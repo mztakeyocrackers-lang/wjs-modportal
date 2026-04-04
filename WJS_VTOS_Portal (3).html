@@ -474,25 +474,20 @@ function selectOffense(type, value, card) {
 function loadRecords(type) {
   const wrap = document.getElementById((type === 'vtos' ? 'v' : 'c') + '-tbl-wrap');
   wrap.innerHTML = '<div class="loading-state"><p>Fetching records from database...</p></div>';
-  const cbName = 'cb_' + Date.now();
-  const script = document.createElement('script');
-  window[cbName] = function(data) {
-    delete window[cbName];
-    try { document.head.removeChild(script); } catch(e) {}
-    if (data && data.entries) {
-      allEntries[type] = data.entries;
-      updateStats(type, data.entries);
-      renderTable(type);
-    } else {
-      wrap.innerHTML = '<div class="empty-state"><p>No records found.</p></div>';
-    }
-  };
-  script.onerror = function() {
-    delete window[cbName];
-    wrap.innerHTML = '<div class="empty-state"><p>Could not reach database.</p></div>';
-  };
-  script.src = SCRIPT_URL + '?callback=' + cbName + '&type=' + type;
-  document.head.appendChild(script);
+  fetch('/.netlify/functions/getrecords?type=' + type)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.entries) {
+        allEntries[type] = data.entries;
+        updateStats(type, data.entries);
+        renderTable(type);
+      } else {
+        wrap.innerHTML = '<div class="empty-state"><p>No records found.</p></div>';
+      }
+    })
+    .catch(() => {
+      wrap.innerHTML = '<div class="empty-state"><p>Could not reach database. Check connection.</p></div>';
+    });
 }
 
 function updateStats(type, entries) {
