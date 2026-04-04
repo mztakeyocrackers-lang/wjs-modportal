@@ -298,6 +298,91 @@
   .admin-action-card p { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
   .btn-danger { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: 1px solid #e8c0c0; color: var(--red); padding: 8px 16px; cursor: pointer; transition: all 0.15s; width: 100%; }
   .btn-danger:hover { background: var(--red); color: white; }
+  .admin-pin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  .admin-pin-overlay.on { display: flex; }
+  .admin-pin-box {
+    background: #111;
+    border: 1px solid #222;
+    border-top: 2px solid #8b1a1a;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  .admin-pin-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: #c8c0b4;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .admin-pin-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #444;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .admin-pin-input {
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid #2a2a2a;
+    color: #c8c0b4;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 20px;
+    padding: 12px 14px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+  }
+  .admin-pin-input:focus { border-color: #8b1a1a; }
+  .admin-pin-err {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #8b1a1a;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    display: none;
+    text-transform: uppercase;
+  }
+  .admin-pin-btn {
+    width: 100%;
+    background: #8b1a1a;
+    color: #f5f0e8;
+    border: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 10px;
+  }
+  .admin-pin-btn:hover { background: #a82020; }
+  .admin-pin-cancel {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: #444;
+    text-transform: uppercase;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .admin-pin-cancel:hover { color: #888; }
   @media (max-width: 700px) {
     .portal-header, .main-nav, .sub-nav, .portal-body, .portal-user-bar { padding-left: 20px; padding-right: 20px; }
     .form-grid { grid-template-columns: 1fr; }
@@ -650,6 +735,18 @@
       </div>
     </div>
   </div>
+  <!-- ADMIN PIN OVERLAY -->
+  <div class="admin-pin-overlay" id="admin-pin-overlay">
+    <div class="admin-pin-box">
+      <div class="admin-pin-title">Admin Authorization Required</div>
+      <div class="admin-pin-sub">Enter your admin access code to continue</div>
+      <input type="password" class="admin-pin-input" id="admin-pin-input" placeholder="••••••" maxlength="10">
+      <div class="admin-pin-err" id="admin-pin-err">INVALID CODE — ACCESS DENIED</div>
+      <button class="admin-pin-btn" onclick="verifyAdminPin()">AUTHORIZE →</button>
+      <button class="admin-pin-cancel" onclick="closeAdminPin()">Cancel</button>
+    </div>
+  </div>
+
   <!-- ADMIN PANEL -->
   <div id="main-admin" class="main-sec">
     <div class="sub-nav">
@@ -736,22 +833,55 @@ async function doLogin() {
   btn.textContent = 'AUTHENTICATE →';
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin();
+  if (e.key === 'Enter' && document.getElementById('admin-pin-overlay').classList.contains('on')) verifyAdminPin();
+});
 
 function doLogout() {
   currentUser = null;
   document.getElementById('portal-page').style.display = 'none';
   document.getElementById('login-page').style.display = 'flex';
+  adminUnlocked = false;
   document.getElementById('login-email').value = '';
   document.getElementById('login-code').value = '';
 }
 
+let adminUnlocked = false;
+let pendingAdminBtn = null;
+
 function showMain(id, btn) {
+  if (id === 'admin' && !adminUnlocked) {
+    pendingAdminBtn = btn;
+    document.getElementById('admin-pin-overlay').classList.add('on');
+    document.getElementById('admin-pin-input').value = '';
+    document.getElementById('admin-pin-err').style.display = 'none';
+    setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
+    return;
+  }
   document.querySelectorAll('.main-sec').forEach(s => s.classList.remove('on'));
   document.querySelectorAll('.main-nav-btn').forEach(b => b.classList.remove('on'));
   document.getElementById('main-' + id).classList.add('on');
   btn.classList.add('on');
   if (id === 'admin') loadSigninLogs();
+}
+
+function verifyAdminPin() {
+  const pin = document.getElementById('admin-pin-input').value.trim();
+  const err = document.getElementById('admin-pin-err');
+  if (pin === '323962') {
+    adminUnlocked = true;
+    document.getElementById('admin-pin-overlay').classList.remove('on');
+    if (pendingAdminBtn) showMain('admin', pendingAdminBtn);
+  } else {
+    err.style.display = 'block';
+    document.getElementById('admin-pin-input').value = '';
+  }
+}
+
+function closeAdminPin() {
+  document.getElementById('admin-pin-overlay').classList.remove('on');
+  pendingAdminBtn = null;
 }
 
 function showSub(main, id, btn) {
