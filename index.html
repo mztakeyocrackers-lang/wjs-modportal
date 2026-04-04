@@ -284,6 +284,20 @@
 
   .ban-duration-wrap { display: none; margin-top: 12px; }
 
+  .admin-section-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 20px; margin-top: 32px; }
+  .admin-section-title:first-child { margin-top: 0; }
+  .signin-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 32px; }
+  .signin-table th { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.6); padding: 10px 14px; text-align: left; font-weight: 400; background: var(--ink); }
+  .signin-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--ink); vertical-align: top; }
+  .signin-table tbody tr:hover { background: rgba(255,255,255,0.6); }
+  .success-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #1a5c2e; margin-right: 6px; }
+  .fail-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--red); margin-right: 6px; }
+  .admin-actions { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 32px; }
+  .admin-action-card { background: #fff; border: 1px solid var(--border); padding: 16px 20px; }
+  .admin-action-card h3 { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); margin-bottom: 8px; }
+  .admin-action-card p { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+  .btn-danger { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: 1px solid #e8c0c0; color: var(--red); padding: 8px 16px; cursor: pointer; transition: all 0.15s; width: 100%; }
+  .btn-danger:hover { background: var(--red); color: white; }
   @media (max-width: 700px) {
     .portal-header, .main-nav, .sub-nav, .portal-body, .portal-user-bar { padding-left: 20px; padding-right: 20px; }
     .form-grid { grid-template-columns: 1fr; }
@@ -298,10 +312,10 @@
 
 <!-- LOGIN PAGE -->
 <div id="login-page">
-  <div class="login-seal"><div class="login-seal-text">WJS</div></div>
+  
   <div class="login-agency">Wild Journey Studios — Moderation Division</div>
   <div class="login-title">SECURE ACCESS PORTAL</div>
-  <div class="login-subtitle">Law Enforcement & Moderation Personnel Only</div>
+  <div class="login-subtitle">Moderation Personnel Only — Unauthorized Access Prohibited</div>
 
   <div class="login-warning">
     WARNING: THIS SYSTEM IS RESTRICTED TO AUTHORIZED USERS ONLY.<br>
@@ -348,6 +362,7 @@
     <button class="main-nav-btn on" onclick="showMain('vtos',this)">VTOS Log</button>
     <button class="main-nav-btn cg" onclick="showMain('cg',this)">Community Guidelines</button>
     <button class="main-nav-btn ex" onclick="showMain('ex',this)">Exploiting Log</button>
+    <button class="main-nav-btn" id="admin-nav-btn" onclick="showMain('admin',this)" style="display:none;">Admin Panel</button>
   </div>
 
   <!-- VTOS -->
@@ -428,7 +443,7 @@
           <textarea id="v-notes" placeholder="Describe the incident. Paste screenshot links, witness usernames, or any relevant information..."></textarea>
         </div>
         <div class="form-footer">
-          <div class="form-footer-note">WJS VTOS Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
+          <div class="form-footer-note">WJS VTOS Log — Moderation Use Only<br>Submitted entries are logged and reviewed by moderation staff.</div>
           <button class="btn-submit" id="v-submitBtn" onclick="submitEntry('vtos')">Submit VTOS Entry →</button>
         </div>
       </div>
@@ -526,7 +541,7 @@
           <textarea id="c-notes" placeholder="Describe the incident..."></textarea>
         </div>
         <div class="form-footer">
-          <div class="form-footer-note">WJS Community Guidelines Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
+          <div class="form-footer-note">WJS Community Guidelines Log — Moderation Use Only<br>Submitted entries are logged and reviewed by moderation staff.</div>
           <button class="btn-submit cg" id="c-submitBtn" onclick="submitEntry('cg')">Submit CG Entry →</button>
         </div>
       </div>
@@ -619,7 +634,7 @@
           <textarea id="e-notes" placeholder="Describe the exploit in detail. Include video links, screenshots, or any relevant evidence..."></textarea>
         </div>
         <div class="form-footer">
-          <div class="form-footer-note">WJS Exploiting Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
+          <div class="form-footer-note">WJS Exploiting Log — Moderation Use Only<br>Submitted entries are logged and reviewed by moderation staff.</div>
           <button class="btn-submit ex" id="e-submitBtn" onclick="submitEntry('ex')">Submit Exploit Entry →</button>
         </div>
       </div>
@@ -632,6 +647,41 @@
         </div>
         <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="e-search" placeholder="Search by player username..." oninput="renderTable('ex')"></div>
         <div id="e-tbl-wrap"><div class="loading-state"><p>Loading records...</p></div></div>
+      </div>
+    </div>
+  </div>
+  <!-- ADMIN PANEL -->
+  <div id="main-admin" class="main-sec">
+    <div class="sub-nav">
+      <button class="sub-nav-btn on" onclick="showSub('admin','signin',this)">Sign-in Logs</button>
+      <button class="sub-nav-btn" onclick="showSub('admin','deletions',this)">Delete Log Entries</button>
+    </div>
+    <div class="portal-body">
+      <div id="admin-signin" class="sub-sec on">
+        <div class="admin-section-title">Sign-in activity log</div>
+        <div id="signin-tbl-wrap"><div class="loading-state"><p>Loading sign-in logs...</p></div></div>
+      </div>
+      <div id="admin-deletions" class="sub-sec">
+        <div class="admin-section-title">Delete all entries by log</div>
+        <div class="admin-actions">
+          <div class="admin-action-card">
+            <h3>VTOS Log</h3>
+            <p>Permanently remove a specific entry from the VTOS offense database.</p>
+            <button class="btn-danger" onclick="showSub('vtos','records',document.querySelector('.main-nav-btn'));showMain('vtos',document.querySelector('.main-nav-btn'))">Go to VTOS Records →</button>
+          </div>
+          <div class="admin-action-card">
+            <h3>Community Guidelines Log</h3>
+            <p>Permanently remove a specific entry from the Community Guidelines database.</p>
+            <button class="btn-danger" onclick="showMain('cg',document.querySelectorAll('.main-nav-btn')[1])">Go to CG Records →</button>
+          </div>
+          <div class="admin-action-card">
+            <h3>Exploiting Log</h3>
+            <p>Permanently remove a specific entry from the Exploiting database.</p>
+            <button class="btn-danger" onclick="showMain('ex',document.querySelectorAll('.main-nav-btn')[2])">Go to Exploit Records →</button>
+          </div>
+        </div>
+        <div class="admin-section-title">Authorized users</div>
+        <div id="auth-users-wrap"><div class="loading-state"><p>Loading...</p></div></div>
       </div>
     </div>
   </div>
@@ -670,6 +720,9 @@ async function doLogin() {
       document.getElementById('portal-page').style.display = 'block';
       document.getElementById('user-email-display').textContent = currentUser.email;
       document.getElementById('user-role-display').textContent = currentUser.role.toUpperCase();
+      if (currentUser.role === 'admin') {
+        document.getElementById('admin-nav-btn').style.display = 'inline-block';
+      }
     } else {
       await fetch(SUPA_URL + '/rest/v1/signin_log', {
         method: 'POST',
@@ -698,6 +751,7 @@ function showMain(id, btn) {
   document.querySelectorAll('.main-nav-btn').forEach(b => b.classList.remove('on'));
   document.getElementById('main-' + id).classList.add('on');
   btn.classList.add('on');
+  if (id === 'admin') loadSigninLogs();
 }
 
 function showSub(main, id, btn) {
@@ -707,6 +761,8 @@ function showSub(main, id, btn) {
   document.getElementById(main + '-' + id).classList.add('on');
   btn.classList.add('on');
   if (id === 'records') loadRecords(main);
+  if (main === 'admin' && id === 'signin') loadSigninLogs();
+  if (main === 'admin' && id === 'deletions') loadAuthUsers();
 }
 
 function selectOffense(type, value, card) {
@@ -827,6 +883,44 @@ function renderTable(type) {
   }).join('');
   const delHeader = isAdmin ? '<th>Delete</th>' : '<th></th>';
   wrap.innerHTML = '<table class="records-table"><thead><tr><th>Player</th><th>Offense</th><th>Action</th><th>Date</th><th>Logged by</th><th>Notes</th>'+delHeader+'</tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+async function loadSigninLogs() {
+  const wrap = document.getElementById('signin-tbl-wrap');
+  wrap.innerHTML = '<div class="loading-state"><p>Loading...</p></div>';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/signin_log?order=id.desc&limit=100', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await res.json();
+    if (!data || data.length === 0) {
+      wrap.innerHTML = '<div class="empty-state"><p>No sign-in logs yet.</p></div>';
+      return;
+    }
+    const rows = data.map(e => {
+      const dt = e.signed_in_at ? new Date(e.signed_in_at).toLocaleString() : '—';
+      return '<tr><td>'+(e.success?'<span class="success-dot"></span>SUCCESS':'<span class="fail-dot"></span>FAILED')+'</td><td style="font-family:IBM Plex Mono,monospace;font-size:12px;">'+(e.email||'—')+'</td><td style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--muted);">'+dt+'</td></tr>';
+    }).join('');
+    wrap.innerHTML = '<table class="signin-table"><thead><tr><th>Status</th><th>Email</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  } catch(e) {
+    wrap.innerHTML = '<div class="empty-state"><p>Could not load sign-in logs.</p></div>';
+  }
+}
+
+async function loadAuthUsers() {
+  const wrap = document.getElementById('auth-users-wrap');
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/authorized_users?select=id,email,role,created_at&order=id.asc', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await res.json();
+    if (!data || data.length === 0) { wrap.innerHTML = '<div class="empty-state"><p>No users found.</p></div>'; return; }
+    const rows = data.map(u => {
+      const dt = u.created_at ? new Date(u.created_at).toLocaleString() : '—';
+      return '<tr><td style="font-family:IBM Plex Mono,monospace;font-size:12px;">'+(u.email||'—')+'</td><td><span class="badge '+(u.role==='admin'?'badge-ban':'badge-rep')+'">'+(u.role||'—').toUpperCase()+'</span></td><td style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--muted);">'+dt+'</td></tr>';
+    }).join('');
+    wrap.innerHTML = '<table class="signin-table"><thead><tr><th>Email</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  } catch(e) { wrap.innerHTML = '<div class="empty-state"><p>Could not load users.</p></div>'; }
 }
 
 async function submitEntry(type) {
