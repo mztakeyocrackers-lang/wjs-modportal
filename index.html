@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WJS — Moderation Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Playfair+Display:wght@400;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #0f0e0d;
@@ -18,29 +18,180 @@
     --success: #1a5c2e;
     --success-bg: #e8f5ec;
     --purple: #3d1a6e;
-    --purple-light: #f0e8f8;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--paper); font-family: 'IBM Plex Sans', sans-serif; color: var(--ink); min-height: 100vh; }
 
+  /* ── LOGIN PAGE ── */
+  #login-page {
+    min-height: 100vh;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  .login-seal {
+    width: 80px; height: 80px;
+    border: 3px solid #8b1a1a;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .login-seal::before {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(139,26,26,0.4);
+    border-radius: 50%;
+  }
+  .login-seal-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    color: #8b1a1a;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+  }
+  .login-agency {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: #555;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .login-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 22px;
+    color: #c8c0b4;
+    letter-spacing: 0.15em;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .login-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: #444;
+    letter-spacing: 0.2em;
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+  }
+  .login-box {
+    background: #111;
+    border: 1px solid #222;
+    border-top: 2px solid #8b1a1a;
+    padding: 36px 40px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .login-field {
+    margin-bottom: 20px;
+  }
+  .login-field label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #666;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .login-field input {
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid #2a2a2a;
+    color: #c8c0b4;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    letter-spacing: 0.1em;
+  }
+  .login-field input:focus { border-color: #8b1a1a; }
+  .login-btn {
+    width: 100%;
+    background: #8b1a1a;
+    color: #f5f0e8;
+    border: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 8px;
+  }
+  .login-btn:hover { background: #a82020; }
+  .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-err {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #8b1a1a;
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+    text-align: center;
+    display: none;
+    text-transform: uppercase;
+  }
+  .login-footer {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: #333;
+    letter-spacing: 0.15em;
+    text-align: center;
+    margin-top: 32px;
+    text-transform: uppercase;
+    line-height: 1.8;
+  }
+  .login-divider {
+    border: none;
+    border-top: 1px solid #1a1a1a;
+    margin: 24px 0;
+  }
+  .login-warning {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 0.12em;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.9;
+    margin-bottom: 28px;
+  }
+
+  /* ── PORTAL ── */
+  #portal-page { display: none; }
   .portal-header { background: var(--ink); color: var(--paper); padding: 28px 48px 22px; border-bottom: 3px solid var(--red); position: relative; overflow: hidden; }
   .portal-header::before { content: ''; position: absolute; top: 0; right: 0; width: 240px; height: 100%; background: repeating-linear-gradient(90deg, transparent, transparent 12px, rgba(255,255,255,0.03) 12px, rgba(255,255,255,0.03) 13px); }
   .portal-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
   .portal-title { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 600; letter-spacing: 0.01em; line-height: 1.2; margin-bottom: 4px; }
   .portal-subtitle { font-size: 12px; color: rgba(245,240,232,0.5); font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.08em; }
   .portal-stamp { position: absolute; top: 24px; right: 48px; border: 1.5px solid var(--red); color: var(--red); font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.15em; padding: 4px 10px; text-transform: uppercase; opacity: 0.85; transform: rotate(2deg); }
+  .portal-user-bar { background: #1a1918; padding: 6px 48px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2a2a; }
+  .portal-user-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(245,240,232,0.4); letter-spacing: 0.1em; }
+  .portal-user-info span { color: var(--gold); }
+  .logout-btn { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: none; border: 1px solid #333; color: #555; padding: 4px 12px; cursor: pointer; transition: all 0.15s; }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
 
   .main-nav { background: #1a1918; display: flex; padding: 0 48px; border-bottom: 2px solid var(--red); }
   .main-nav-btn { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 24px 14px; border: none; background: none; color: rgba(245,240,232,0.4); cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color 0.15s, border-color 0.15s; }
   .main-nav-btn.on { color: var(--paper); border-bottom: 3px solid var(--red); }
   .main-nav-btn.cg.on { border-bottom-color: var(--purple); }
+  .main-nav-btn.ex.on { border-bottom-color: var(--gold); }
 
   .sub-nav { background: var(--paper2); border-bottom: 1px solid var(--border); display: flex; padding: 0 48px; }
   .sub-nav-btn { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 18px 10px; border: none; background: none; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; }
   .sub-nav-btn.on { color: var(--ink); border-bottom: 2px solid var(--red); font-weight: 500; }
   .sub-nav-btn.cg.on { border-bottom-color: var(--purple); }
+  .sub-nav-btn.ex.on { border-bottom-color: var(--gold); }
 
-  .portal-body { padding: 40px 48px; max-width: 960px; }
+  .portal-body { padding: 40px 48px; max-width: 980px; }
   .main-sec { display: none; } .main-sec.on { display: block; }
   .sub-sec { display: none; } .sub-sec.on { display: block; }
 
@@ -51,7 +202,7 @@
   .field input, .field select, .field textarea { font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; color: var(--ink); background: #fff; border: 1px solid var(--border); padding: 10px 14px; border-radius: 0; outline: none; transition: border-color 0.15s; width: 100%; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--ink); }
   .field textarea { min-height: 100px; resize: vertical; }
-  .radio-group { display: flex; gap: 24px; padding-top: 4px; }
+  .radio-group { display: flex; gap: 24px; padding-top: 4px; flex-wrap: wrap; }
   .radio-group label { display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; letter-spacing: 0; text-transform: none; color: var(--ink); cursor: pointer; }
   .full-width { margin-bottom: 16px; }
 
@@ -63,20 +214,29 @@
   .offense-card.selected .oc-name { color: var(--paper); }
   .offense-card.selected .oc-tier { color: rgba(245,240,232,0.5); }
   .offense-card.cg-selected { background: var(--purple); border-color: var(--purple); }
-  .offense-card.cg-selected .oc-code { color: var(--gold); }
-  .offense-card.cg-selected .oc-name { color: var(--paper); }
+  .offense-card.cg-selected .oc-code, .offense-card.cg-selected .oc-name { color: var(--paper); }
   .offense-card.cg-selected .oc-tier { color: rgba(245,240,232,0.5); }
+  .offense-card.ex-selected { background: #6b4a00; border-color: #6b4a00; }
+  .offense-card.ex-selected .oc-code { color: var(--gold); }
+  .offense-card.ex-selected .oc-name { color: var(--paper); }
+  .offense-card.ex-selected .oc-tier { color: rgba(245,240,232,0.5); }
   .oc-code { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--red); text-transform: uppercase; margin-bottom: 4px; font-weight: 500; }
   .oc-name { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
   .oc-tier { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
   .offense-card.other-card { border-style: dashed; }
   .tier-low { color: #1a5c2e; } .tier-mid { color: #7a5c00; } .tier-extreme { color: var(--red); } .tier-legal { color: var(--purple); }
 
+  .prior-alert { background: #fff8e8; border: 1px solid #e8d9a0; border-left: 3px solid var(--gold); padding: 10px 14px; margin-bottom: 16px; display: none; }
+  .prior-alert p { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #7a5c00; letter-spacing: 0.05em; line-height: 1.6; }
+  .prior-alert.danger { background: var(--red-light); border-color: #e8c0c0; border-left-color: var(--red); }
+  .prior-alert.danger p { color: var(--red); }
+
   .form-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); margin-top: 28px; padding-top: 20px; }
   .form-footer-note { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--muted); line-height: 1.8; }
   .btn-submit { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 14px 32px; cursor: pointer; transition: background 0.15s; }
   .btn-submit:hover { background: var(--red); }
   .btn-submit.cg:hover { background: var(--purple); }
+  .btn-submit.ex:hover { background: #6b4a00; }
   .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .alert { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 14px 18px; margin-bottom: 24px; display: none; letter-spacing: 0.05em; line-height: 1.6; }
@@ -100,7 +260,7 @@
   .records-table { width: 100%; border-collapse: collapse; }
   .records-table thead tr { background: var(--ink); }
   .records-table th { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.6); padding: 12px 16px; text-align: left; font-weight: 400; white-space: nowrap; }
-  .records-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--ink); vertical-align: top; }
+  .records-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--ink); vertical-align: top; }
   .records-table tbody tr:hover { background: rgba(255,255,255,0.7); }
   .player-name { font-weight: 500; font-size: 14px; }
   .player-id { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 3px; }
@@ -108,213 +268,371 @@
   .badge-ban { background: var(--red-light); color: var(--red); border: 1px solid #e8c0c0; }
   .badge-warn { background: #fdf6e3; color: #7a5c00; border: 1px solid #e8d9a0; }
   .badge-rep { background: #e8f0f8; color: #1a3a5c; border: 1px solid #b0c8e0; }
+  .badge-kick { background: #f0e8f8; color: var(--purple); border: 1px solid #d0b8f0; }
   .repeat-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--red); text-transform: uppercase; margin-top: 4px; }
-  .notes-cell { font-size: 12px; color: var(--muted); max-width: 180px; line-height: 1.6; }
+  .offense-count { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .offense-count.hot { color: var(--red); font-weight: 500; }
+  .notes-cell { font-size: 12px; color: var(--muted); max-width: 160px; line-height: 1.6; }
   .date-cell { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
   .mod-cell { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink); }
+  .del-btn { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; background: none; border: 1px solid #e8c0c0; color: var(--red); padding: 3px 8px; cursor: pointer; text-transform: uppercase; transition: all 0.15s; }
+  .del-btn:hover { background: var(--red); color: white; }
   .empty-state { text-align: center; padding: 60px 20px; border: 1px dashed var(--border); }
   .empty-state p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
   .loading-state { text-align: center; padding: 60px 20px; }
   .loading-state p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
 
+  .ban-duration-wrap { display: none; margin-top: 12px; }
+
   @media (max-width: 700px) {
-    .portal-header, .main-nav, .sub-nav, .portal-body { padding-left: 20px; padding-right: 20px; }
+    .portal-header, .main-nav, .sub-nav, .portal-body, .portal-user-bar { padding-left: 20px; padding-right: 20px; }
     .form-grid { grid-template-columns: 1fr; }
     .offense-grid { grid-template-columns: 1fr 1fr; }
     .stats-row { grid-template-columns: 1fr; }
     .portal-stamp { display: none; }
+    .login-box { padding: 28px 20px; }
   }
 </style>
 </head>
 <body>
 
-<div class="portal-header">
-  <div class="portal-eyebrow">Wild Journey Studios — Moderation Division</div>
-  <div class="portal-title">Moderation Portal</div>
-  <div class="portal-subtitle">Restricted Access — Authorized Personnel Only</div>
-  <div class="portal-stamp">Permanent Record</div>
-</div>
+<!-- LOGIN PAGE -->
+<div id="login-page">
+  <div class="login-seal"><div class="login-seal-text">WJS</div></div>
+  <div class="login-agency">Wild Journey Studios — Moderation Division</div>
+  <div class="login-title">SECURE ACCESS PORTAL</div>
+  <div class="login-subtitle">Law Enforcement & Moderation Personnel Only</div>
 
-<div class="main-nav">
-  <button class="main-nav-btn on" onclick="showMain('vtos',this)">VTOS Log</button>
-  <button class="main-nav-btn cg" onclick="showMain('cg',this)">Community Guidelines Log</button>
-</div>
-
-<!-- VTOS -->
-<div id="main-vtos" class="main-sec on">
-  <div class="sub-nav">
-    <button class="sub-nav-btn on" onclick="showSub('vtos','form',this)">File New Entry</button>
-    <button class="sub-nav-btn" onclick="showSub('vtos','records',this)">View Records</button>
+  <div class="login-warning">
+    WARNING: THIS SYSTEM IS RESTRICTED TO AUTHORIZED USERS ONLY.<br>
+    UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED AND WILL BE LOGGED.<br>
+    ALL ACTIVITY ON THIS SYSTEM IS MONITORED AND RECORDED.
   </div>
-  <div class="portal-body">
-    <div id="vtos-form" class="sub-sec on">
-      <div class="alert alert-success" id="vtos-toast">Entry permanently logged to the WJS VTOS database.</div>
-      <div class="alert alert-error" id="vtos-err">Please complete all required fields and select an offense.</div>
 
-      <div class="form-rule">Section 1 — Player Identification</div>
-      <div class="form-grid">
-        <div class="field"><label>Player username *</label><input type="text" id="v-user" placeholder="Roblox username"></div>
-        <div class="field"><label>Player user ID</label><input type="text" id="v-uid" placeholder="Roblox user ID (optional)"></div>
-      </div>
+  <div class="login-box">
+    <div class="login-field">
+      <label>Verified Email Address</label>
+      <input type="email" id="login-email" placeholder="officer@example.com" autocomplete="off">
+    </div>
+    <div class="login-field">
+      <label>Access Code</label>
+      <input type="password" id="login-code" placeholder="••••••••" autocomplete="off">
+    </div>
+    <hr class="login-divider">
+    <button class="login-btn" id="login-btn" onclick="doLogin()">AUTHENTICATE →</button>
+    <div class="login-err" id="login-err">ACCESS DENIED — INVALID CREDENTIALS</div>
+  </div>
 
-      <div class="form-rule">Section 2 — VTOS Offense</div>
-      <div class="offense-grid" id="vtos-offense-grid">
-        <div class="offense-card" onclick="selectOffense('vtos','Sexual Roleplay (ERP)',this)"><div class="oc-code">ERP</div><div class="oc-name">Sexual Roleplay</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Inappropriate Avatar',this)"><div class="oc-code">IA</div><div class="oc-name">Inappropriate Avatar</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Bypassing Chat Filter',this)"><div class="oc-code">BCF</div><div class="oc-name">Bypassing Chat Filter</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Ro-Bang / Sexual Content',this)"><div class="oc-code">RB</div><div class="oc-name">Ro-Bang / Sexual Content</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Inappropriate Username',this)"><div class="oc-code">IU</div><div class="oc-name">Inappropriate Username</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Inappropriate Clothing',this)"><div class="oc-code">IC</div><div class="oc-name">Inappropriate Clothing</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Solicitation of Minors',this)"><div class="oc-code">SOM</div><div class="oc-name">Solicitation of Minors</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Threatening / Doxxing',this)"><div class="oc-code">DOX</div><div class="oc-name">Threatening / Doxxing</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Alt Account to Avoid Punishment (AATAP)',this)"><div class="oc-code">AATAP</div><div class="oc-name">Alt Account to Avoid Punishment</div><div class="oc-tier tier-legal">Legal Standard</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','ICERP | Immigration & Customs Enforcement Roleplay',this)"><div class="oc-code">ICERP</div><div class="oc-name">Immigration Enforcement Roleplay</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('vtos','Sexual Language / Chat',this)"><div class="oc-code">SLC</div><div class="oc-name">Sexual Language / Chat</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card other-card" onclick="selectOffense('vtos','other',this)"><div class="oc-code">OTH</div><div class="oc-name">Other — specify below</div><div class="oc-tier">Custom</div></div>
-      </div>
-      <div id="vtos-other-wrap" style="display:none;margin-bottom:16px;">
-        <div class="field"><label>Specify offense *</label><input type="text" id="v-other" placeholder="Describe the VTOS offense..."></div>
-      </div>
+  <div class="login-footer">
+    UNAUTHORIZED ACCESS ATTEMPTS ARE LOGGED AND REPORTED<br>
+    ISSUES WITH ACCESS? DM @aurxora<br>
+    WJS MODERATION DIVISION — ALL RIGHTS RESERVED
+  </div>
+</div>
 
-      <div class="form-rule">Section 3 — Incident Details</div>
-      <div class="form-grid">
-        <div class="field"><label>Date of offense *</label><input type="date" id="v-date"></div>
-        <div class="field"><label>Logged by (moderator) *</label><input type="text" id="v-mod" placeholder="Your Roblox username"></div>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Action taken *</label>
-          <select id="v-action">
-            <option value="">Select action taken...</option>
-            <option>Warning issued</option>
-            <option>Temporary ban</option>
-            <option>Permanent ban</option>
-            <option>Roblox report filed</option>
-            <option>Permanent ban + Roblox report filed</option>
-          </select>
+<!-- PORTAL PAGE -->
+<div id="portal-page">
+  <div class="portal-header">
+    <div class="portal-eyebrow">Wild Journey Studios — Moderation Division</div>
+    <div class="portal-title">Moderation Portal</div>
+    <div class="portal-subtitle">Restricted Access — Authorized Personnel Only</div>
+    <div class="portal-stamp">Permanent Record</div>
+  </div>
+
+  <div class="portal-user-bar">
+    <div class="portal-user-info">Logged in as: <span id="user-email-display">—</span> &nbsp;|&nbsp; Role: <span id="user-role-display">—</span></div>
+    <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  </div>
+
+  <div class="main-nav">
+    <button class="main-nav-btn on" onclick="showMain('vtos',this)">VTOS Log</button>
+    <button class="main-nav-btn cg" onclick="showMain('cg',this)">Community Guidelines</button>
+    <button class="main-nav-btn ex" onclick="showMain('ex',this)">Exploiting Log</button>
+  </div>
+
+  <!-- VTOS -->
+  <div id="main-vtos" class="main-sec on">
+    <div class="sub-nav">
+      <button class="sub-nav-btn on" onclick="showSub('vtos','form',this)">File New Entry</button>
+      <button class="sub-nav-btn" onclick="showSub('vtos','records',this)">View Records</button>
+    </div>
+    <div class="portal-body">
+      <div id="vtos-form" class="sub-sec on">
+        <div class="alert alert-success" id="vtos-toast">Entry permanently logged to the WJS VTOS database.</div>
+        <div class="alert alert-error" id="vtos-err">Please complete all required fields and select an offense.</div>
+        <div class="prior-alert" id="vtos-prior-alert"><p></p></div>
+
+        <div class="form-rule">Section 1 — Player Identification</div>
+        <div class="form-grid">
+          <div class="field"><label>Player username *</label><input type="text" id="v-user" placeholder="Roblox username" oninput="checkPrior('vtos')"></div>
+          <div class="field"><label>Player user ID</label><input type="text" id="v-uid" placeholder="Roblox user ID (optional)"></div>
         </div>
-        <div class="field">
-          <label>Prior offenses on record</label>
-          <div class="radio-group" style="margin-top:8px;">
-            <label><input type="radio" name="v-prior" value="None — first offense" checked> None</label>
-            <label><input type="radio" name="v-prior" value="Yes — repeat offender"> Repeat offender</label>
+
+        <div class="form-rule">Section 2 — VTOS Offense</div>
+        <div class="offense-grid" id="vtos-offense-grid">
+          <div class="offense-card" onclick="selectOffense('vtos','Sexual Roleplay (ERP)',this)"><div class="oc-code">ERP</div><div class="oc-name">Sexual Roleplay</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Inappropriate Avatar',this)"><div class="oc-code">IA</div><div class="oc-name">Inappropriate Avatar</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Bypassing Chat Filter',this)"><div class="oc-code">BCF</div><div class="oc-name">Bypassing Chat Filter</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Ro-Bang / Sexual Content',this)"><div class="oc-code">RB</div><div class="oc-name">Ro-Bang / Sexual Content</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Inappropriate Username',this)"><div class="oc-code">IU</div><div class="oc-name">Inappropriate Username</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Inappropriate Clothing',this)"><div class="oc-code">IC</div><div class="oc-name">Inappropriate Clothing</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Solicitation of Minors',this)"><div class="oc-code">SOM</div><div class="oc-name">Solicitation of Minors</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Threatening / Doxxing',this)"><div class="oc-code">DOX</div><div class="oc-name">Threatening / Doxxing</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Alt Account to Avoid Punishment (AATAP)',this)"><div class="oc-code">AATAP</div><div class="oc-name">Alt Account to Avoid Punishment</div><div class="oc-tier tier-legal">Legal Standard</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','ICERP | Immigration & Customs Enforcement Roleplay',this)"><div class="oc-code">ICERP</div><div class="oc-name">Immigration Enforcement Roleplay</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('vtos','Sexual Language / Chat',this)"><div class="oc-code">SLC</div><div class="oc-name">Sexual Language / Chat</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card other-card" onclick="selectOffense('vtos','other',this)"><div class="oc-code">OTH</div><div class="oc-name">Other — specify below</div><div class="oc-tier">Custom</div></div>
+        </div>
+        <div id="vtos-other-wrap" style="display:none;margin-bottom:16px;">
+          <div class="field"><label>Specify offense *</label><input type="text" id="v-other" placeholder="Describe the VTOS offense..."></div>
+        </div>
+
+        <div class="form-rule">Section 3 — Incident Details</div>
+        <div class="form-grid">
+          <div class="field"><label>Date of offense *</label><input type="date" id="v-date"></div>
+          <div class="field"><label>Logged by (moderator) *</label><input type="text" id="v-mod" placeholder="Your Roblox username"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Action taken *</label>
+            <select id="v-action" onchange="toggleDuration('vtos')">
+              <option value="">Select action taken...</option>
+              <option>Warning issued</option>
+              <option>Temporary ban</option>
+              <option>Permanent ban</option>
+              <option>Roblox report filed</option>
+              <option>Permanent ban + Roblox report filed</option>
+            </select>
+            <div class="ban-duration-wrap" id="vtos-duration-wrap">
+              <div class="field"><label>Ban duration *</label>
+              <select id="v-duration">
+                <option value="">Select duration...</option>
+                <option>1 hour</option><option>6 hours</option><option>12 hours</option>
+                <option>1 day</option><option>3 days</option><option>1 week</option>
+                <option>2 weeks</option><option>1 month</option><option>3 months</option><option>6 months</option>
+              </select></div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Prior offenses on record</label>
+            <div class="radio-group" style="margin-top:8px;">
+              <label><input type="radio" name="v-prior" value="None — first offense" checked> None</label>
+              <label><input type="radio" name="v-prior" value="Yes — repeat offender"> Repeat offender</label>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="form-rule">Section 4 — Evidence & Notes</div>
-      <div class="field full-width">
-        <label>Evidence / notes</label>
-        <textarea id="v-notes" placeholder="Describe the incident. Paste screenshot links, witness usernames, or any relevant information..."></textarea>
-      </div>
-      <div class="form-footer">
-        <div class="form-footer-note">WJS VTOS Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
-        <button class="btn-submit" id="v-submitBtn" onclick="submitEntry('vtos')">Submit VTOS Entry →</button>
-      </div>
-    </div>
-
-    <div id="vtos-records" class="sub-sec">
-      <div class="stats-row">
-        <div class="stat-box"><div class="stat-n" id="vs-total">—</div><div class="stat-l">Total entries</div></div>
-        <div class="stat-box red"><div class="stat-n" id="vs-bans">—</div><div class="stat-l">Permanent bans</div></div>
-        <div class="stat-box gold"><div class="stat-n" id="vs-repeat">—</div><div class="stat-l">Repeat offenders</div></div>
-      </div>
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="v-search" placeholder="Search by player username..." oninput="renderTable('vtos')">
-      </div>
-      <div id="v-tbl-wrap"><div class="loading-state"><p>Loading records...</p></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- COMMUNITY GUIDELINES -->
-<div id="main-cg" class="main-sec">
-  <div class="sub-nav">
-    <button class="sub-nav-btn cg on" onclick="showSub('cg','form',this)">File New Entry</button>
-    <button class="sub-nav-btn cg" onclick="showSub('cg','records',this)">View Records</button>
-  </div>
-  <div class="portal-body">
-    <div id="cg-form" class="sub-sec on">
-      <div class="alert alert-success" id="cg-toast">Entry permanently logged to the WJS Community Guidelines database.</div>
-      <div class="alert alert-error" id="cg-err">Please complete all required fields and select a rule.</div>
-
-      <div class="form-rule">Section 1 — Player Identification</div>
-      <div class="form-grid">
-        <div class="field"><label>Player username *</label><input type="text" id="c-user" placeholder="Roblox username"></div>
-        <div class="field"><label>Player user ID</label><input type="text" id="c-uid" placeholder="Roblox user ID (optional)"></div>
-      </div>
-
-      <div class="form-rule">Section 2 — Rule Broken</div>
-      <div class="offense-grid" id="cg-offense-grid">
-        <div class="offense-card" onclick="selectOffense('cg','PDR | Player Dis-Respect',this)"><div class="oc-code">PDR</div><div class="oc-name">Player Dis-Respect</div><div class="oc-tier tier-low">Low Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','SDR | Staff Dis-Respect',this)"><div class="oc-code">SDR</div><div class="oc-name">Staff Dis-Respect</div><div class="oc-tier tier-low">Low Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','LEC | Law Enforcement Camping',this)"><div class="oc-code">LEC</div><div class="oc-name">Law Enforcement Camping</div><div class="oc-tier tier-low">Low Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','ESA | Emergency Siren Abuse',this)"><div class="oc-code">ESA</div><div class="oc-name">Emergency Siren Abuse</div><div class="oc-tier tier-low">Low Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','NLR | New Life Rule',this)"><div class="oc-code">NLR</div><div class="oc-name">New Life Rule</div><div class="oc-tier tier-low">Low Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','FRP | Fail Roleplay',this)"><div class="oc-code">FRP</div><div class="oc-name">Fail Roleplay</div><div class="oc-tier tier-mid">Low / Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','TG | Tool-Glitch',this)"><div class="oc-code">TG</div><div class="oc-name">Tool-Glitch</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','IWS | Interference with Staff Scene',this)"><div class="oc-code">IWS</div><div class="oc-name">Interference with Staff Scene</div><div class="oc-tier tier-mid">Mid Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','AOT | Abuse of Tools',this)"><div class="oc-code">AOT</div><div class="oc-name">Abuse of Tools</div><div class="oc-tier tier-extreme">Mid / Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','IWARP | Interfering with Another Roleplay',this)"><div class="oc-code">IWARP</div><div class="oc-name">Interfering with Another Roleplay</div><div class="oc-tier tier-extreme">Mid / Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','LTAP | Leaving to Avoid Punishment',this)"><div class="oc-code">LTAP</div><div class="oc-name">Leaving to Avoid Punishment</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','NITRP | No Intention to Roleplay',this)"><div class="oc-code">NITRP</div><div class="oc-name">No Intention to Roleplay</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','SI | Staff Impersonation',this)"><div class="oc-code">SI</div><div class="oc-name">Staff Impersonation</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card" onclick="selectOffense('cg','PE | Player Exploiting',this)"><div class="oc-code">PE</div><div class="oc-name">Player Exploiting</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
-        <div class="offense-card other-card" onclick="selectOffense('cg','other',this)"><div class="oc-code">OTH</div><div class="oc-name">Other — specify below</div><div class="oc-tier">Custom</div></div>
-      </div>
-      <div id="cg-other-wrap" style="display:none;margin-bottom:16px;">
-        <div class="field"><label>Specify rule broken *</label><input type="text" id="c-other" placeholder="Describe the rule violation..."></div>
-      </div>
-
-      <div class="form-rule">Section 3 — Incident Details</div>
-      <div class="form-grid">
-        <div class="field"><label>Date of offense *</label><input type="date" id="c-date"></div>
-        <div class="field"><label>Logged by (moderator) *</label><input type="text" id="c-mod" placeholder="Your Roblox username"></div>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Action taken *</label>
-          <select id="c-action">
-            <option value="">Select action taken...</option>
-            <option>Verbal warning</option>
-            <option>Written warning</option>
-            <option>Kick</option>
-            <option>Temporary ban</option>
-            <option>Permanent ban</option>
-          </select>
+        <div class="form-rule">Section 4 — Evidence & Notes</div>
+        <div class="field full-width">
+          <label>Evidence / notes</label>
+          <textarea id="v-notes" placeholder="Describe the incident. Paste screenshot links, witness usernames, or any relevant information..."></textarea>
         </div>
-        <div class="field">
-          <label>Prior offenses on record</label>
-          <div class="radio-group" style="margin-top:8px;">
-            <label><input type="radio" name="c-prior" value="None — first offense" checked> None</label>
-            <label><input type="radio" name="c-prior" value="Yes — repeat offender"> Repeat offender</label>
+        <div class="form-footer">
+          <div class="form-footer-note">WJS VTOS Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
+          <button class="btn-submit" id="v-submitBtn" onclick="submitEntry('vtos')">Submit VTOS Entry →</button>
+        </div>
+      </div>
+
+      <div id="vtos-records" class="sub-sec">
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-n" id="vs-total">—</div><div class="stat-l">Total entries</div></div>
+          <div class="stat-box red"><div class="stat-n" id="vs-bans">—</div><div class="stat-l">Permanent bans</div></div>
+          <div class="stat-box gold"><div class="stat-n" id="vs-repeat">—</div><div class="stat-l">Repeat offenders</div></div>
+        </div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="v-search" placeholder="Search by player username..." oninput="renderTable('vtos')"></div>
+        <div id="v-tbl-wrap"><div class="loading-state"><p>Loading records...</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY GUIDELINES -->
+  <div id="main-cg" class="main-sec">
+    <div class="sub-nav">
+      <button class="sub-nav-btn cg on" onclick="showSub('cg','form',this)">File New Entry</button>
+      <button class="sub-nav-btn cg" onclick="showSub('cg','records',this)">View Records</button>
+    </div>
+    <div class="portal-body">
+      <div id="cg-form" class="sub-sec on">
+        <div class="alert alert-success" id="cg-toast">Entry permanently logged to the WJS Community Guidelines database.</div>
+        <div class="alert alert-error" id="cg-err">Please complete all required fields and select a rule.</div>
+        <div class="prior-alert" id="cg-prior-alert"><p></p></div>
+
+        <div class="form-rule">Section 1 — Player Identification</div>
+        <div class="form-grid">
+          <div class="field"><label>Player username *</label><input type="text" id="c-user" placeholder="Roblox username" oninput="checkPrior('cg')"></div>
+          <div class="field"><label>Player user ID</label><input type="text" id="c-uid" placeholder="Roblox user ID (optional)"></div>
+        </div>
+
+        <div class="form-rule">Section 2 — Rule Broken</div>
+        <div class="offense-grid" id="cg-offense-grid">
+          <div class="offense-card" onclick="selectOffense('cg','PDR | Player Dis-Respect',this)"><div class="oc-code">PDR</div><div class="oc-name">Player Dis-Respect</div><div class="oc-tier tier-low">Low Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','SDR | Staff Dis-Respect',this)"><div class="oc-code">SDR</div><div class="oc-name">Staff Dis-Respect</div><div class="oc-tier tier-low">Low Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','LEC | Law Enforcement Camping',this)"><div class="oc-code">LEC</div><div class="oc-name">Law Enforcement Camping</div><div class="oc-tier tier-low">Low Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','ESA | Emergency Siren Abuse',this)"><div class="oc-code">ESA</div><div class="oc-name">Emergency Siren Abuse</div><div class="oc-tier tier-low">Low Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','NLR | New Life Rule',this)"><div class="oc-code">NLR</div><div class="oc-name">New Life Rule</div><div class="oc-tier tier-low">Low Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','FRP | Fail Roleplay',this)"><div class="oc-code">FRP</div><div class="oc-name">Fail Roleplay</div><div class="oc-tier tier-mid">Low / Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','TG | Tool-Glitch',this)"><div class="oc-code">TG</div><div class="oc-name">Tool-Glitch</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','IWS | Interference with Staff Scene',this)"><div class="oc-code">IWS</div><div class="oc-name">Interference with Staff Scene</div><div class="oc-tier tier-mid">Mid Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','AOT | Abuse of Tools',this)"><div class="oc-code">AOT</div><div class="oc-name">Abuse of Tools</div><div class="oc-tier tier-extreme">Mid / Extreme</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','IWARP | Interfering with Another Roleplay',this)"><div class="oc-code">IWARP</div><div class="oc-name">Interfering with Another Roleplay</div><div class="oc-tier tier-extreme">Mid / Extreme</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','LTAP | Leaving to Avoid Punishment',this)"><div class="oc-code">LTAP</div><div class="oc-name">Leaving to Avoid Punishment</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','NITRP | No Intention to Roleplay',this)"><div class="oc-code">NITRP</div><div class="oc-name">No Intention to Roleplay</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','SI | Staff Impersonation',this)"><div class="oc-code">SI</div><div class="oc-name">Staff Impersonation</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('cg','PE | Player Exploiting',this)"><div class="oc-code">PE</div><div class="oc-name">Player Exploiting</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card other-card" onclick="selectOffense('cg','other',this)"><div class="oc-code">OTH</div><div class="oc-name">Other — specify below</div><div class="oc-tier">Custom</div></div>
+        </div>
+        <div id="cg-other-wrap" style="display:none;margin-bottom:16px;">
+          <div class="field"><label>Specify rule broken *</label><input type="text" id="c-other" placeholder="Describe the rule violation..."></div>
+        </div>
+
+        <div class="form-rule">Section 3 — Incident Details</div>
+        <div class="form-grid">
+          <div class="field"><label>Date of offense *</label><input type="date" id="c-date"></div>
+          <div class="field"><label>Logged by (moderator) *</label><input type="text" id="c-mod" placeholder="Your Roblox username"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Action taken *</label>
+            <select id="c-action" onchange="toggleDuration('cg')">
+              <option value="">Select action taken...</option>
+              <option>Verbal warning</option>
+              <option>Written warning</option>
+              <option>Kick</option>
+              <option>Temporary ban</option>
+              <option>Permanent ban</option>
+            </select>
+            <div class="ban-duration-wrap" id="cg-duration-wrap">
+              <div class="field"><label>Ban duration *</label>
+              <select id="c-duration">
+                <option value="">Select duration...</option>
+                <option>1 hour</option><option>6 hours</option><option>12 hours</option>
+                <option>1 day</option><option>3 days</option><option>1 week</option>
+                <option>2 weeks</option><option>1 month</option><option>3 months</option><option>6 months</option>
+              </select></div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Prior offenses on record</label>
+            <div class="radio-group" style="margin-top:8px;">
+              <label><input type="radio" name="c-prior" value="None — first offense" checked> None</label>
+              <label><input type="radio" name="c-prior" value="Yes — repeat offender"> Repeat offender</label>
+            </div>
           </div>
         </div>
+
+        <div class="form-rule">Section 4 — Evidence & Notes</div>
+        <div class="field full-width">
+          <label>Evidence / notes</label>
+          <textarea id="c-notes" placeholder="Describe the incident..."></textarea>
+        </div>
+        <div class="form-footer">
+          <div class="form-footer-note">WJS Community Guidelines Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
+          <button class="btn-submit cg" id="c-submitBtn" onclick="submitEntry('cg')">Submit CG Entry →</button>
+        </div>
       </div>
 
-      <div class="form-rule">Section 4 — Evidence & Notes</div>
-      <div class="field full-width">
-        <label>Evidence / notes</label>
-        <textarea id="c-notes" placeholder="Describe the incident. Paste screenshot links, witness usernames, or any relevant information..."></textarea>
-      </div>
-      <div class="form-footer">
-        <div class="form-footer-note">WJS Community Guidelines Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
-        <button class="btn-submit cg" id="c-submitBtn" onclick="submitEntry('cg')">Submit CG Entry →</button>
+      <div id="cg-records" class="sub-sec">
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-n" id="cs-total">—</div><div class="stat-l">Total entries</div></div>
+          <div class="stat-box red"><div class="stat-n" id="cs-bans">—</div><div class="stat-l">Permanent bans</div></div>
+          <div class="stat-box purple"><div class="stat-n" id="cs-repeat">—</div><div class="stat-l">Repeat offenders</div></div>
+        </div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="c-search" placeholder="Search by player username..." oninput="renderTable('cg')"></div>
+        <div id="c-tbl-wrap"><div class="loading-state"><p>Loading records...</p></div></div>
       </div>
     </div>
+  </div>
 
-    <div id="cg-records" class="sub-sec">
-      <div class="stats-row">
-        <div class="stat-box"><div class="stat-n" id="cs-total">—</div><div class="stat-l">Total entries</div></div>
-        <div class="stat-box red"><div class="stat-n" id="cs-bans">—</div><div class="stat-l">Permanent bans</div></div>
-        <div class="stat-box purple"><div class="stat-n" id="cs-repeat">—</div><div class="stat-l">Repeat offenders</div></div>
+  <!-- EXPLOITING -->
+  <div id="main-ex" class="main-sec">
+    <div class="sub-nav">
+      <button class="sub-nav-btn ex on" onclick="showSub('ex','form',this)">File New Entry</button>
+      <button class="sub-nav-btn ex" onclick="showSub('ex','records',this)">View Records</button>
+    </div>
+    <div class="portal-body">
+      <div id="ex-form" class="sub-sec on">
+        <div class="alert alert-success" id="ex-toast">Entry permanently logged to the WJS Exploiting database.</div>
+        <div class="alert alert-error" id="ex-err">Please complete all required fields and select an offense.</div>
+        <div class="prior-alert" id="ex-prior-alert"><p></p></div>
+
+        <div class="form-rule">Section 1 — Player Identification</div>
+        <div class="form-grid">
+          <div class="field"><label>Player username *</label><input type="text" id="e-user" placeholder="Roblox username" oninput="checkPrior('ex')"></div>
+          <div class="field"><label>Player user ID</label><input type="text" id="e-uid" placeholder="Roblox user ID (optional)"></div>
+        </div>
+
+        <div class="form-rule">Section 2 — Exploit Type</div>
+        <div class="offense-grid" id="ex-offense-grid">
+          <div class="offense-card" onclick="selectOffense('ex','Speed Hacking',this)"><div class="oc-code">SPD</div><div class="oc-name">Speed Hacking</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Fly Hacking',this)"><div class="oc-code">FLY</div><div class="oc-name">Fly Hacking</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','No-Clip / Noclip',this)"><div class="oc-code">NCP</div><div class="oc-name">No-Clip</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','God Mode / Infinite Health',this)"><div class="oc-code">GOD</div><div class="oc-name">God Mode / Infinite Health</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','ESP / Wallhack',this)"><div class="oc-code">ESP</div><div class="oc-name">ESP / Wallhack</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Aimbot',this)"><div class="oc-code">AIM</div><div class="oc-name">Aimbot</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Infinite Money / Item Dupe',this)"><div class="oc-code">DUP</div><div class="oc-name">Infinite Money / Item Dupe</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Script Injection',this)"><div class="oc-code">SCR</div><div class="oc-name">Script Injection</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Crash / Lag Script',this)"><div class="oc-code">CRS</div><div class="oc-name">Crash / Lag Script</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Teleport Hacking',this)"><div class="oc-code">TEL</div><div class="oc-name">Teleport Hacking</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card" onclick="selectOffense('ex','Tool / Admin Abuse via Exploit',this)"><div class="oc-code">ADM</div><div class="oc-name">Admin Abuse via Exploit</div><div class="oc-tier tier-extreme">Extreme Tier</div></div>
+          <div class="offense-card other-card" onclick="selectOffense('ex','other',this)"><div class="oc-code">OTH</div><div class="oc-name">Other — specify below</div><div class="oc-tier">Custom</div></div>
+        </div>
+        <div id="ex-other-wrap" style="display:none;margin-bottom:16px;">
+          <div class="field"><label>Specify exploit *</label><input type="text" id="e-other" placeholder="Describe the exploit..."></div>
+        </div>
+
+        <div class="form-rule">Section 3 — Incident Details</div>
+        <div class="form-grid">
+          <div class="field"><label>Date of offense *</label><input type="date" id="e-date"></div>
+          <div class="field"><label>Logged by (moderator) *</label><input type="text" id="e-mod" placeholder="Your Roblox username"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Action taken *</label>
+            <select id="e-action" onchange="toggleDuration('ex')">
+              <option value="">Select action taken...</option>
+              <option>Temporary ban</option>
+              <option>Permanent ban</option>
+              <option>Permanent ban + Roblox report filed</option>
+            </select>
+            <div class="ban-duration-wrap" id="ex-duration-wrap">
+              <div class="field"><label>Ban duration *</label>
+              <select id="e-duration">
+                <option value="">Select duration...</option>
+                <option>1 hour</option><option>6 hours</option><option>12 hours</option>
+                <option>1 day</option><option>3 days</option><option>1 week</option>
+                <option>2 weeks</option><option>1 month</option><option>3 months</option><option>6 months</option>
+              </select></div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Prior offenses on record</label>
+            <div class="radio-group" style="margin-top:8px;">
+              <label><input type="radio" name="e-prior" value="None — first offense" checked> None</label>
+              <label><input type="radio" name="e-prior" value="Yes — repeat offender"> Repeat offender</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-rule">Section 4 — Evidence & Notes</div>
+        <div class="field full-width">
+          <label>Evidence / notes</label>
+          <textarea id="e-notes" placeholder="Describe the exploit in detail. Include video links, screenshots, or any relevant evidence..."></textarea>
+        </div>
+        <div class="form-footer">
+          <div class="form-footer-note">WJS Exploiting Log — Moderation Use Only<br>All submissions are permanent and cannot be edited or deleted.</div>
+          <button class="btn-submit ex" id="e-submitBtn" onclick="submitEntry('ex')">Submit Exploit Entry →</button>
+        </div>
       </div>
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="c-search" placeholder="Search by player username..." oninput="renderTable('cg')">
+
+      <div id="ex-records" class="sub-sec">
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-n" id="es-total">—</div><div class="stat-l">Total entries</div></div>
+          <div class="stat-box red"><div class="stat-n" id="es-bans">—</div><div class="stat-l">Permanent bans</div></div>
+          <div class="stat-box gold"><div class="stat-n" id="es-repeat">—</div><div class="stat-l">Repeat offenders</div></div>
+        </div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="e-search" placeholder="Search by player username..." oninput="renderTable('ex')"></div>
+        <div id="e-tbl-wrap"><div class="loading-state"><p>Loading records...</p></div></div>
       </div>
-      <div id="c-tbl-wrap"><div class="loading-state"><p>Loading records...</p></div></div>
     </div>
   </div>
 </div>
@@ -322,8 +640,58 @@
 <script>
 const SUPA_URL = 'https://eyuoltsgdspzcfhvmvim.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dW9sdHNnZHNwemNmaHZtdmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyODYzOTEsImV4cCI6MjA5MDg2MjM5MX0.J33tHu7XTM28mMUSTKaqMJt3yq6jOVjvk3juARqM07Q';
-const selectedOffense = { vtos: '', cg: '' };
-const allEntries = { vtos: [], cg: [] };
+
+const selectedOffense = { vtos: '', cg: '', ex: '' };
+const allEntries = { vtos: [], cg: [], ex: [] };
+let currentUser = null;
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const code  = document.getElementById('login-code').value.trim();
+  const btn   = document.getElementById('login-btn');
+  const err   = document.getElementById('login-err');
+  err.style.display = 'none';
+  if (!email || !code) { err.style.display = 'block'; return; }
+  btn.disabled = true;
+  btn.textContent = 'AUTHENTICATING...';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/authorized_users?email=eq.' + encodeURIComponent(email) + '&access_code=eq.' + encodeURIComponent(code), {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await res.json();
+    if (data && data.length > 0) {
+      currentUser = data[0];
+      await fetch(SUPA_URL + '/rest/v1/signin_log', {
+        method: 'POST',
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ email, success: true })
+      });
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('portal-page').style.display = 'block';
+      document.getElementById('user-email-display').textContent = currentUser.email;
+      document.getElementById('user-role-display').textContent = currentUser.role.toUpperCase();
+    } else {
+      await fetch(SUPA_URL + '/rest/v1/signin_log', {
+        method: 'POST',
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ email, success: false })
+      });
+      err.style.display = 'block';
+    }
+  } catch(e) { err.textContent = 'CONNECTION ERROR — TRY AGAIN'; err.style.display = 'block'; }
+  btn.disabled = false;
+  btn.textContent = 'AUTHENTICATE →';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin(); });
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('portal-page').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-code').value = '';
+}
 
 function showMain(id, btn) {
   document.querySelectorAll('.main-sec').forEach(s => s.classList.remove('on'));
@@ -342,34 +710,69 @@ function showSub(main, id, btn) {
 }
 
 function selectOffense(type, value, card) {
-  document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected'));
-  card.classList.add(type === 'cg' ? 'cg-selected' : 'selected');
+  document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
+  const cls = type === 'cg' ? 'cg-selected' : type === 'ex' ? 'ex-selected' : 'selected';
+  card.classList.add(cls);
   selectedOffense[type] = value;
   document.getElementById(type+'-other-wrap').style.display = value === 'other' ? 'block' : 'none';
 }
 
+function toggleDuration(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const action = document.getElementById(p+'-action').value;
+  const wrap = document.getElementById(type+'-duration-wrap');
+  wrap.style.display = action === 'Temporary ban' ? 'block' : 'none';
+}
+
+let priorTimer = {};
+async function checkPrior(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const username = document.getElementById(p+'-user').value.trim().toLowerCase();
+  const alertEl = document.getElementById(type+'-prior-alert');
+  if (!username || username.length < 3) { alertEl.style.display = 'none'; return; }
+  clearTimeout(priorTimer[type]);
+  priorTimer[type] = setTimeout(async () => {
+    const tables = ['vtos_log','cg_log','exploiting_log'];
+    let total = 0; let offenses = [];
+    for (const table of tables) {
+      try {
+        const res = await fetch(SUPA_URL + '/rest/v1/' + table + '?username=ilike.' + encodeURIComponent(username) + '&select=offense,action,date', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+        });
+        const data = await res.json();
+        if (data && data.length) { total += data.length; offenses = offenses.concat(data); }
+      } catch(e) {}
+    }
+    if (total === 0) { alertEl.style.display = 'none'; return; }
+    const bans = offenses.filter(o => o.action && o.action.includes('ban')).length;
+    alertEl.classList.toggle('danger', bans > 0);
+    alertEl.querySelector('p').innerHTML = '⚑ PRIOR RECORD FOUND — ' + total + ' offense(s) on file across all logs.' + (bans > 0 ? ' ' + bans + ' ban(s) on record.' : '') + '<br>Recent: ' + offenses.slice(0,3).map(o => o.offense).join(', ');
+    alertEl.style.display = 'block';
+  }, 600);
+}
+
+const tableMap = { vtos: 'vtos_log', cg: 'cg_log', ex: 'exploiting_log' };
+
 async function loadRecords(type) {
-  const table = type === 'vtos' ? 'vtos_log' : 'cg_log';
-  const wrap = document.getElementById((type==='vtos'?'v':'c')+'-tbl-wrap');
+  const table = tableMap[type];
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const wrap = document.getElementById(p+'-tbl-wrap');
   wrap.innerHTML = '<div class="loading-state"><p>Fetching records from database...</p></div>';
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/' + table + '?order=id.desc', {
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + SUPA_KEY
-      }
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
     const data = await res.json();
     allEntries[type] = data || [];
     updateStats(type, allEntries[type]);
     renderTable(type);
   } catch(e) {
-    wrap.innerHTML = '<div class="empty-state"><p>Could not reach database. Check connection.</p></div>';
+    wrap.innerHTML = '<div class="empty-state"><p>Could not reach database.</p></div>';
   }
 }
 
 function updateStats(type, entries) {
-  const p = type === 'vtos' ? 'vs' : 'cs';
+  const p = type === 'vtos' ? 'vs' : type === 'cg' ? 'cs' : 'es';
   document.getElementById(p+'-total').textContent = entries.length;
   document.getElementById(p+'-bans').textContent = entries.filter(e => e.action && e.action.includes('Permanent ban')).length;
   document.getElementById(p+'-repeat').textContent = entries.filter(e => e.prior && e.prior.includes('repeat')).length;
@@ -378,33 +781,56 @@ function updateStats(type, entries) {
 function badgeClass(action) {
   if (!action) return 'badge-rep';
   if (action.includes('Permanent ban')) return 'badge-ban';
-  if (action.includes('warning') || action.includes('Warning')) return 'badge-warn';
+  if (action.includes('Temporary ban')) return 'badge-kick';
+  if (action.toLowerCase().includes('warning') || action.toLowerCase().includes('verbal')) return 'badge-warn';
+  if (action.toLowerCase().includes('kick')) return 'badge-kick';
   return 'badge-rep';
 }
 
+function countPlayerOffenses(username, type) {
+  return allEntries[type].filter(e => (e.username||'').toLowerCase() === username.toLowerCase()).length;
+}
+
+async function deleteEntry(type, id) {
+  if (!currentUser || currentUser.role !== 'admin') return;
+  if (!confirm('Permanently delete this entry? This cannot be undone.')) return;
+  const table = tableMap[type];
+  await fetch(SUPA_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+  });
+  loadRecords(type);
+}
+
 function renderTable(type) {
-  const isV = type === 'vtos';
-  const q = (document.getElementById((isV?'v':'c')+'-search').value||'').toLowerCase();
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const q = (document.getElementById(p+'-search').value||'').toLowerCase();
   const filtered = allEntries[type].filter(e => !q || (e.username||'').toLowerCase().includes(q));
-  const wrap = document.getElementById((isV?'v':'c')+'-tbl-wrap');
+  const wrap = document.getElementById(p+'-tbl-wrap');
+  const isAdmin = currentUser && currentUser.role === 'admin';
   if (filtered.length === 0) {
     wrap.innerHTML = '<div class="empty-state"><p>'+(q?'No records matching that username.':'No entries have been logged yet.')+'</p></div>';
     return;
   }
-  const rows = filtered.map(e =>
-    '<tr><td><div class="player-name">'+(e.username||'—')+'</div><div class="player-id">'+(e.userid||'')+'</div></td>'+
-    '<td style="font-size:12px;">'+(e.offense||'—')+'</td>'+
-    '<td><span class="badge '+badgeClass(e.action)+'">'+(e.action||'—')+'</span></td>'+
-    '<td><div class="date-cell">'+(e.date||'—')+'</div>'+(e.prior&&e.prior.includes('repeat')?'<div class="repeat-tag">⚑ Repeat</div>':'')+'</td>'+
-    '<td class="mod-cell">'+(e.mod||'—')+'</td>'+
-    '<td class="notes-cell">'+(e.notes?e.notes.substring(0,80)+(e.notes.length>80?'…':''):'—')+'</td></tr>'
-  ).join('');
-  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Player</th><th>Offense / Rule</th><th>Action</th><th>Date</th><th>Logged by</th><th>Notes</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  const rows = filtered.map(e => {
+    const count = countPlayerOffenses(e.username, type);
+    const dur = e.ban_duration ? ' ('+e.ban_duration+')' : '';
+    return '<tr>'+
+      '<td><div class="player-name">'+(e.username||'—')+'</div><div class="player-id">'+(e.userid||'')+'</div><div class="offense-count'+(count>1?' hot':'')+'">'+count+' offense(s) in this log</div></td>'+
+      '<td style="font-size:12px;">'+(e.offense||'—')+'</td>'+
+      '<td><span class="badge '+badgeClass(e.action)+'">'+(e.action||'—')+dur+'</span>'+(e.prior&&e.prior.includes('repeat')?'<div class="repeat-tag">⚑ Repeat</div>':'')+'</td>'+
+      '<td class="date-cell">'+(e.date||'—')+'</td>'+
+      '<td class="mod-cell">'+(e.mod||'—')+'</td>'+
+      '<td class="notes-cell">'+(e.notes?e.notes.substring(0,80)+(e.notes.length>80?'…':''):'—')+'</td>'+
+      (isAdmin ? '<td><button class="del-btn" onclick="deleteEntry(\''+type+'\','+e.id+')">Delete</button></td>' : '<td></td>')+
+      '</tr>';
+  }).join('');
+  const delHeader = isAdmin ? '<th>Delete</th>' : '<th></th>';
+  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Player</th><th>Offense</th><th>Action</th><th>Date</th><th>Logged by</th><th>Notes</th>'+delHeader+'</tr></thead><tbody>'+rows+'</tbody></table>';
 }
 
 async function submitEntry(type) {
-  const isV = type === 'vtos';
-  const p = isV ? 'v' : 'c';
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
   const username = document.getElementById(p+'-user').value.trim();
   const date     = document.getElementById(p+'-date').value;
   const mod      = document.getElementById(p+'-mod').value.trim();
@@ -414,53 +840,45 @@ async function submitEntry(type) {
   const userid   = document.getElementById(p+'-uid').value.trim();
   let offense    = selectedOffense[type];
   if (offense === 'other') offense = document.getElementById(p+'-other').value.trim();
+  const durEl    = document.getElementById(p+'-duration');
+  const ban_duration = (action === 'Temporary ban' && durEl) ? durEl.value : '';
 
   const errEl   = document.getElementById(type+'-err');
   const toastEl = document.getElementById(type+'-toast');
   const btn     = document.getElementById(p+'-submitBtn');
-  errEl.style.display = 'none';
-  toastEl.style.display = 'none';
+  errEl.style.display = 'none'; toastEl.style.display = 'none';
 
-  if (!username || !date || !mod || !action || !offense) {
-    errEl.style.display = 'block';
-    return;
-  }
+  if (!username || !date || !mod || !action || !offense) { errEl.style.display = 'block'; return; }
+  if (action === 'Temporary ban' && !ban_duration) { errEl.textContent = 'Please select a ban duration.'; errEl.style.display = 'block'; return; }
 
   btn.disabled = true;
   btn.textContent = 'Submitting...';
 
-  const table = isV ? 'vtos_log' : 'cg_log';
+  const table = tableMap[type];
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/' + table, {
       method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + SUPA_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ username, userid, date, mod, offense, action, prior, notes })
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ username, userid, date, mod, offense, action, ban_duration, prior, notes })
     });
-
     if (res.ok || res.status === 201) {
       toastEl.style.display = 'block';
       [p+'-user',p+'-uid',p+'-date',p+'-mod',p+'-notes'].forEach(id => document.getElementById(id).value='');
       document.getElementById(p+'-action').value='';
-      document.querySelector('input[name="'+p+'-prior"]').checked = true;
-      document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected'));
-      document.getElementById(type+'-other-wrap').style.display = 'none';
-      selectedOffense[type] = '';
-      setTimeout(() => toastEl.style.display='none', 5000);
-    } else {
-      throw new Error('Status ' + res.status);
-    }
-  } catch(e) {
-    errEl.textContent = 'Could not reach database. Please try again.';
-    errEl.style.display = 'block';
-  }
+      if (durEl) durEl.value='';
+      document.getElementById(type+'-duration-wrap').style.display='none';
+      document.querySelector('input[name="'+p+'-prior"]').checked=true;
+      document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c=>c.classList.remove('selected','cg-selected','ex-selected'));
+      document.getElementById(type+'-other-wrap').style.display='none';
+      document.getElementById(type+'-prior-alert').style.display='none';
+      selectedOffense[type]='';
+      setTimeout(()=>toastEl.style.display='none',5000);
+    } else { throw new Error('Status '+res.status); }
+  } catch(e) { errEl.textContent='Could not reach database. Please try again.'; errEl.style.display='block'; }
 
-  btn.disabled = false;
-  btn.textContent = isV ? 'Submit VTOS Entry →' : 'Submit CG Entry →';
+  btn.disabled=false;
+  const labels={vtos:'Submit VTOS Entry →',cg:'Submit CG Entry →',ex:'Submit Exploit Entry →'};
+  btn.textContent=labels[type];
 }
 </script>
 </body>
