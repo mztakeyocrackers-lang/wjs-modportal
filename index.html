@@ -747,6 +747,18 @@
     </div>
   </div>
 
+  <!-- DELETION REASON OVERLAY -->
+  <div class="admin-pin-overlay" id="delete-reason-overlay">
+    <div class="admin-pin-box">
+      <div class="admin-pin-title">Deletion Reason Required</div>
+      <div class="admin-pin-sub">You must provide a reason for this deletion. This will be logged.</div>
+      <textarea class="admin-pin-input" id="delete-reason-input" placeholder="Enter reason for deletion..." style="height:100px;font-size:14px;resize:vertical;letter-spacing:0.05em;text-align:left;"></textarea>
+      <div class="admin-pin-err" id="delete-reason-err" style="display:none;">REQUIRED — YOU MUST PROVIDE A REASON</div>
+      <button class="admin-pin-btn" onclick="confirmDeleteWithReason()">CONFIRM DELETION →</button>
+      <button class="admin-pin-cancel" onclick="closeDeleteReason()">Cancel</button>
+    </div>
+  </div>
+
   <!-- ADMIN PANEL -->
   <div id="main-admin" class="main-sec">
     <div class="sub-nav">
@@ -788,7 +800,7 @@
           <div class="stat-box red"><div class="stat-n" id="dh-vtos">—</div><div class="stat-l">VTOS deletions</div></div>
           <div class="stat-box purple"><div class="stat-n" id="dh-cg">—</div><div class="stat-l">CG deletions</div></div>
         </div>
-        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by deleted player or admin..." oninput="renderDeletionHistory()"></div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, admin, or reason..." oninput="renderDeletionHistory()"></div>
         <div id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
       </div>
     </div>
@@ -847,6 +859,7 @@ async function doLogin() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin();
   if (e.key === 'Enter' && document.getElementById('admin-pin-overlay').classList.contains('on')) verifyAdminPin();
+  if (e.key === 'Enter' && document.getElementById('delete-reason-overlay').classList.contains('on')) confirmDeleteWithReason();
 });
 
 function doLogout() {
@@ -860,6 +873,9 @@ function doLogout() {
 
 let adminUnlocked = false;
 let pendingAdminBtn = null;
+let pendingDeleteType = null;
+let pendingDeleteId = null;
+let pendingDeleteEntryDetails = null;
 
 function showMain(id, btn) {
   if (id === 'admin' && !adminUnlocked) {
@@ -995,7 +1011,7 @@ async function deleteEntry(type, id) {
 
   const table = tableMap[type];
 
-  // Fetch the entry details before deletion for logging
+  // Fetch the entry details before showing reason modal
   let entryDetails = null;
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/' + table + '?id=eq.' + id, {
@@ -1005,7 +1021,33 @@ async function deleteEntry(type, id) {
     if (data && data.length > 0) entryDetails = data[0];
   } catch(e) {}
 
-  // Log the deletion to deletion_history table
+  // Store pending deletion details and show reason modal
+  pendingDeleteType = type;
+  pendingDeleteId = id;
+  pendingDeleteEntryDetails = entryDetails;
+
+  document.getElementById('delete-reason-overlay').classList.add('on');
+  document.getElementById('delete-reason-input').value = '';
+  document.getElementById('delete-reason-err').style.display = 'none';
+  setTimeout(() => document.getElementById('delete-reason-input').focus(), 100);
+}
+
+async function confirmDeleteWithReason() {
+  const reason = document.getElementById('delete-reason-input').value.trim();
+  const errEl = document.getElementById('delete-reason-err');
+
+  if (!reason) {
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  const type = pendingDeleteType;
+  const id = pendingDeleteId;
+  const entryDetails = pendingDeleteEntryDetails;
+  const table = tableMap[type];
+
+  // Log the deletion to deletion_history table with reason
   try {
     await fetch(SUPA_URL + '/rest/v1/deletion_history', {
       method: 'POST',
@@ -1020,7 +1062,8 @@ async function deleteEntry(type, id) {
         original_date: entryDetails ? entryDetails.date : null,
         original_mod: entryDetails ? entryDetails.mod : null,
         deleted_by_email: currentUser.email,
-        deleted_by_role: currentUser.role
+        deleted_by_role: currentUser.role,
+        deletion_reason: reason
       })
     });
   } catch(e) {}
@@ -1030,7 +1073,21 @@ async function deleteEntry(type, id) {
     method: 'DELETE',
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
   });
+
+  // Clear pending deletion
+  pendingDeleteType = null;
+  pendingDeleteId = null;
+  pendingDeleteEntryDetails = null;
+
+  document.getElementById('delete-reason-overlay').classList.remove('on');
   loadRecords(type);
+}
+
+function closeDeleteReason() {
+  document.getElementById('delete-reason-overlay').classList.remove('on');
+  pendingDeleteType = null;
+  pendingDeleteId = null;
+  pendingDeleteEntryDetails = null;
 }
 
 function renderTable(type) {
@@ -1128,7 +1185,8 @@ function renderDeletionHistory() {
     const playerMatch = e.player_username && e.player_username.toLowerCase().includes(q);
     const adminMatch = e.deleted_by_email && e.deleted_by_email.toLowerCase().includes(q);
     const offenseMatch = e.offense && e.offense.toLowerCase().includes(q);
-    return !q || playerMatch || adminMatch || offenseMatch;
+    const reasonMatch = e.deletion_reason && e.deletion_reason.toLowerCase().includes(q);
+    return !q || playerMatch || adminMatch || offenseMatch || reasonMatch;
   });
   const wrap = document.getElementById('deletion-history-wrap');
   if (filtered.length === 0) {
@@ -1141,18 +1199,19 @@ function renderDeletionHistory() {
                         e.log_type === 'cg' ? '<span class="badge badge-kick">CG</span>' :
                         e.log_type === 'ex' ? '<span class="badge badge-rep">EXP</span>' :
                         '<span class="badge badge-warn">'+e.log_type+'</span>';
+    const reasonText = e.deletion_reason ? e.deletion_reason.substring(0,60)+(e.deletion_reason.length>60?'…':'') : '—';
     return '<tr>'+
       '<td><div class="player-name">'+(e.player_username || '—')+'</div><div class="player-id">'+(e.player_userid || '')+'</div></td>'+
       '<td>'+logTypeBadge+'</td>'+
       '<td style="font-size:12px;">'+(e.offense || '—')+'</td>'+
       '<td><span class="badge '+badgeClass(e.action)+'">'+(e.action || '—')+'</span></td>'+
-      '<td class="date-cell">'+(e.original_date || '—')+'</td>'+
+      '<td class="notes-cell" style="max-width:200px;" title="'+(e.deletion_reason || '')+'">'+reasonText+'</td>'+
       '<td class="mod-cell">'+(e.original_mod || '—')+'</td>'+
       '<td><div class="player-name" style="font-size:12px;">'+(e.deleted_by_email || '—')+'</div><div class="player-id" style="font-size:9px;">'+(e.deleted_by_role || '').toUpperCase()+'</div></td>'+
       '<td class="date-cell">'+dt+'</td>'+
       '</tr>';
   }).join('');
-  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Original Action</th><th>Original Date</th><th>Original Mod</th><th>Deleted By</th><th>Deleted At</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Original Action</th><th>Deletion Reason</th><th>Original Mod</th><th>Deleted By</th><th>Deleted At</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 
 async function submitEntry(type) {
