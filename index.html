@@ -298,6 +298,32 @@
   .admin-action-card p { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
   .btn-danger { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: 1px solid #e8c0c0; color: var(--red); padding: 8px 16px; cursor: pointer; transition: all 0.15s; width: 100%; }
   .btn-danger:hover { background: var(--red); color: white; }
+
+  /* Deletion History Table Styling */
+  .deletion-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .deletion-table thead tr { background: var(--ink); }
+  .deletion-table th { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.7); padding: 14px 16px; text-align: left; font-weight: 500; }
+  .deletion-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--ink); vertical-align: top; line-height: 1.5; }
+  .deletion-table tbody tr:hover { background: rgba(255,255,255,0.8); }
+  .deletion-table tbody tr { transition: background 0.15s; }
+  .dh-player-cell { min-width: 140px; }
+  .dh-player-name { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 3px; }
+  .dh-player-id { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); }
+  .dh-type-badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; font-weight: 500; }
+  .dh-type-vtos { background: var(--red-light); color: var(--red); border: 1px solid #e8c0c0; }
+  .dh-type-cg { background: #f0e8f8; color: var(--purple); border: 1px solid #d0b8f0; }
+  .dh-type-ex { background: #fdf6e3; color: #7a5c00; border: 1px solid #e8d9a0; }
+  .dh-offense { font-size: 12px; color: var(--ink); max-width: 180px; }
+  .dh-action { font-size: 11px; }
+  .dh-reason { background: #f8f6f3; border-left: 3px solid var(--gold); padding: 10px 12px; font-size: 12px; color: var(--ink); line-height: 1.5; border-radius: 0 4px 4px 0; max-width: 220px; }
+  .dh-reason-empty { color: var(--muted); font-style: italic; }
+  .dh-mod { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+  .dh-admin-cell { min-width: 160px; }
+  .dh-admin-email { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink); font-weight: 500; margin-bottom: 2px; }
+  .dh-admin-role { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .dh-timestamp { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .dh-date-part { color: var(--ink); }
+  .dh-time-part { color: var(--muted); font-size: 10px; }
   .admin-pin-overlay {
     position: fixed;
     inset: 0;
@@ -749,12 +775,14 @@
 
   <!-- DELETION REASON OVERLAY -->
   <div class="admin-pin-overlay" id="delete-reason-overlay">
-    <div class="admin-pin-box">
-      <div class="admin-pin-title">Deletion Reason Required</div>
-      <div class="admin-pin-sub">You must provide a reason for this deletion. This will be logged.</div>
-      <textarea class="admin-pin-input" id="delete-reason-input" placeholder="Enter reason for deletion..." style="height:100px;font-size:14px;resize:vertical;letter-spacing:0.05em;text-align:left;"></textarea>
-      <div class="admin-pin-err" id="delete-reason-err" style="display:none;">REQUIRED — YOU MUST PROVIDE A REASON</div>
-      <button class="admin-pin-btn" onclick="confirmDeleteWithReason()">CONFIRM DELETION →</button>
+    <div class="admin-pin-box" style="max-width:480px;">
+      <div class="admin-pin-title" style="color:#c8c0b4;border-bottom:1px solid #333;padding-bottom:12px;margin-bottom:12px;">⚠ Deletion Reason Required</div>
+      <div class="admin-pin-sub" style="color:#888;margin-bottom:20px;line-height:1.6;">All deletions are logged. Please provide a detailed reason for audit purposes.</div>
+      <label style="display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;color:#666;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;">Reason for Deletion *</label>
+      <textarea class="admin-pin-input" id="delete-reason-input" placeholder="e.g., Entry was a duplicate, Player was unbanned upon appeal, Incorrect offense logged..." style="height:120px;font-size:13px;resize:vertical;letter-spacing:0.02em;text-align:left;line-height:1.5;font-family:"IBM Plex Sans",sans-serif;padding:14px;margin-bottom:0;"></textarea>
+      <div style="font-family:"IBM Plex Mono",monospace;font-size:9px;color:#444;margin-top:6px;text-align:right;letter-spacing:0.05em;">This reason will be permanently logged</div>
+      <div class="admin-pin-err" id="delete-reason-err" style="display:none;margin-top:12px;">REQUIRED — YOU MUST PROVIDE A REASON</div>
+      <button class="admin-pin-btn" onclick="confirmDeleteWithReason()" style="margin-top:20px;background:#1a5c2e;">CONFIRM & LOG DELETION →</button>
       <button class="admin-pin-cancel" onclick="closeDeleteReason()">Cancel</button>
     </div>
   </div>
@@ -795,12 +823,15 @@
       </div>
 
       <div id="admin-deletion-history" class="sub-sec">
+        <div class="admin-section-title" style="margin-top:0;">Deletion Statistics</div>
         <div class="stats-row">
           <div class="stat-box"><div class="stat-n" id="dh-total">—</div><div class="stat-l">Total deletions</div></div>
           <div class="stat-box red"><div class="stat-n" id="dh-vtos">—</div><div class="stat-l">VTOS deletions</div></div>
           <div class="stat-box purple"><div class="stat-n" id="dh-cg">—</div><div class="stat-l">CG deletions</div></div>
+          <div class="stat-box gold"><div class="stat-n" id="dh-ex">—</div><div class="stat-l">Exploiting deletions</div></div>
         </div>
-        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, admin, or reason..." oninput="renderDeletionHistory()"></div>
+        <div class="admin-section-title">Deletion Records</div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, admin, offense, or reason..." oninput="renderDeletionHistory()"></div>
         <div id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
       </div>
     </div>
@@ -1177,6 +1208,7 @@ function updateDeletionStats(entries) {
   document.getElementById('dh-total').textContent = entries.length;
   document.getElementById('dh-vtos').textContent = entries.filter(e => e.log_type === 'vtos').length;
   document.getElementById('dh-cg').textContent = entries.filter(e => e.log_type === 'cg').length;
+  document.getElementById('dh-ex').textContent = entries.filter(e => e.log_type === 'ex').length;
 }
 
 function renderDeletionHistory() {
@@ -1194,24 +1226,26 @@ function renderDeletionHistory() {
     return;
   }
   const rows = filtered.map(e => {
-    const dt = e.deleted_at ? new Date(e.deleted_at).toLocaleString() : '—';
-    const logTypeBadge = e.log_type === 'vtos' ? '<span class="badge badge-ban">VTOS</span>' :
-                        e.log_type === 'cg' ? '<span class="badge badge-kick">CG</span>' :
-                        e.log_type === 'ex' ? '<span class="badge badge-rep">EXP</span>' :
-                        '<span class="badge badge-warn">'+e.log_type+'</span>';
-    const reasonText = e.deletion_reason ? e.deletion_reason.substring(0,60)+(e.deletion_reason.length>60?'…':'') : '—';
+    const dt = e.deleted_at ? new Date(e.deleted_at) : null;
+    const dateStr = dt ? dt.toLocaleDateString() : '—';
+    const timeStr = dt ? dt.toLocaleTimeString() : '';
+    const logTypeClass = e.log_type === 'vtos' ? 'dh-type-vtos' : e.log_type === 'cg' ? 'dh-type-cg' : 'dh-type-ex';
+    const logTypeLabel = e.log_type === 'vtos' ? 'VTOS' : e.log_type === 'cg' ? 'CG' : e.log_type === 'ex' ? 'EXP' : e.log_type;
+    const reasonHtml = e.deletion_reason
+      ? '<div class="dh-reason" title="'+e.deletion_reason.replace(/"/g,'&quot;')+'">'+e.deletion_reason.substring(0,55)+(e.deletion_reason.length>55?'…':'')+'</div>'
+      : '<div class="dh-reason dh-reason-empty">No reason provided</div>';
     return '<tr>'+
-      '<td><div class="player-name">'+(e.player_username || '—')+'</div><div class="player-id">'+(e.player_userid || '')+'</div></td>'+
-      '<td>'+logTypeBadge+'</td>'+
-      '<td style="font-size:12px;">'+(e.offense || '—')+'</td>'+
-      '<td><span class="badge '+badgeClass(e.action)+'">'+(e.action || '—')+'</span></td>'+
-      '<td class="notes-cell" style="max-width:200px;" title="'+(e.deletion_reason || '')+'">'+reasonText+'</td>'+
-      '<td class="mod-cell">'+(e.original_mod || '—')+'</td>'+
-      '<td><div class="player-name" style="font-size:12px;">'+(e.deleted_by_email || '—')+'</div><div class="player-id" style="font-size:9px;">'+(e.deleted_by_role || '').toUpperCase()+'</div></td>'+
-      '<td class="date-cell">'+dt+'</td>'+
+      '<td class="dh-player-cell"><div class="dh-player-name">'+(e.player_username || '—')+'</div>'+(e.player_userid ? '<div class="dh-player-id">ID: '+e.player_userid+'</div>' : '')+'</td>'+
+      '<td><span class="dh-type-badge '+logTypeClass+'">'+logTypeLabel+'</span></td>'+
+      '<td><div class="dh-offense">'+(e.offense || '—')+'</div></td>'+
+      '<td><span class="badge '+badgeClass(e.action)+' dh-action">'+(e.action || '—')+'</span></td>'+
+      '<td>'+reasonHtml+'</td>'+
+      '<td><div class="dh-mod">'+(e.original_mod || '—')+'</div></td>'+
+      '<td class="dh-admin-cell"><div class="dh-admin-email">'+(e.deleted_by_email || '—')+'</div>'+(e.deleted_by_role ? '<div class="dh-admin-role">'+(e.deleted_by_role).toUpperCase()+'</div>' : '')+'</td>'+
+      '<td><div class="dh-timestamp"><span class="dh-date-part">'+dateStr+'</span>'+(dt?'<br><span class="dh-time-part">'+timeStr+'</span>':'')+'</div></td>'+
       '</tr>';
   }).join('');
-  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Original Action</th><th>Deletion Reason</th><th>Original Mod</th><th>Deleted By</th><th>Deleted At</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  wrap.innerHTML = '<table class="deletion-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Action</th><th>Deletion Reason</th><th>Original Mod</th><th>Deleted By</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 
 async function submitEntry(type) {
