@@ -752,6 +752,7 @@
     <div class="sub-nav">
       <button class="sub-nav-btn on" onclick="showSub('admin','signin',this)">Sign-in Logs</button>
       <button class="sub-nav-btn" onclick="showSub('admin','deletions',this)">Delete Log Entries</button>
+      <button class="sub-nav-btn" onclick="showSub('admin','deletion-history',this)">Deletion History</button>
     </div>
     <div class="portal-body">
       <div id="admin-signin" class="sub-sec on">
@@ -779,6 +780,16 @@
         </div>
         <div class="admin-section-title">Authorized users</div>
         <div id="auth-users-wrap"><div class="loading-state"><p>Loading...</p></div></div>
+      </div>
+
+      <div id="admin-deletion-history" class="sub-sec">
+        <div class="stats-row">
+          <div class="stat-box"><div class="stat-n" id="dh-total">—</div><div class="stat-l">Total deletions</div></div>
+          <div class="stat-box red"><div class="stat-n" id="dh-vtos">—</div><div class="stat-l">VTOS deletions</div></div>
+          <div class="stat-box purple"><div class="stat-n" id="dh-cg">—</div><div class="stat-l">CG deletions</div></div>
+        </div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by deleted player or admin..." oninput="renderDeletionHistory()"></div>
+        <div id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
       </div>
     </div>
   </div>
@@ -893,6 +904,7 @@ function showSub(main, id, btn) {
   if (id === 'records') loadRecords(main);
   if (main === 'admin' && id === 'signin') loadSigninLogs();
   if (main === 'admin' && id === 'deletions') loadAuthUsers();
+  if (main === 'admin' && id === 'deletion-history') loadDeletionHistory();
 }
 
 function selectOffense(type, value, card) {
@@ -980,7 +992,40 @@ function countPlayerOffenses(username, type) {
 async function deleteEntry(type, id) {
   if (!currentUser || currentUser.role !== 'admin') return;
   if (!confirm('Permanently delete this entry? This cannot be undone.')) return;
+
   const table = tableMap[type];
+
+  // Fetch the entry details before deletion for logging
+  let entryDetails = null;
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await res.json();
+    if (data && data.length > 0) entryDetails = data[0];
+  } catch(e) {}
+
+  // Log the deletion to deletion_history table
+  try {
+    await fetch(SUPA_URL + '/rest/v1/deletion_history', {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        log_type: type,
+        deleted_record_id: id,
+        player_username: entryDetails ? entryDetails.username : null,
+        player_userid: entryDetails ? entryDetails.userid : null,
+        offense: entryDetails ? entryDetails.offense : null,
+        action: entryDetails ? entryDetails.action : null,
+        original_date: entryDetails ? entryDetails.date : null,
+        original_mod: entryDetails ? entryDetails.mod : null,
+        deleted_by_email: currentUser.email,
+        deleted_by_role: currentUser.role
+      })
+    });
+  } catch(e) {}
+
+  // Delete the entry
   await fetch(SUPA_URL + '/rest/v1/' + table + '?id=eq.' + id, {
     method: 'DELETE',
     headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
@@ -1051,6 +1096,63 @@ async function loadAuthUsers() {
     }).join('');
     wrap.innerHTML = '<table class="signin-table"><thead><tr><th>Email</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table>';
   } catch(e) { wrap.innerHTML = '<div class="empty-state"><p>Could not load users.</p></div>'; }
+}
+
+let allDeletionHistory = [];
+
+async function loadDeletionHistory() {
+  const wrap = document.getElementById('deletion-history-wrap');
+  wrap.innerHTML = '<div class="loading-state"><p>Loading deletion history...</p></div>';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/deletion_history?order=id.desc', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await res.json();
+    allDeletionHistory = data || [];
+    updateDeletionStats(allDeletionHistory);
+    renderDeletionHistory();
+  } catch(e) {
+    wrap.innerHTML = '<div class="empty-state"><p>Could not load deletion history.</p></div>';
+  }
+}
+
+function updateDeletionStats(entries) {
+  document.getElementById('dh-total').textContent = entries.length;
+  document.getElementById('dh-vtos').textContent = entries.filter(e => e.log_type === 'vtos').length;
+  document.getElementById('dh-cg').textContent = entries.filter(e => e.log_type === 'cg').length;
+}
+
+function renderDeletionHistory() {
+  const q = (document.getElementById('dh-search').value || '').toLowerCase();
+  const filtered = allDeletionHistory.filter(e => {
+    const playerMatch = e.player_username && e.player_username.toLowerCase().includes(q);
+    const adminMatch = e.deleted_by_email && e.deleted_by_email.toLowerCase().includes(q);
+    const offenseMatch = e.offense && e.offense.toLowerCase().includes(q);
+    return !q || playerMatch || adminMatch || offenseMatch;
+  });
+  const wrap = document.getElementById('deletion-history-wrap');
+  if (filtered.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><p>'+(q?'No deletions matching that search.':'No deletions have been logged yet.')+'</p></div>';
+    return;
+  }
+  const rows = filtered.map(e => {
+    const dt = e.deleted_at ? new Date(e.deleted_at).toLocaleString() : '—';
+    const logTypeBadge = e.log_type === 'vtos' ? '<span class="badge badge-ban">VTOS</span>' :
+                        e.log_type === 'cg' ? '<span class="badge badge-kick">CG</span>' :
+                        e.log_type === 'ex' ? '<span class="badge badge-rep">EXP</span>' :
+                        '<span class="badge badge-warn">'+e.log_type+'</span>';
+    return '<tr>'+
+      '<td><div class="player-name">'+(e.player_username || '—')+'</div><div class="player-id">'+(e.player_userid || '')+'</div></td>'+
+      '<td>'+logTypeBadge+'</td>'+
+      '<td style="font-size:12px;">'+(e.offense || '—')+'</td>'+
+      '<td><span class="badge '+badgeClass(e.action)+'">'+(e.action || '—')+'</span></td>'+
+      '<td class="date-cell">'+(e.original_date || '—')+'</td>'+
+      '<td class="mod-cell">'+(e.original_mod || '—')+'</td>'+
+      '<td><div class="player-name" style="font-size:12px;">'+(e.deleted_by_email || '—')+'</div><div class="player-id" style="font-size:9px;">'+(e.deleted_by_role || '').toUpperCase()+'</div></td>'+
+      '<td class="date-cell">'+dt+'</td>'+
+      '</tr>';
+  }).join('');
+  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Original Action</th><th>Original Date</th><th>Original Mod</th><th>Deleted By</th><th>Deleted At</th></tr></thead><tbody>'+rows+'</tbody></table>';
 }
 
 async function submitEntry(type) {
