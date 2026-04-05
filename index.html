@@ -877,6 +877,151 @@ body{
 }
 .admin-pin-cancel:hover{color:#666;}
 
+/* ── Reason chips ── */
+.reason-chips{
+  display:flex;flex-wrap:wrap;gap:7px;
+  margin-bottom:14px;text-align:left;
+}
+.reason-chip{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;
+  background:rgba(255,255,255,.04);
+  border:1px solid #2a2724;
+  color:#5a5450;
+  padding:6px 11px;
+  cursor:pointer;
+  border-radius:0;
+  transition:all .15s;
+  line-height:1.3;
+}
+.reason-chip:hover{
+  background:rgba(140,21,21,.12);
+  border-color:rgba(140,21,21,.4);
+  color:#c07070;
+}
+.reason-chip.active{
+  background:rgba(140,21,21,.18);
+  border-color:rgba(140,21,21,.6);
+  color:#d08080;
+}
+.reason-chips-label{
+  font-family:'DM Mono',monospace;
+  font-size:8px;letter-spacing:.22em;
+  color:#333;text-transform:uppercase;
+  margin-bottom:9px;text-align:left;
+  display:block;
+}
+
+/* ── Submit confirmation overlay ── */
+#confirm-overlay{
+  position:fixed;inset:0;
+  background:rgba(5,5,4,.95);
+  display:none;align-items:center;justify-content:center;
+  z-index:9999;backdrop-filter:blur(7px);
+}
+#confirm-overlay.on{display:flex;}
+
+.confirm-box{
+  background:#0d0c0b;
+  border:1px solid #1c1a18;
+  border-top:2px solid var(--gold);
+  padding:0;
+  width:100%;max-width:540px;
+  box-shadow:0 40px 80px rgba(0,0,0,.7);
+  animation:overlayIn .22s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+}
+
+.confirm-header{
+  padding:24px 32px 20px;
+  border-bottom:1px solid #1c1a18;
+  display:flex;align-items:center;gap:14px;
+}
+.confirm-icon{
+  width:36px;height:36px;flex-shrink:0;
+  border:1px solid rgba(176,125,18,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  color:var(--gold);
+}
+.confirm-header-text{}
+.confirm-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;letter-spacing:.16em;
+  color:#c5bcaa;font-weight:400;
+  margin-bottom:3px;
+}
+.confirm-subtitle{
+  font-family:'DM Mono',monospace;
+  font-size:8px;letter-spacing:.2em;
+  color:#363330;text-transform:uppercase;
+}
+
+.confirm-body{padding:22px 32px;}
+
+.confirm-row{
+  display:flex;align-items:baseline;gap:0;
+  padding:9px 0;
+  border-bottom:1px solid #131110;
+}
+.confirm-row:last-child{border-bottom:none;}
+.confirm-key{
+  font-family:'DM Mono',monospace;
+  font-size:8.5px;letter-spacing:.18em;
+  color:#3a3633;text-transform:uppercase;
+  min-width:130px;flex-shrink:0;
+}
+.confirm-val{
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;color:#c5bcaa;
+  line-height:1.5;flex:1;
+}
+.confirm-val.highlight{color:#d4a840;font-weight:500;}
+.confirm-val.danger{color:#c07070;}
+.confirm-val.notes-val{
+  font-size:11px;color:#555;
+  font-style:italic;max-width:300px;
+  white-space:pre-wrap;line-height:1.55;
+}
+
+.confirm-warning{
+  background:rgba(176,125,18,.06);
+  border:1px solid rgba(176,125,18,.15);
+  border-left:3px solid var(--gold);
+  padding:11px 14px;margin-top:16px;
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:.1em;
+  color:#7a6020;line-height:1.75;
+  text-transform:uppercase;
+}
+
+.confirm-footer{
+  padding:18px 32px 24px;
+  display:flex;gap:10px;
+  border-top:1px solid #131110;
+}
+.confirm-submit-btn{
+  flex:1;
+  background:var(--success);color:#f5efe2;
+  border:none;
+  font-family:'DM Mono',monospace;
+  font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;
+  padding:14px;cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:background .2s,box-shadow .2s;
+}
+.confirm-submit-btn:hover{background:#245e38;box-shadow:0 4px 20px rgba(28,84,48,.35);}
+.confirm-submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.confirm-cancel-btn{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  background:none;border:1px solid #1c1a18;
+  color:#3a3633;padding:14px 22px;cursor:pointer;
+  transition:all .15s;
+}
+.confirm-cancel-btn:hover{border-color:#2e2c29;color:#666;}
+
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    RESPONSIVE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -1273,11 +1418,24 @@ body{
 
   <!-- ── DELETION REASON OVERLAY ── -->
   <div class="admin-pin-overlay" id="delete-reason-overlay">
-    <div class="admin-pin-box" style="max-width:490px;">
-      <div class="admin-pin-title" style="color:#c8c0b4;border-bottom:1px solid #1e1d1b;padding-bottom:13px;margin-bottom:14px;">⚠ Deletion Reason Required</div>
-      <div class="admin-pin-sub" style="color:#484440;margin-bottom:22px;line-height:1.9;">All deletions are permanently logged. Provide a detailed reason for audit purposes.</div>
-      <label style="display:block;font-family:'DM Mono',monospace;font-size:8.5px;color:#484440;letter-spacing:.2em;text-transform:uppercase;margin-bottom:9px;text-align:left;">Reason for Deletion *</label>
-      <textarea class="admin-pin-input" id="delete-reason-input" placeholder="e.g., Entry was a duplicate, Player was unbanned upon appeal, Incorrect offense logged..." style="height:120px;font-size:13px;resize:vertical;letter-spacing:.01em;text-align:left;line-height:1.55;font-family:'DM Sans',sans-serif;padding:14px;margin-bottom:0;"></textarea>
+    <div class="admin-pin-box" style="max-width:520px;">
+      <div class="admin-pin-title" style="color:#c8c0b4;border-bottom:1px solid #1e1d1b;padding-bottom:13px;margin-bottom:16px;">⚠ Deletion Reason Required</div>
+      <div class="admin-pin-sub" style="color:#484440;margin-bottom:18px;line-height:1.9;">All deletions are permanently logged. Select a preset or write a custom reason.</div>
+
+      <span class="reason-chips-label">Quick Reasons</span>
+      <div class="reason-chips" id="reason-chips">
+        <button class="reason-chip" onclick="selectReasonChip(this,'Duplicate entry')">Duplicate entry</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Player unbanned on appeal')">Unbanned on appeal</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Incorrect offense logged')">Wrong offense</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Incorrect player logged')">Wrong player</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Insufficient evidence')">Insufficient evidence</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Entry logged in error')">Logged in error</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Moderator request — entry retracted')">Mod retraction</button>
+        <button class="reason-chip" onclick="selectReasonChip(this,'Player situation resolved')">Situation resolved</button>
+      </div>
+
+      <label style="display:block;font-family:'DM Mono',monospace;font-size:8.5px;color:#484440;letter-spacing:.2em;text-transform:uppercase;margin-bottom:9px;text-align:left;">Full Reason *</label>
+      <textarea class="admin-pin-input" id="delete-reason-input" placeholder="Select a preset above or type a custom reason..." style="height:100px;font-size:13px;resize:vertical;letter-spacing:.01em;text-align:left;line-height:1.55;font-family:'DM Sans',sans-serif;padding:14px;margin-bottom:0;" oninput="syncChipsToTextarea()"></textarea>
       <div style="font-family:'DM Mono',monospace;font-size:8px;color:#2e2c29;margin-top:6px;text-align:right;letter-spacing:.06em;">This reason will be permanently logged</div>
       <div class="admin-pin-err" id="delete-reason-err" style="display:none;margin-top:12px;">Required — You must provide a reason</div>
       <button class="admin-pin-btn" onclick="confirmDeleteWithReason()" style="margin-top:20px;background:#1c5430;">Confirm &amp; Log Deletion →</button>
@@ -1330,6 +1488,30 @@ body{
         <div class="admin-section-title">Deletion Records</div>
         <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, admin, offense, or reason..." oninput="renderDeletionHistory()"></div>
         <div id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SUBMIT CONFIRMATION OVERLAY ── -->
+  <div id="confirm-overlay">
+    <div class="confirm-box">
+      <div class="confirm-header">
+        <div class="confirm-icon">⚑</div>
+        <div class="confirm-header-text">
+          <div class="confirm-title">Confirm Submission</div>
+          <div class="confirm-subtitle">Review entry details before logging permanently</div>
+        </div>
+      </div>
+      <div class="confirm-body">
+        <div id="confirm-rows"></div>
+        <div class="confirm-warning">
+          This entry will be permanently logged to the WJS moderation database.<br>
+          Ensure all details are accurate before confirming.
+        </div>
+      </div>
+      <div class="confirm-footer">
+        <button class="confirm-cancel-btn" onclick="closeConfirm()">← Go Back &amp; Edit</button>
+        <button class="confirm-submit-btn" id="confirm-submit-btn" onclick="confirmAndSubmit()">Confirm &amp; Log Entry →</button>
       </div>
     </div>
   </div>
@@ -1649,6 +1831,7 @@ async function deleteEntry(type,id){
   pendingDeleteType=type;pendingDeleteId=id;pendingDeleteEntryDetails=entry;
   document.getElementById('delete-reason-input').value='';
   document.getElementById('delete-reason-err').style.display='none';
+  document.querySelectorAll('.reason-chip').forEach(c=>c.classList.remove('active'));
   document.getElementById('delete-reason-overlay').classList.add('on');
   setTimeout(()=>document.getElementById('delete-reason-input').focus(),100);
 }
@@ -1680,6 +1863,116 @@ async function confirmDeleteWithReason(){
   }catch(e){alert('Delete failed. Please try again.');}
 }
 
+/* ── Deletion reason chips ── */
+function selectReasonChip(chip, text) {
+  const ta = document.getElementById('delete-reason-input');
+  // Toggle: if already active, clear textarea and deactivate
+  if (chip.classList.contains('active')) {
+    chip.classList.remove('active');
+    if (ta.value === text) ta.value = '';
+  } else {
+    // Deactivate all chips, activate this one
+    document.querySelectorAll('.reason-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    ta.value = text;
+  }
+  document.getElementById('delete-reason-err').style.display = 'none';
+}
+
+function syncChipsToTextarea() {
+  const val = document.getElementById('delete-reason-input').value;
+  document.querySelectorAll('.reason-chip').forEach(c => {
+    c.classList.toggle('active', c.getAttribute('onclick').includes("'"+val+"'") || c.textContent.trim() === val);
+  });
+}
+
+/* ── Submit confirmation overlay ── */
+let pendingSubmitType = null;
+let pendingSubmitData = null;
+
+function openConfirm(type, data) {
+  pendingSubmitType = type;
+  pendingSubmitData = data;
+
+  const typeLabels = { vtos: 'VTOS Log', cg: 'Community Guidelines', ex: 'Exploiting Log' };
+  const rows = [
+    { key: 'Log Type',       val: typeLabels[type],          cls: 'highlight' },
+    { key: 'Player',         val: data.username || '—',      cls: '' },
+    { key: 'User ID',        val: data.userid || 'Not provided', cls: '' },
+    { key: 'Offense',        val: data.offense || '—',       cls: data.offense ? '' : 'danger' },
+    { key: 'Action Taken',   val: data.action + (data.ban_duration ? ' · ' + data.ban_duration : ''), cls: data.action.toLowerCase().includes('permanent') ? 'danger' : '' },
+    { key: 'Prior Offenses', val: data.prior,                cls: data.prior.includes('repeat') ? 'danger' : '' },
+    { key: 'Date of Offense',val: data.date || '—',          cls: '' },
+    { key: 'Logged By',      val: data.mod || '—',           cls: '' },
+    { key: 'Notes',          val: data.notes || 'None',      cls: 'notes-val' },
+  ];
+
+  document.getElementById('confirm-rows').innerHTML = rows.map(r =>
+    `<div class="confirm-row">
+      <span class="confirm-key">${r.key}</span>
+      <span class="confirm-val ${r.cls}">${r.val}</span>
+    </div>`
+  ).join('');
+
+  const btn = document.getElementById('confirm-submit-btn');
+  btn.disabled = false;
+  btn.textContent = 'Confirm & Log Entry →';
+  document.getElementById('confirm-overlay').classList.add('on');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('on');
+  pendingSubmitType = null;
+  pendingSubmitData = null;
+}
+
+async function confirmAndSubmit() {
+  const type = pendingSubmitType;
+  const data  = pendingSubmitData;
+  if (!type || !data) return;
+
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const errEl   = document.getElementById(type + '-err');
+  const toastEl = document.getElementById(type + '-toast');
+  const btn     = document.getElementById(p + '-submitBtn');
+  const confBtn = document.getElementById('confirm-submit-btn');
+
+  confBtn.disabled = true;
+  confBtn.textContent = 'Logging...';
+
+  const table = tableMap[type];
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/' + table, {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok || res.status === 201) {
+      closeConfirm();
+      toastEl.style.display = 'block';
+      // Reset form
+      const durEl = document.getElementById(p + '-duration');
+      [p+'-user',p+'-uid',p+'-date',p+'-mod',p+'-notes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById(p+'-action').value = '';
+      if (durEl) durEl.value = '';
+      document.getElementById(type+'-duration-wrap').style.display = 'none';
+      document.querySelector('input[name="'+p+'-prior"]').checked = true;
+      document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
+      document.getElementById(type+'-other-wrap').style.display = 'none';
+      document.getElementById(type+'-prior-alert').style.display = 'none';
+      selectedOffense[type] = '';
+      setTimeout(() => toastEl.style.display = 'none', 5000);
+    } else { throw new Error('Status ' + res.status); }
+  } catch(e) {
+    closeConfirm();
+    errEl.textContent = 'Could not reach database. Please try again.';
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  const labels = { vtos:'Submit VTOS Entry →', cg:'Submit CG Entry →', ex:'Submit Exploit Entry →' };
+  btn.textContent = labels[type];
+}
+
 async function submitEntry(type){
   const p=type==='vtos'?'v':type==='cg'?'c':'e';
   const username=document.getElementById(p+'-user').value.trim();
@@ -1695,38 +1988,13 @@ async function submitEntry(type){
   const ban_duration=(action==='Temporary ban'&&durEl)?durEl.value:'';
 
   const errEl=document.getElementById(type+'-err');
-  const toastEl=document.getElementById(type+'-toast');
-  const btn=document.getElementById(p+'-submitBtn');
-  errEl.style.display='none';toastEl.style.display='none';
+  errEl.style.display='none';
 
   if(!username||!date||!mod||!action||!offense){errEl.style.display='block';return;}
   if(action==='Temporary ban'&&!ban_duration){errEl.textContent='Please select a ban duration.';errEl.style.display='block';return;}
 
-  btn.disabled=true;btn.textContent='Submitting...';
-  const table=tableMap[type];
-  try{
-    const res=await fetch(SUPA_URL+'/rest/v1/'+table,{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({username,userid,date,mod,offense,action,ban_duration,prior,notes})
-    });
-    if(res.ok||res.status===201){
-      toastEl.style.display='block';
-      [p+'-user',p+'-uid',p+'-date',p+'-mod',p+'-notes'].forEach(id=>document.getElementById(id).value='');
-      document.getElementById(p+'-action').value='';
-      if(durEl) durEl.value='';
-      document.getElementById(type+'-duration-wrap').style.display='none';
-      document.querySelector('input[name="'+p+'-prior"]').checked=true;
-      document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c=>c.classList.remove('selected','cg-selected','ex-selected'));
-      document.getElementById(type+'-other-wrap').style.display='none';
-      document.getElementById(type+'-prior-alert').style.display='none';
-      selectedOffense[type]='';
-      setTimeout(()=>toastEl.style.display='none',5000);
-    }else{throw new Error('Status '+res.status);}
-  }catch(e){errEl.textContent='Could not reach database. Please try again.';errEl.style.display='block';}
-  btn.disabled=false;
-  const labels={vtos:'Submit VTOS Entry →',cg:'Submit CG Entry →',ex:'Submit Exploit Entry →'};
-  btn.textContent=labels[type];
+  // Show confirm overlay instead of submitting immediately
+  openConfirm(type, {username, userid, date, mod, offense, action, ban_duration, prior, notes});
 }
 </script>
 </body>
