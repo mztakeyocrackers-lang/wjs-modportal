@@ -6,9 +6,6 @@
 <title>WJS — Moderation Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   TOKENS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 :root {
   --ink:         #0a0908;
   --paper:       #f5efe2;
@@ -49,9 +46,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   LOGIN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* LOGIN */
 #login-page{
   min-height:100vh;
   background:var(--l-bg);
@@ -105,6 +100,16 @@ body{
 .login-box::after{bottom:13px;right:13px;border-right:1px solid rgba(140,21,21,.25);border-bottom:1px solid rgba(140,21,21,.25);}
 .login-field{margin-bottom:22px;}
 .login-field label{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.28em;color:#484440;text-transform:uppercase;display:block;margin-bottom:9px;}
+
+/* username input with @ prefix */
+.login-username-wrap{position:relative;}
+.login-username-at{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  font-family:'DM Mono',monospace;font-size:14px;color:#3a3530;
+  pointer-events:none;user-select:none;
+}
+.login-username-wrap input{padding-left:30px !important;}
+
 .login-field input{width:100%;background:var(--l-bg);border:1px solid #1a1816;color:var(--l-text);font-family:'DM Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.05em;border-radius:0;}
 .login-field input:focus{border-color:rgba(140,21,21,.65);box-shadow:0 0 0 3px rgba(140,21,21,.09),inset 0 0 16px rgba(140,21,21,.04);}
 .login-field input::placeholder{color:#222;}
@@ -120,9 +125,7 @@ body{
 @keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .login-footer{font-family:'DM Mono',monospace;font-size:8.5px;color:#202020;letter-spacing:.14em;text-align:center;margin-top:30px;text-transform:uppercase;line-height:2.1;animation:fadeUp .7s .3s ease both;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PORTAL SHELL
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* PORTAL SHELL */
 #portal-page{display:none;}
 .portal-header{background:var(--ink);padding:0;border-bottom:2px solid var(--red-deep);position:relative;overflow:hidden;}
 .portal-header::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);background-size:18px 18px;pointer-events:none;}
@@ -160,9 +163,7 @@ body{
 .main-sec{display:none;}.main-sec.on{display:block;}
 .sub-sec{display:none;}.sub-sec.on{display:block;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   FORM ELEMENTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* FORM ELEMENTS */
 .form-rule{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:11px;margin-bottom:24px;display:flex;align-items:center;gap:12px;}
 .form-rule .rule-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--border-dark);letter-spacing:.05em;line-height:1;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
@@ -177,9 +178,7 @@ body{
 .radio-group input[type="radio"]{accent-color:var(--red);width:15px;height:15px;}
 .full-width{margin-bottom:18px;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   OFFENSE CARDS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* OFFENSE CARDS */
 .offense-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
 .offense-card{border:1px solid var(--border);padding:14px 16px;cursor:pointer;background:#fff;transition:border-color .15s,box-shadow .15s,transform .15s;position:relative;overflow:hidden;}
 .offense-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:0;background:var(--red);transition:height .2s;}
@@ -227,9 +226,7 @@ body{
 .btn-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 .ban-duration-wrap{display:none;margin-top:14px;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   STATS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;}
 .stat-box{background:#fff;border:1px solid var(--border);padding:26px 28px;position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;}
 .stat-box:hover{box-shadow:0 6px 24px rgba(0,0,0,.09);transform:translateY(-1px);}
@@ -244,9 +241,7 @@ body{
 .stat-box.purple .stat-n{color:var(--purple);}
 .stat-box.purple::after{background:var(--purple);}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   SEARCH & TABLES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* SEARCH & TABLES */
 .search-wrap{margin-bottom:20px;position:relative;}
 .search-wrap input{width:100%;font-family:'DM Mono',monospace;font-size:13px;background:#fff;border:1px solid var(--border);padding:13px 14px 13px 46px;outline:none;color:var(--ink);transition:border-color .2s,box-shadow .2s;}
 .search-wrap input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(10,9,8,.05);}
@@ -277,9 +272,7 @@ body{
 .loading-state{text-align:center;padding:72px 20px;}
 .loading-state p{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ADMIN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* ADMIN */
 .admin-section-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:22px;margin-top:32px;display:flex;align-items:center;gap:10px;}
 .admin-section-title::before{content:'';display:inline-block;width:3px;height:11px;background:var(--muted);flex-shrink:0;}
 .admin-section-title:first-child{margin-top:0;}
@@ -297,7 +290,7 @@ body{
 .btn-danger{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid #e8bcbc;color:var(--red);padding:9px 16px;cursor:pointer;transition:all .15s;width:100%;}
 .btn-danger:hover{background:var(--red);color:#fff;box-shadow:0 2px 14px rgba(140,21,21,.22);}
 
-/* ── Deletion history ── */
+/* Deletion history */
 .deletion-table{width:100%;border-collapse:collapse;font-size:13px;}
 .deletion-table thead tr{background:var(--ink);}
 .deletion-table th{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,239,226,.42);padding:13px 16px;text-align:left;font-weight:400;}
@@ -317,15 +310,13 @@ body{
 .dh-reason-empty{color:var(--muted);font-style:italic;}
 .dh-mod{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
 .dh-admin-cell{min-width:160px;}
-.dh-admin-email{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink);font-weight:500;margin-bottom:2px;}
+.dh-admin-name{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink);font-weight:500;margin-bottom:2px;}
 .dh-admin-role{font-family:'DM Mono',monospace;font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
 .dh-timestamp{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
 .dh-date-part{color:var(--ink);}
 .dh-time-part{color:var(--muted);font-size:10px;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   MANAGE USERS — NEW SECTION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* MANAGE USERS */
 .add-user-box {
   background: #fff;
   border: 1px solid var(--border);
@@ -360,6 +351,20 @@ body{
   text-transform: uppercase;
   color: var(--muted);
 }
+
+/* @ prefix inside add-user inputs */
+.username-input-wrap { position: relative; }
+.username-input-wrap .at-prefix {
+  position: absolute;
+  left: 13px; top: 50%; transform: translateY(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--muted-light);
+  pointer-events: none;
+  user-select: none;
+}
+.username-input-wrap input { padding-left: 26px !important; }
+
 .add-user-grid .field input,
 .add-user-grid .field select {
   font-family: 'DM Mono', monospace;
@@ -418,14 +423,13 @@ body{
 .add-user-alert.success { background: var(--success-bg); color: var(--success); border-left-color: var(--success); }
 .add-user-alert.error   { background: var(--red-light);   color: var(--red);     border-left-color: var(--red);     }
 
-/* User management table */
 .users-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .users-table thead tr { background: var(--ink); }
 .users-table th { font-family: 'DM Mono', monospace; font-size: 7.5px; letter-spacing: .26em; text-transform: uppercase; color: rgba(245,239,226,.42); padding: 13px 16px; text-align: left; font-weight: 400; }
 .users-table td { padding: 13px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .users-table tbody tr { transition: background .1s; }
 .users-table tbody tr:hover { background: rgba(255,255,255,.8); }
-.user-email-cell { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink); font-weight: 500; }
+.user-name-cell  { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--ink); font-weight: 500; }
 .user-code-cell  { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: .08em; }
 .user-role-badge { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: .14em; text-transform: uppercase; padding: 3px 10px; font-weight: 600; }
 .role-admin { background: var(--red-light); color: var(--red); border: 1px solid #e8bcbc; }
@@ -445,9 +449,7 @@ body{
 .revoke-btn:hover { background: var(--red); color: #fff; box-shadow: 0 2px 10px rgba(140,21,21,.18); }
 .revoke-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   OVERLAYS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* OVERLAYS */
 .admin-pin-overlay{position:fixed;inset:0;background:rgba(5,5,4,.94);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(6px);}
 .admin-pin-overlay.on{display:flex;}
 .admin-pin-box{background:var(--l-surf);border:1px solid var(--l-border);border-top:2px solid var(--red);padding:44px 48px;width:100%;max-width:390px;text-align:center;box-shadow:0 40px 80px rgba(0,0,0,.65);animation:overlayIn .22s cubic-bezier(.4,0,.2,1);}
@@ -467,7 +469,6 @@ body{
 .reason-chip.active{background:rgba(140,21,21,.18);border-color:rgba(140,21,21,.6);color:#d08080;}
 .reason-chips-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.22em;color:#333;text-transform:uppercase;margin-bottom:9px;text-align:left;display:block;}
 
-/* Submit confirmation overlay */
 #confirm-overlay{position:fixed;inset:0;background:rgba(5,5,4,.95);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(7px);}
 #confirm-overlay.on{display:flex;}
 .confirm-box{background:#0d0c0b;border:1px solid #1c1a18;border-top:2px solid var(--gold);padding:0;width:100%;max-width:540px;box-shadow:0 40px 80px rgba(0,0,0,.7);animation:overlayIn .22s cubic-bezier(.4,0,.2,1);overflow:hidden;}
@@ -491,9 +492,6 @@ body{
 .confirm-cancel-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;background:none;border:1px solid #1c1a18;color:#3a3633;padding:14px 22px;cursor:pointer;transition:all .15s;}
 .confirm-cancel-btn:hover{border-color:#2e2c29;color:#666;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   RESPONSIVE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media(max-width:700px){
   .header-left,.header-right,.portal-user-bar,.main-nav,.sub-nav,.portal-body{padding-left:20px;padding-right:20px;}
   .form-grid{grid-template-columns:1fr;}
@@ -508,9 +506,7 @@ body{
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════
-     LOGIN
-════════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="login-page">
   <div class="login-scanlines"></div>
   <div class="login-emblem">
@@ -526,8 +522,11 @@ body{
   </div>
   <div class="login-box">
     <div class="login-field">
-      <label>Verified Email Address</label>
-      <input type="email" id="login-email" placeholder="officer@example.com" autocomplete="off">
+      <label>Username</label>
+      <div class="login-username-wrap">
+        <span class="login-username-at">@</span>
+        <input type="text" id="login-username" placeholder="aurxora" autocomplete="off" autocapitalize="none" spellcheck="false">
+      </div>
     </div>
     <div class="login-field">
       <label>Access Code</label>
@@ -544,12 +543,9 @@ body{
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PORTAL
-════════════════════════════════════════════════════════════ -->
+<!-- PORTAL -->
 <div id="portal-page">
 
-  <!-- Header -->
   <div class="portal-header">
     <div class="header-inner">
       <div class="header-left">
@@ -564,17 +560,15 @@ body{
     </div>
   </div>
 
-  <!-- User bar -->
   <div class="portal-user-bar">
     <div class="portal-user-info">
       <span class="u-dot"></span>
-      Logged in as: <span class="u-val" id="user-email-display">—</span>
+      Logged in as: <span class="u-val" id="user-name-display">—</span>
       &nbsp;·&nbsp; Role: <span class="u-val" id="user-role-display">—</span>
     </div>
     <button class="logout-btn" onclick="doLogout()">Sign Out</button>
   </div>
 
-  <!-- Main nav -->
   <div class="main-nav">
     <button class="main-nav-btn on" onclick="showMain('vtos',this)">VTOS Log</button>
     <button class="main-nav-btn cg" onclick="showMain('cg',this)">Community Guidelines</button>
@@ -582,7 +576,7 @@ body{
     <button class="main-nav-btn" id="admin-nav-btn" onclick="showMain('admin',this)" style="display:none;">Admin Panel</button>
   </div>
 
-  <!-- ── VTOS ── -->
+  <!-- VTOS -->
   <div id="main-vtos" class="main-sec on">
     <div class="sub-nav">
       <button class="sub-nav-btn on" onclick="showSub('vtos','form',this)">File New Entry</button>
@@ -677,7 +671,7 @@ body{
     </div>
   </div>
 
-  <!-- ── COMMUNITY GUIDELINES ── -->
+  <!-- COMMUNITY GUIDELINES -->
   <div id="main-cg" class="main-sec">
     <div class="sub-nav">
       <button class="sub-nav-btn cg on" onclick="showSub('cg','form',this)">File New Entry</button>
@@ -775,7 +769,7 @@ body{
     </div>
   </div>
 
-  <!-- ── EXPLOITING ── -->
+  <!-- EXPLOITING -->
   <div id="main-ex" class="main-sec">
     <div class="sub-nav">
       <button class="sub-nav-btn ex on" onclick="showSub('ex','form',this)">File New Entry</button>
@@ -868,7 +862,7 @@ body{
     </div>
   </div>
 
-  <!-- ── ADMIN PIN OVERLAY ── -->
+  <!-- ADMIN PIN OVERLAY -->
   <div class="admin-pin-overlay" id="admin-pin-overlay">
     <div class="admin-pin-box">
       <div class="admin-pin-title">Admin Authorization</div>
@@ -880,7 +874,7 @@ body{
     </div>
   </div>
 
-  <!-- ── DELETION REASON OVERLAY ── -->
+  <!-- DELETION REASON OVERLAY -->
   <div class="admin-pin-overlay" id="delete-reason-overlay">
     <div class="admin-pin-box" style="max-width:520px;">
       <div class="admin-pin-title" style="color:#c8c0b4;border-bottom:1px solid #1e1d1b;padding-bottom:13px;margin-bottom:16px;">⚠ Deletion Reason Required</div>
@@ -905,7 +899,7 @@ body{
     </div>
   </div>
 
-  <!-- ── ADMIN PANEL ── -->
+  <!-- ADMIN PANEL -->
   <div id="main-admin" class="main-sec">
     <div class="sub-nav">
       <button class="sub-nav-btn on"  onclick="showSub('admin','signin',this)">Sign-in Logs</button>
@@ -915,13 +909,11 @@ body{
     </div>
     <div class="portal-body">
 
-      <!-- Sign-in logs -->
       <div id="admin-signin" class="sub-sec on">
         <div class="admin-section-title">Sign-in Activity Log</div>
         <div id="signin-tbl-wrap"><div class="loading-state"><p>Loading sign-in logs...</p></div></div>
       </div>
 
-      <!-- Delete log entries -->
       <div id="admin-deletions" class="sub-sec">
         <div class="admin-section-title">Delete All Entries by Log</div>
         <div class="admin-actions">
@@ -945,7 +937,6 @@ body{
         <div id="auth-users-wrap"><div class="loading-state"><p>Loading...</p></div></div>
       </div>
 
-      <!-- Deletion history -->
       <div id="admin-deletion-history" class="sub-sec">
         <div class="admin-section-title" style="margin-top:0;">Deletion Statistics</div>
         <div class="stats-row">
@@ -955,21 +946,20 @@ body{
           <div class="stat-box gold"><div class="stat-n" id="dh-ex">—</div><div class="stat-l">Exploiting deletions</div></div>
         </div>
         <div class="admin-section-title">Deletion Records</div>
-        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, admin, offense, or reason..." oninput="renderDeletionHistory()"></div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, moderator, offense, or reason..." oninput="renderDeletionHistory()"></div>
         <div id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
       </div>
 
-      <!-- ════════════════════════════════════════════════
-           MANAGE USERS — new sub-tab
-      ════════════════════════════════════════════════ -->
+      <!-- MANAGE USERS -->
       <div id="admin-manage-users" class="sub-sec">
-
-        <!-- Add user form -->
         <div class="add-user-box">
           <div class="add-user-grid">
             <div class="field">
-              <label>Email Address *</label>
-              <input type="email" id="nu-email" placeholder="officer@example.com" autocomplete="off">
+              <label>Username *</label>
+              <div class="username-input-wrap">
+                <span class="at-prefix">@</span>
+                <input type="text" id="nu-username" placeholder="newmoderator" autocomplete="off" autocapitalize="none" spellcheck="false">
+              </div>
             </div>
             <div class="field">
               <label>Access Code *</label>
@@ -989,17 +979,14 @@ body{
           <div class="add-user-alert" id="add-user-alert"></div>
         </div>
 
-        <!-- Existing users table -->
         <div class="admin-section-title" style="margin-top:0;">Current Authorized Users</div>
         <div id="manage-users-tbl-wrap"><div class="loading-state"><p>Loading users...</p></div></div>
-
       </div>
-      <!-- end manage-users -->
 
     </div>
   </div>
 
-  <!-- ── SUBMIT CONFIRMATION OVERLAY ── -->
+  <!-- SUBMIT CONFIRMATION OVERLAY -->
   <div id="confirm-overlay">
     <div class="confirm-box">
       <div class="confirm-header">
@@ -1029,262 +1016,267 @@ body{
 const SUPA_URL = 'https://eyuoltsgdspzcfhvmvim.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dW9sdHNnZHNwemNmaHZtdmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyODYzOTEsImV4cCI6MjA5MDg2MjM5MX0.J33tHu7XTM28mMUSTKaqMJt3yq6jOVjvk3juARqM07Q';
 
-const selectedOffense={vtos:'',cg:'',ex:''};
-const allEntries={vtos:[],cg:[],ex:[]};
-let currentUser=null;
+const selectedOffense = {vtos:'', cg:'', ex:''};
+const allEntries = {vtos:[], cg:[], ex:[]};
+let currentUser = null;
 
-async function doLogin(){
-  const email=document.getElementById('login-email').value.trim().toLowerCase();
-  const code=document.getElementById('login-code').value.trim();
-  const btn=document.getElementById('login-btn');
-  const err=document.getElementById('login-err');
-  err.style.display='none';
-  if(!email||!code){err.style.display='block';return;}
-  btn.disabled=true;btn.textContent='Authenticating...';
-  try{
-    const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?email=eq.'+encodeURIComponent(email)+'&access_code=eq.'+encodeURIComponent(code),{
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
-    });
-    const data=await res.json();
-    if(data&&data.length>0){
-      currentUser=data[0];
-      await fetch(SUPA_URL+'/rest/v1/signin_log',{
-        method:'POST',
-        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify({email,success:true})
-      });
-      document.getElementById('login-page').style.display='none';
-      document.getElementById('portal-page').style.display='block';
-      document.getElementById('user-email-display').textContent=currentUser.email;
-      document.getElementById('user-role-display').textContent=currentUser.role.toUpperCase();
-      if(currentUser.role==='admin') document.getElementById('admin-nav-btn').style.display='inline-block';
-    }else{
-      await fetch(SUPA_URL+'/rest/v1/signin_log',{
-        method:'POST',
-        headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-        body:JSON.stringify({email,success:false})
-      });
-      err.style.display='block';
-    }
-  }catch(e){err.textContent='Connection Error — Try Again';err.style.display='block';}
-  btn.disabled=false;btn.textContent='Authenticate →';
+// Strip leading @ if user types it in
+function cleanUsername(val) {
+  return val.replace(/^@+/, '').trim().toLowerCase();
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('login-page').style.display!=='none') doLogin();
-  if(e.key==='Enter'&&document.getElementById('admin-pin-overlay').classList.contains('on')) verifyAdminPin();
-  if(e.key==='Enter'&&document.getElementById('delete-reason-overlay').classList.contains('on')) confirmDeleteWithReason();
+async function doLogin() {
+  const username = cleanUsername(document.getElementById('login-username').value);
+  const code = document.getElementById('login-code').value.trim();
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  err.style.display = 'none';
+  if (!username || !code) { err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Authenticating...';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/authorized_users?username=eq.' + encodeURIComponent(username) + '&access_code=eq.' + encodeURIComponent(code), {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    const data = await res.json();
+    if (data && data.length > 0) {
+      currentUser = data[0];
+      await fetch(SUPA_URL + '/rest/v1/signin_log', {
+        method: 'POST',
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ username, success: true })
+      });
+      document.getElementById('login-page').style.display = 'none';
+      document.getElementById('portal-page').style.display = 'block';
+      document.getElementById('user-name-display').textContent = '@' + currentUser.username;
+      document.getElementById('user-role-display').textContent = currentUser.role.toUpperCase();
+      if (currentUser.role === 'admin') document.getElementById('admin-nav-btn').style.display = 'inline-block';
+    } else {
+      await fetch(SUPA_URL + '/rest/v1/signin_log', {
+        method: 'POST',
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ username, success: false })
+      });
+      err.style.display = 'block';
+    }
+  } catch(e) { err.textContent = 'Connection Error — Try Again'; err.style.display = 'block'; }
+  btn.disabled = false; btn.textContent = 'Authenticate →';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') doLogin();
+  if (e.key === 'Enter' && document.getElementById('admin-pin-overlay').classList.contains('on')) verifyAdminPin();
+  if (e.key === 'Enter' && document.getElementById('delete-reason-overlay').classList.contains('on')) confirmDeleteWithReason();
 });
 
-function doLogout(){
-  currentUser=null;
-  document.getElementById('portal-page').style.display='none';
-  document.getElementById('login-page').style.display='flex';
-  adminUnlocked=false;
-  document.getElementById('login-email').value='';
-  document.getElementById('login-code').value='';
+function doLogout() {
+  currentUser = null;
+  document.getElementById('portal-page').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  adminUnlocked = false;
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-code').value = '';
 }
 
-let adminUnlocked=false,pendingAdminBtn=null,pendingDeleteType=null,pendingDeleteId=null,pendingDeleteEntryDetails=null;
+let adminUnlocked = false, pendingAdminBtn = null, pendingDeleteType = null, pendingDeleteId = null, pendingDeleteEntryDetails = null;
 
-function showMain(id,btn){
-  if(id==='admin'&&!adminUnlocked){
-    pendingAdminBtn=btn;
+function showMain(id, btn) {
+  if (id === 'admin' && !adminUnlocked) {
+    pendingAdminBtn = btn;
     document.getElementById('admin-pin-overlay').classList.add('on');
-    document.getElementById('admin-pin-input').value='';
-    document.getElementById('admin-pin-err').style.display='none';
-    setTimeout(()=>document.getElementById('admin-pin-input').focus(),100);
+    document.getElementById('admin-pin-input').value = '';
+    document.getElementById('admin-pin-err').style.display = 'none';
+    setTimeout(() => document.getElementById('admin-pin-input').focus(), 100);
     return;
   }
-  document.querySelectorAll('.main-sec').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.main-nav-btn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('main-'+id).classList.add('on');
+  document.querySelectorAll('.main-sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.main-nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('main-' + id).classList.add('on');
   btn.classList.add('on');
-  if(id==='admin') loadSigninLogs();
+  if (id === 'admin') loadSigninLogs();
 }
 
-function verifyAdminPin(){
-  const pin=document.getElementById('admin-pin-input').value.trim();
-  const err=document.getElementById('admin-pin-err');
-  if(pin==='323962'){
-    adminUnlocked=true;
+function verifyAdminPin() {
+  const pin = document.getElementById('admin-pin-input').value.trim();
+  const err = document.getElementById('admin-pin-err');
+  if (pin === '323962') {
+    adminUnlocked = true;
     document.getElementById('admin-pin-overlay').classList.remove('on');
-    if(pendingAdminBtn) showMain('admin',pendingAdminBtn);
-  }else{
-    err.style.display='block';
-    document.getElementById('admin-pin-input').value='';
+    if (pendingAdminBtn) showMain('admin', pendingAdminBtn);
+  } else {
+    err.style.display = 'block';
+    document.getElementById('admin-pin-input').value = '';
   }
 }
 
-function closeAdminPin(){
+function closeAdminPin() {
   document.getElementById('admin-pin-overlay').classList.remove('on');
-  pendingAdminBtn=null;
+  pendingAdminBtn = null;
 }
 
-function showSub(main,id,btn){
-  const parent=document.getElementById('main-'+main);
-  parent.querySelectorAll('.sub-sec').forEach(s=>s.classList.remove('on'));
-  parent.querySelectorAll('.sub-nav-btn').forEach(b=>b.classList.remove('on'));
-  document.getElementById(main+'-'+id).classList.add('on');
+function showSub(main, id, btn) {
+  const parent = document.getElementById('main-' + main);
+  parent.querySelectorAll('.sub-sec').forEach(s => s.classList.remove('on'));
+  parent.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById(main + '-' + id).classList.add('on');
   btn.classList.add('on');
-  if(id==='records') loadRecords(main);
-  if(main==='admin'&&id==='signin') loadSigninLogs();
-  if(main==='admin'&&id==='deletions') loadAuthUsers();
-  if(main==='admin'&&id==='deletion-history') loadDeletionHistory();
-  if(main==='admin'&&id==='manage-users') loadManageUsers();
+  if (id === 'records') loadRecords(main);
+  if (main === 'admin' && id === 'signin') loadSigninLogs();
+  if (main === 'admin' && id === 'deletions') loadAuthUsers();
+  if (main === 'admin' && id === 'deletion-history') loadDeletionHistory();
+  if (main === 'admin' && id === 'manage-users') loadManageUsers();
 }
 
-function selectOffense(type,value,card){
-  document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c=>c.classList.remove('selected','cg-selected','ex-selected'));
-  const cls=type==='cg'?'cg-selected':type==='ex'?'ex-selected':'selected';
+function selectOffense(type, value, card) {
+  document.getElementById(type + '-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
+  const cls = type === 'cg' ? 'cg-selected' : type === 'ex' ? 'ex-selected' : 'selected';
   card.classList.add(cls);
-  selectedOffense[type]=value;
-  document.getElementById(type+'-other-wrap').style.display=value==='other'?'block':'none';
+  selectedOffense[type] = value;
+  document.getElementById(type + '-other-wrap').style.display = value === 'other' ? 'block' : 'none';
 }
 
-function toggleDuration(type){
-  const p=type==='vtos'?'v':type==='cg'?'c':'e';
-  const action=document.getElementById(p+'-action').value;
-  document.getElementById(type+'-duration-wrap').style.display=action==='Temporary ban'?'block':'none';
+function toggleDuration(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const action = document.getElementById(p + '-action').value;
+  document.getElementById(type + '-duration-wrap').style.display = action === 'Temporary ban' ? 'block' : 'none';
 }
 
-let priorTimer={};
-async function checkPrior(type){
-  const p=type==='vtos'?'v':type==='cg'?'c':'e';
-  const username=document.getElementById(p+'-user').value.trim().toLowerCase();
-  const alertEl=document.getElementById(type+'-prior-alert');
-  if(!username||username.length<3){alertEl.style.display='none';return;}
+let priorTimer = {};
+async function checkPrior(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const username = document.getElementById(p + '-user').value.trim().toLowerCase();
+  const alertEl = document.getElementById(type + '-prior-alert');
+  if (!username || username.length < 3) { alertEl.style.display = 'none'; return; }
   clearTimeout(priorTimer[type]);
-  priorTimer[type]=setTimeout(async()=>{
-    const tables=['vtos_log','cg_log','exploiting_log'];
-    let total=0;let offenses=[];
-    for(const table of tables){
-      try{
-        const res=await fetch(SUPA_URL+'/rest/v1/'+table+'?username=ilike.'+encodeURIComponent(username)+'&select=offense,action,date',{
-          headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+  priorTimer[type] = setTimeout(async () => {
+    const tables = ['vtos_log','cg_log','exploiting_log'];
+    let total = 0; let offenses = [];
+    for (const table of tables) {
+      try {
+        const res = await fetch(SUPA_URL + '/rest/v1/' + table + '?username=ilike.' + encodeURIComponent(username) + '&select=offense,action,date', {
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
         });
-        const data=await res.json();
-        if(data&&data.length){total+=data.length;offenses=offenses.concat(data);}
-      }catch(e){}
+        const data = await res.json();
+        if (data && data.length) { total += data.length; offenses = offenses.concat(data); }
+      } catch(e) {}
     }
-    if(total===0){alertEl.style.display='none';return;}
-    const bans=offenses.filter(o=>o.action&&o.action.includes('ban')).length;
-    alertEl.classList.toggle('danger',bans>0);
-    alertEl.querySelector('p').innerHTML='⚑ Prior Record Found — '+total+' offense(s) on file across all logs.'+(bans>0?' '+bans+' ban(s) on record.':'')+'<br>Recent: '+offenses.slice(0,3).map(o=>o.offense).join(', ');
-    alertEl.style.display='block';
-  },600);
+    if (total === 0) { alertEl.style.display = 'none'; return; }
+    const bans = offenses.filter(o => o.action && o.action.includes('ban')).length;
+    alertEl.classList.toggle('danger', bans > 0);
+    alertEl.querySelector('p').innerHTML = '⚑ Prior Record Found — ' + total + ' offense(s) on file across all logs.' + (bans > 0 ? ' ' + bans + ' ban(s) on record.' : '') + '<br>Recent: ' + offenses.slice(0,3).map(o => o.offense).join(', ');
+    alertEl.style.display = 'block';
+  }, 600);
 }
 
-const tableMap={vtos:'vtos_log',cg:'cg_log',ex:'exploiting_log'};
-const isAdmin=()=>currentUser&&currentUser.role==='admin';
+const tableMap = {vtos:'vtos_log', cg:'cg_log', ex:'exploiting_log'};
+const isAdmin = () => currentUser && currentUser.role === 'admin';
 
-function badgeClass(action){
-  if(!action) return '';
-  if(action.includes('Permanent ban')||action.toLowerCase().includes('permanent')) return 'badge-ban';
-  if(action.toLowerCase().includes('ban')) return 'badge-ban';
-  if(action.toLowerCase().includes('warn')||action.toLowerCase().includes('warning')) return 'badge-warn';
-  if(action.toLowerCase().includes('kick')) return 'badge-kick';
+function badgeClass(action) {
+  if (!action) return '';
+  if (action.includes('Permanent ban') || action.toLowerCase().includes('permanent')) return 'badge-ban';
+  if (action.toLowerCase().includes('ban')) return 'badge-ban';
+  if (action.toLowerCase().includes('warn') || action.toLowerCase().includes('warning')) return 'badge-warn';
+  if (action.toLowerCase().includes('kick')) return 'badge-kick';
   return 'badge-rep';
 }
 
-function countPlayerOffenses(username){
-  let count=0;
-  for(const type of['vtos','cg','ex']){
-    if(allEntries[type]) count+=allEntries[type].filter(e=>e.username&&e.username.toLowerCase()===username.toLowerCase()).length;
+function countPlayerOffenses(username) {
+  let count = 0;
+  for (const type of ['vtos','cg','ex']) {
+    if (allEntries[type]) count += allEntries[type].filter(e => e.username && e.username.toLowerCase() === username.toLowerCase()).length;
   }
   return count;
 }
 
-async function loadRecords(type){
-  const p=type==='vtos'?'v':type==='cg'?'c':'e';
-  const table=tableMap[type];
-  const wrap=document.getElementById(p+'-tbl-wrap');
-  wrap.innerHTML='<div class="loading-state"><p>Loading records...</p></div>';
-  try{
-    const res=await fetch(SUPA_URL+'/rest/v1/'+table+'?order=id.desc',{
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+async function loadRecords(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const table = tableMap[type];
+  const wrap = document.getElementById(p + '-tbl-wrap');
+  wrap.innerHTML = '<div class="loading-state"><p>Loading records...</p></div>';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/' + table + '?order=id.desc', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
-    const data=await res.json();
-    allEntries[type]=data||[];
-    updateStats(type,data||[]);
+    const data = await res.json();
+    allEntries[type] = data || [];
+    updateStats(type, data || []);
     renderTable(type);
-  }catch(e){
-    wrap.innerHTML='<div class="empty-state"><p>Could not load records.</p></div>';
+  } catch(e) {
+    wrap.innerHTML = '<div class="empty-state"><p>Could not load records.</p></div>';
   }
 }
 
-function updateStats(type,entries){
-  const pfx=type==='vtos'?'vs':type==='cg'?'cs':'es';
-  document.getElementById(pfx+'-total').textContent=entries.length;
-  document.getElementById(pfx+'-bans').textContent=entries.filter(e=>e.action&&e.action.toLowerCase().includes('permanent')).length;
-  document.getElementById(pfx+'-repeat').textContent=entries.filter(e=>e.prior&&e.prior.includes('repeat')).length;
+function updateStats(type, entries) {
+  const pfx = type === 'vtos' ? 'vs' : type === 'cg' ? 'cs' : 'es';
+  document.getElementById(pfx + '-total').textContent = entries.length;
+  document.getElementById(pfx + '-bans').textContent = entries.filter(e => e.action && e.action.toLowerCase().includes('permanent')).length;
+  document.getElementById(pfx + '-repeat').textContent = entries.filter(e => e.prior && e.prior.includes('repeat')).length;
 }
 
-function renderTable(type){
-  const p=type==='vtos'?'v':type==='cg'?'c':'e';
-  const q=(document.getElementById(p+'-search').value||'').toLowerCase();
-  const wrap=document.getElementById(p+'-tbl-wrap');
-  const filtered=(allEntries[type]||[]).filter(e=>!q||(e.username&&e.username.toLowerCase().includes(q)));
-  if(filtered.length===0){
-    wrap.innerHTML='<div class="empty-state"><p>'+(q?'No records matching that search.':'No records yet.')+'</p></div>';
+function renderTable(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const q = (document.getElementById(p + '-search').value || '').toLowerCase();
+  const wrap = document.getElementById(p + '-tbl-wrap');
+  const filtered = (allEntries[type] || []).filter(e => !q || (e.username && e.username.toLowerCase().includes(q)));
+  if (filtered.length === 0) {
+    wrap.innerHTML = '<div class="empty-state"><p>' + (q ? 'No records matching that search.' : 'No records yet.') + '</p></div>';
     return;
   }
-  const rows=filtered.map(e=>{
-    const count=countPlayerOffenses(e.username);
-    const dur=e.ban_duration?' ('+e.ban_duration+')':'';
-    return '<tr>'+
-      '<td><div class="player-name">'+(e.username||'—')+'</div><div class="player-id">'+(e.userid||'')+'</div><div class="offense-count'+(count>1?' hot':'')+'">'+count+' offense(s) in this log</div></td>'+
-      '<td style="font-size:12px;">'+(e.offense||'—')+'</td>'+
-      '<td><span class="badge '+badgeClass(e.action)+'">'+(e.action||'—')+dur+'</span>'+(e.prior&&e.prior.includes('repeat')?'<div class="repeat-tag">⚑ Repeat</div>':'')+'</td>'+
-      '<td class="date-cell">'+(e.date||'—')+'</td>'+
-      '<td class="mod-cell">'+(e.mod||'—')+'</td>'+
-      '<td class="notes-cell">'+(e.notes?e.notes.substring(0,80)+(e.notes.length>80?'…':''):'—')+'</td>'+
-      (isAdmin()?'<td><button class="del-btn" onclick="deleteEntry(\''+type+'\','+e.id+')">Delete</button></td>':'<td></td>')+
+  const rows = filtered.map(e => {
+    const count = countPlayerOffenses(e.username);
+    const dur = e.ban_duration ? ' (' + e.ban_duration + ')' : '';
+    return '<tr>' +
+      '<td><div class="player-name">' + (e.username || '—') + '</div><div class="player-id">' + (e.userid || '') + '</div><div class="offense-count' + (count > 1 ? ' hot' : '') + '">' + count + ' offense(s) in this log</div></td>' +
+      '<td style="font-size:12px;">' + (e.offense || '—') + '</td>' +
+      '<td><span class="badge ' + badgeClass(e.action) + '">' + (e.action || '—') + dur + '</span>' + (e.prior && e.prior.includes('repeat') ? '<div class="repeat-tag">⚑ Repeat</div>' : '') + '</td>' +
+      '<td class="date-cell">' + (e.date || '—') + '</td>' +
+      '<td class="mod-cell">' + (e.mod || '—') + '</td>' +
+      '<td class="notes-cell">' + (e.notes ? e.notes.substring(0,80) + (e.notes.length > 80 ? '…' : '') : '—') + '</td>' +
+      (isAdmin() ? '<td><button class="del-btn" onclick="deleteEntry(\'' + type + '\',' + e.id + ')">Delete</button></td>' : '<td></td>') +
       '</tr>';
   }).join('');
-  const delH=isAdmin()?'<th>Delete</th>':'<th></th>';
-  wrap.innerHTML='<table class="records-table"><thead><tr><th>Player</th><th>Offense</th><th>Action</th><th>Date</th><th>Logged by</th><th>Notes</th>'+delH+'</tr></thead><tbody>'+rows+'</tbody></table>';
+  const delH = isAdmin() ? '<th>Delete</th>' : '<th></th>';
+  wrap.innerHTML = '<table class="records-table"><thead><tr><th>Player</th><th>Offense</th><th>Action</th><th>Date</th><th>Logged by</th><th>Notes</th>' + delH + '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
-async function loadSigninLogs(){
-  const wrap=document.getElementById('signin-tbl-wrap');
-  wrap.innerHTML='<div class="loading-state"><p>Loading...</p></div>';
-  try{
-    const res=await fetch(SUPA_URL+'/rest/v1/signin_log?order=id.desc&limit=100',{
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+async function loadSigninLogs() {
+  const wrap = document.getElementById('signin-tbl-wrap');
+  wrap.innerHTML = '<div class="loading-state"><p>Loading...</p></div>';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/signin_log?order=id.desc&limit=100', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
-    const data=await res.json();
-    if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No sign-in logs yet.</p></div>';return;}
-    const rows=data.map(e=>{
-      const dt=e.signed_in_at?new Date(e.signed_in_at).toLocaleString():'—';
-      return '<tr><td>'+(e.success?'<span class="success-dot"></span>Success':'<span class="fail-dot"></span>Failed')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;">'+(e.email||'—')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">'+dt+'</td></tr>';
+    const data = await res.json();
+    if (!data || data.length === 0) { wrap.innerHTML = '<div class="empty-state"><p>No sign-in logs yet.</p></div>'; return; }
+    const rows = data.map(e => {
+      const dt = e.signed_in_at ? new Date(e.signed_in_at).toLocaleString() : '—';
+      const nameDisplay = e.username ? '@' + e.username : (e.email || '—');
+      return '<tr><td>' + (e.success ? '<span class="success-dot"></span>Success' : '<span class="fail-dot"></span>Failed') + '</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;">' + nameDisplay + '</td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">' + dt + '</td></tr>';
     }).join('');
-    wrap.innerHTML='<table class="signin-table"><thead><tr><th>Status</th><th>Email</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table>';
-  }catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load sign-in logs.</p></div>';}
+    wrap.innerHTML = '<table class="signin-table"><thead><tr><th>Status</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  } catch(e) { wrap.innerHTML = '<div class="empty-state"><p>Could not load sign-in logs.</p></div>'; }
 }
 
-async function loadAuthUsers(){
-  const wrap=document.getElementById('auth-users-wrap');
-  try{
-    const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?select=id,email,role,created_at&order=id.asc',{
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+async function loadAuthUsers() {
+  const wrap = document.getElementById('auth-users-wrap');
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/authorized_users?select=id,username,role,created_at&order=id.asc', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
-    const data=await res.json();
-    if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No users found.</p></div>';return;}
-    const rows=data.map(u=>{
-      const dt=u.created_at?new Date(u.created_at).toLocaleString():'—';
-      return '<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;">'+(u.email||'—')+'</td><td><span class="badge '+(u.role==='admin'?'badge-ban':'badge-rep')+'">'+(u.role||'—').toUpperCase()+'</span></td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">'+dt+'</td></tr>';
+    const data = await res.json();
+    if (!data || data.length === 0) { wrap.innerHTML = '<div class="empty-state"><p>No users found.</p></div>'; return; }
+    const rows = data.map(u => {
+      const dt = u.created_at ? new Date(u.created_at).toLocaleString() : '—';
+      return '<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;">@' + (u.username || '—') + '</td><td><span class="badge ' + (u.role === 'admin' ? 'badge-ban' : 'badge-rep') + '">' + (u.role || '—').toUpperCase() + '</span></td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">' + dt + '</td></tr>';
     }).join('');
-    wrap.innerHTML='<table class="signin-table"><thead><tr><th>Email</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table>';
-  }catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';}
+    wrap.innerHTML = '<table class="signin-table"><thead><tr><th>Username</th><th>Role</th><th>Added</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  } catch(e) { wrap.innerHTML = '<div class="empty-state"><p>Could not load users.</p></div>'; }
 }
 
-/* ── Manage Users ── */
 async function loadManageUsers() {
   const wrap = document.getElementById('manage-users-tbl-wrap');
   wrap.innerHTML = '<div class="loading-state"><p>Loading users...</p></div>';
   try {
-    const res = await fetch(SUPA_URL + '/rest/v1/authorized_users?select=id,email,access_code,role,created_at&order=id.asc', {
+    const res = await fetch(SUPA_URL + '/rest/v1/authorized_users?select=id,username,access_code,role,created_at&order=id.asc', {
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
     const data = await res.json();
@@ -1296,16 +1288,16 @@ async function loadManageUsers() {
       const dt = u.created_at ? new Date(u.created_at).toLocaleDateString() : '—';
       const isSelf = currentUser && currentUser.id === u.id;
       return `<tr>
-        <td class="user-email-cell">${u.email || '—'}${isSelf ? ' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>' : ''}</td>
+        <td class="user-name-cell">@${u.username || '—'}${isSelf ? ' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>' : ''}</td>
         <td class="user-code-cell">${u.access_code || '—'}</td>
         <td><span class="user-role-badge ${u.role === 'admin' ? 'role-admin' : 'role-mod'}">${(u.role || '—').toUpperCase()}</span></td>
         <td class="user-date-cell">${dt}</td>
-        <td>${isSelf ? '' : `<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.email}',this)">Revoke Access</button>`}</td>
+        <td>${isSelf ? '' : `<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.username}',this)">Revoke Access</button>`}</td>
       </tr>`;
     }).join('');
     wrap.innerHTML = `<table class="users-table">
       <thead><tr>
-        <th>Email Address</th>
+        <th>Username</th>
         <th>Access Code</th>
         <th>Role</th>
         <th>Added</th>
@@ -1313,29 +1305,29 @@ async function loadManageUsers() {
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
-  } catch (e) {
+  } catch(e) {
     wrap.innerHTML = '<div class="empty-state"><p>Could not load users.</p></div>';
   }
 }
 
 async function addUser() {
-  const email   = document.getElementById('nu-email').value.trim().toLowerCase();
-  const code    = document.getElementById('nu-code').value.trim();
-  const role    = document.getElementById('nu-role').value;
-  const alertEl = document.getElementById('add-user-alert');
-  const btn     = document.getElementById('add-user-btn');
+  const username = cleanUsername(document.getElementById('nu-username').value);
+  const code     = document.getElementById('nu-code').value.trim();
+  const role     = document.getElementById('nu-role').value;
+  const alertEl  = document.getElementById('add-user-alert');
+  const btn      = document.getElementById('add-user-btn');
 
   alertEl.style.display = 'none';
 
-  if (!email || !code) {
+  if (!username || !code) {
     alertEl.className = 'add-user-alert error';
-    alertEl.textContent = 'Both email and access code are required.';
+    alertEl.textContent = 'Both username and access code are required.';
     alertEl.style.display = 'block';
     return;
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!/^[a-z0-9_]+$/.test(username)) {
     alertEl.className = 'add-user-alert error';
-    alertEl.textContent = 'Please enter a valid email address.';
+    alertEl.textContent = 'Username may only contain letters, numbers, and underscores.';
     alertEl.style.display = 'block';
     return;
   }
@@ -1344,14 +1336,13 @@ async function addUser() {
   btn.textContent = 'Adding...';
 
   try {
-    // Check if email already exists
-    const checkRes = await fetch(SUPA_URL + '/rest/v1/authorized_users?email=eq.' + encodeURIComponent(email), {
+    const checkRes = await fetch(SUPA_URL + '/rest/v1/authorized_users?username=eq.' + encodeURIComponent(username), {
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
     const existing = await checkRes.json();
     if (existing && existing.length > 0) {
       alertEl.className = 'add-user-alert error';
-      alertEl.textContent = 'That email is already registered as an authorized user.';
+      alertEl.textContent = 'That username is already registered.';
       alertEl.style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'Add User →';
@@ -1361,21 +1352,21 @@ async function addUser() {
     const res = await fetch(SUPA_URL + '/rest/v1/authorized_users', {
       method: 'POST',
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ email, access_code: code, role })
+      body: JSON.stringify({ username, access_code: code, role })
     });
 
     if (res.ok || res.status === 201) {
       alertEl.className = 'add-user-alert success';
-      alertEl.textContent = `✓ ${email} added successfully as ${role.toUpperCase()}.`;
+      alertEl.textContent = `✓ @${username} added successfully as ${role.toUpperCase()}.`;
       alertEl.style.display = 'block';
-      document.getElementById('nu-email').value = '';
-      document.getElementById('nu-code').value  = '';
-      document.getElementById('nu-role').value  = 'mod';
-      loadManageUsers(); // refresh table
+      document.getElementById('nu-username').value = '';
+      document.getElementById('nu-code').value = '';
+      document.getElementById('nu-role').value = 'mod';
+      loadManageUsers();
     } else {
       throw new Error('Status ' + res.status);
     }
-  } catch (e) {
+  } catch(e) {
     alertEl.className = 'add-user-alert error';
     alertEl.textContent = 'Could not add user. Please try again.';
     alertEl.style.display = 'block';
@@ -1385,8 +1376,8 @@ async function addUser() {
   btn.textContent = 'Add User →';
 }
 
-async function revokeUser(id, email, btn) {
-  if (!confirm(`Revoke access for ${email}? They will no longer be able to log in.`)) return;
+async function revokeUser(id, username, btn) {
+  if (!confirm(`Revoke access for @${username}? They will no longer be able to log in.`)) return;
   btn.disabled = true;
   btn.textContent = 'Revoking...';
   try {
@@ -1401,103 +1392,112 @@ async function revokeUser(id, email, btn) {
       btn.textContent = 'Revoke Access';
       alert('Could not revoke access. Please try again.');
     }
-  } catch (e) {
+  } catch(e) {
     btn.disabled = false;
     btn.textContent = 'Revoke Access';
     alert('Connection error. Please try again.');
   }
 }
 
-let allDeletionHistory=[];
+let allDeletionHistory = [];
 
-async function loadDeletionHistory(){
-  const wrap=document.getElementById('deletion-history-wrap');
-  wrap.innerHTML='<div class="loading-state"><p>Loading deletion history...</p></div>';
-  try{
-    const res=await fetch(SUPA_URL+'/rest/v1/deletion_history?order=id.desc',{
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+async function loadDeletionHistory() {
+  const wrap = document.getElementById('deletion-history-wrap');
+  wrap.innerHTML = '<div class="loading-state"><p>Loading deletion history...</p></div>';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/deletion_history?order=id.desc', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
-    const data=await res.json();
-    allDeletionHistory=data||[];
+    const data = await res.json();
+    allDeletionHistory = data || [];
     updateDeletionStats(allDeletionHistory);
     renderDeletionHistory();
-  }catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load deletion history.</p></div>';}
+  } catch(e) { wrap.innerHTML = '<div class="empty-state"><p>Could not load deletion history.</p></div>'; }
 }
 
-function updateDeletionStats(entries){
-  document.getElementById('dh-total').textContent=entries.length;
-  document.getElementById('dh-vtos').textContent=entries.filter(e=>e.log_type==='vtos').length;
-  document.getElementById('dh-cg').textContent=entries.filter(e=>e.log_type==='cg').length;
-  document.getElementById('dh-ex').textContent=entries.filter(e=>e.log_type==='ex').length;
+function updateDeletionStats(entries) {
+  document.getElementById('dh-total').textContent = entries.length;
+  document.getElementById('dh-vtos').textContent = entries.filter(e => e.log_type === 'vtos').length;
+  document.getElementById('dh-cg').textContent = entries.filter(e => e.log_type === 'cg').length;
+  document.getElementById('dh-ex').textContent = entries.filter(e => e.log_type === 'ex').length;
 }
 
-function renderDeletionHistory(){
-  const q=(document.getElementById('dh-search').value||'').toLowerCase();
-  const filtered=allDeletionHistory.filter(e=>{
-    return !q||(e.player_username&&e.player_username.toLowerCase().includes(q))||(e.deleted_by_email&&e.deleted_by_email.toLowerCase().includes(q))||(e.offense&&e.offense.toLowerCase().includes(q))||(e.deletion_reason&&e.deletion_reason.toLowerCase().includes(q));
+function renderDeletionHistory() {
+  const q = (document.getElementById('dh-search').value || '').toLowerCase();
+  const filtered = allDeletionHistory.filter(e => {
+    return !q || (e.player_username && e.player_username.toLowerCase().includes(q)) || (e.deleted_by_username && e.deleted_by_username.toLowerCase().includes(q)) || (e.deleted_by_email && e.deleted_by_email.toLowerCase().includes(q)) || (e.offense && e.offense.toLowerCase().includes(q)) || (e.deletion_reason && e.deletion_reason.toLowerCase().includes(q));
   });
-  const wrap=document.getElementById('deletion-history-wrap');
-  if(filtered.length===0){wrap.innerHTML='<div class="empty-state"><p>'+(q?'No deletions matching that search.':'No deletions have been logged yet.')+'</p></div>';return;}
-  const rows=filtered.map(e=>{
-    const dt=e.deleted_at?new Date(e.deleted_at):null;
-    const dateStr=dt?dt.toLocaleDateString():'—';
-    const timeStr=dt?dt.toLocaleTimeString():'';
-    const logTypeClass=e.log_type==='vtos'?'dh-type-vtos':e.log_type==='cg'?'dh-type-cg':'dh-type-ex';
-    const logTypeLabel=e.log_type==='vtos'?'VTOS':e.log_type==='cg'?'CG':e.log_type==='ex'?'EXP':e.log_type;
-    const reasonHtml=e.deletion_reason
-      ?'<div class="dh-reason" title="'+e.deletion_reason.replace(/"/g,'&quot;')+'">'+e.deletion_reason.substring(0,55)+(e.deletion_reason.length>55?'…':'')+'</div>'
-      :'<div class="dh-reason dh-reason-empty">No reason provided</div>';
-    return '<tr>'+
-      '<td class="dh-player-cell"><div class="dh-player-name">'+(e.player_username||'—')+'</div>'+(e.player_userid?'<div class="dh-player-id">ID: '+e.player_userid+'</div>':'')+'</td>'+
-      '<td><span class="dh-type-badge '+logTypeClass+'">'+logTypeLabel+'</span></td>'+
-      '<td><div class="dh-offense">'+(e.offense||'—')+'</div></td>'+
-      '<td><span class="badge '+badgeClass(e.action)+' dh-action">'+(e.action||'—')+'</span></td>'+
-      '<td>'+reasonHtml+'</td>'+
-      '<td><div class="dh-mod">'+(e.original_mod||'—')+'</div></td>'+
-      '<td class="dh-admin-cell"><div class="dh-admin-email">'+(e.deleted_by_email||'—')+'</div>'+(e.deleted_by_role?'<div class="dh-admin-role">'+e.deleted_by_role.toUpperCase()+'</div>':'')+'</td>'+
-      '<td><div class="dh-timestamp"><span class="dh-date-part">'+dateStr+'</span>'+(dt?'<br><span class="dh-time-part">'+timeStr+'</span>':'')+'</div></td>'+
+  const wrap = document.getElementById('deletion-history-wrap');
+  if (filtered.length === 0) { wrap.innerHTML = '<div class="empty-state"><p>' + (q ? 'No deletions matching that search.' : 'No deletions have been logged yet.') + '</p></div>'; return; }
+  const rows = filtered.map(e => {
+    const dt = e.deleted_at ? new Date(e.deleted_at) : null;
+    const dateStr = dt ? dt.toLocaleDateString() : '—';
+    const timeStr = dt ? dt.toLocaleTimeString() : '';
+    const logTypeClass = e.log_type === 'vtos' ? 'dh-type-vtos' : e.log_type === 'cg' ? 'dh-type-cg' : 'dh-type-ex';
+    const logTypeLabel = e.log_type === 'vtos' ? 'VTOS' : e.log_type === 'cg' ? 'CG' : e.log_type === 'ex' ? 'EXP' : e.log_type;
+    const reasonHtml = e.deletion_reason
+      ? '<div class="dh-reason" title="' + e.deletion_reason.replace(/"/g,'&quot;') + '">' + e.deletion_reason.substring(0,55) + (e.deletion_reason.length > 55 ? '…' : '') + '</div>'
+      : '<div class="dh-reason dh-reason-empty">No reason provided</div>';
+    const adminDisplay = e.deleted_by_username ? '@' + e.deleted_by_username : (e.deleted_by_email || '—');
+    return '<tr>' +
+      '<td class="dh-player-cell"><div class="dh-player-name">' + (e.player_username || '—') + '</div>' + (e.player_userid ? '<div class="dh-player-id">ID: ' + e.player_userid + '</div>' : '') + '</td>' +
+      '<td><span class="dh-type-badge ' + logTypeClass + '">' + logTypeLabel + '</span></td>' +
+      '<td><div class="dh-offense">' + (e.offense || '—') + '</div></td>' +
+      '<td><span class="badge ' + badgeClass(e.action) + ' dh-action">' + (e.action || '—') + '</span></td>' +
+      '<td>' + reasonHtml + '</td>' +
+      '<td><div class="dh-mod">' + (e.original_mod || '—') + '</div></td>' +
+      '<td class="dh-admin-cell"><div class="dh-admin-name">' + adminDisplay + '</div>' + (e.deleted_by_role ? '<div class="dh-admin-role">' + e.deleted_by_role.toUpperCase() + '</div>' : '') + '</td>' +
+      '<td><div class="dh-timestamp"><span class="dh-date-part">' + dateStr + '</span>' + (dt ? '<br><span class="dh-time-part">' + timeStr + '</span>' : '') + '</div></td>' +
       '</tr>';
   }).join('');
-  wrap.innerHTML='<table class="deletion-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Action</th><th>Deletion Reason</th><th>Original Mod</th><th>Deleted By</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  wrap.innerHTML = '<table class="deletion-table"><thead><tr><th>Deleted Player</th><th>Log Type</th><th>Offense</th><th>Action</th><th>Deletion Reason</th><th>Original Mod</th><th>Deleted By</th><th>Timestamp</th></tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
-async function deleteEntry(type,id){
-  if(!isAdmin()) return;
-  const entry=(allEntries[type]||[]).find(e=>e.id===id);
-  if(!entry) return;
-  pendingDeleteType=type;pendingDeleteId=id;pendingDeleteEntryDetails=entry;
-  document.getElementById('delete-reason-input').value='';
-  document.getElementById('delete-reason-err').style.display='none';
-  document.querySelectorAll('.reason-chip').forEach(c=>c.classList.remove('active'));
+async function deleteEntry(type, id) {
+  if (!isAdmin()) return;
+  const entry = (allEntries[type] || []).find(e => e.id === id);
+  if (!entry) return;
+  pendingDeleteType = type; pendingDeleteId = id; pendingDeleteEntryDetails = entry;
+  document.getElementById('delete-reason-input').value = '';
+  document.getElementById('delete-reason-err').style.display = 'none';
+  document.querySelectorAll('.reason-chip').forEach(c => c.classList.remove('active'));
   document.getElementById('delete-reason-overlay').classList.add('on');
-  setTimeout(()=>document.getElementById('delete-reason-input').focus(),100);
+  setTimeout(() => document.getElementById('delete-reason-input').focus(), 100);
 }
 
-function closeDeleteReason(){
+function closeDeleteReason() {
   document.getElementById('delete-reason-overlay').classList.remove('on');
-  pendingDeleteType=null;pendingDeleteId=null;pendingDeleteEntryDetails=null;
+  pendingDeleteType = null; pendingDeleteId = null; pendingDeleteEntryDetails = null;
 }
 
-async function confirmDeleteWithReason(){
-  const reason=document.getElementById('delete-reason-input').value.trim();
-  const errEl=document.getElementById('delete-reason-err');
-  if(!reason){errEl.style.display='block';return;}
-  errEl.style.display='none';
-  const type=pendingDeleteType,id=pendingDeleteId,entry=pendingDeleteEntryDetails;
+async function confirmDeleteWithReason() {
+  const reason = document.getElementById('delete-reason-input').value.trim();
+  const errEl = document.getElementById('delete-reason-err');
+  if (!reason) { errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+  const type = pendingDeleteType, id = pendingDeleteId, entry = pendingDeleteEntryDetails;
   closeDeleteReason();
-  const table=tableMap[type];
-  try{
-    await fetch(SUPA_URL+'/rest/v1/deletion_history',{
-      method:'POST',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
-      body:JSON.stringify({log_type:type,original_id:id,player_username:entry.username,player_userid:entry.userid,offense:entry.offense,action:entry.action,original_mod:entry.mod,deleted_by_email:currentUser.email,deleted_by_role:currentUser.role,deletion_reason:reason})
+  const table = tableMap[type];
+  try {
+    await fetch(SUPA_URL + '/rest/v1/deletion_history', {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        log_type: type, original_id: id,
+        player_username: entry.username, player_userid: entry.userid,
+        offense: entry.offense, action: entry.action, original_mod: entry.mod,
+        deleted_by_username: currentUser.username,
+        deleted_by_email: currentUser.email || null,
+        deleted_by_role: currentUser.role,
+        deletion_reason: reason
+      })
     });
-    await fetch(SUPA_URL+'/rest/v1/'+table+'?id=eq.'+id,{
-      method:'DELETE',
-      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}
+    await fetch(SUPA_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+      method: 'DELETE',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
     });
     loadRecords(type);
-  }catch(e){alert('Delete failed. Please try again.');}
+  } catch(e) { alert('Delete failed. Please try again.'); }
 }
 
 function selectReasonChip(chip, text) {
@@ -1516,28 +1516,27 @@ function selectReasonChip(chip, text) {
 function syncChipsToTextarea() {
   const val = document.getElementById('delete-reason-input').value;
   document.querySelectorAll('.reason-chip').forEach(c => {
-    c.classList.toggle('active', c.getAttribute('onclick').includes("'"+val+"'") || c.textContent.trim() === val);
+    c.classList.toggle('active', c.getAttribute('onclick').includes("'" + val + "'") || c.textContent.trim() === val);
   });
 }
 
-/* ── Submit confirmation overlay ── */
 let pendingSubmitType = null;
 let pendingSubmitData = null;
 
 function openConfirm(type, data) {
   pendingSubmitType = type;
   pendingSubmitData = data;
-  const typeLabels = { vtos: 'VTOS Log', cg: 'Community Guidelines', ex: 'Exploiting Log' };
+  const typeLabels = {vtos:'VTOS Log', cg:'Community Guidelines', ex:'Exploiting Log'};
   const rows = [
-    { key: 'Log Type',       val: typeLabels[type],          cls: 'highlight' },
-    { key: 'Player',         val: data.username || '—',      cls: '' },
-    { key: 'User ID',        val: data.userid || 'Not provided', cls: '' },
-    { key: 'Offense',        val: data.offense || '—',       cls: data.offense ? '' : 'danger' },
-    { key: 'Action Taken',   val: data.action + (data.ban_duration ? ' · ' + data.ban_duration : ''), cls: data.action.toLowerCase().includes('permanent') ? 'danger' : '' },
-    { key: 'Prior Offenses', val: data.prior,                cls: data.prior.includes('repeat') ? 'danger' : '' },
-    { key: 'Date of Offense',val: data.date || '—',          cls: '' },
-    { key: 'Logged By',      val: data.mod || '—',           cls: '' },
-    { key: 'Notes',          val: data.notes || 'None',      cls: 'notes-val' },
+    { key: 'Log Type',        val: typeLabels[type],      cls: 'highlight' },
+    { key: 'Player',          val: data.username || '—',  cls: '' },
+    { key: 'User ID',         val: data.userid || 'Not provided', cls: '' },
+    { key: 'Offense',         val: data.offense || '—',  cls: data.offense ? '' : 'danger' },
+    { key: 'Action Taken',    val: data.action + (data.ban_duration ? ' · ' + data.ban_duration : ''), cls: data.action.toLowerCase().includes('permanent') ? 'danger' : '' },
+    { key: 'Prior Offenses',  val: data.prior,            cls: data.prior.includes('repeat') ? 'danger' : '' },
+    { key: 'Date of Offense', val: data.date || '—',     cls: '' },
+    { key: 'Logged By',       val: data.mod || '—',      cls: '' },
+    { key: 'Notes',           val: data.notes || 'None', cls: 'notes-val' },
   ];
   document.getElementById('confirm-rows').innerHTML = rows.map(r =>
     `<div class="confirm-row"><span class="confirm-key">${r.key}</span><span class="confirm-val ${r.cls}">${r.val}</span></div>`
@@ -1576,14 +1575,14 @@ async function confirmAndSubmit() {
       closeConfirm();
       toastEl.style.display = 'block';
       const durEl = document.getElementById(p + '-duration');
-      [p+'-user',p+'-uid',p+'-date',p+'-mod',p+'-notes'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById(p+'-action').value = '';
+      [p+'-user', p+'-uid', p+'-date', p+'-mod', p+'-notes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById(p + '-action').value = '';
       if (durEl) durEl.value = '';
-      document.getElementById(type+'-duration-wrap').style.display = 'none';
-      document.querySelector('input[name="'+p+'-prior"]').checked = true;
-      document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
-      document.getElementById(type+'-other-wrap').style.display = 'none';
-      document.getElementById(type+'-prior-alert').style.display = 'none';
+      document.getElementById(type + '-duration-wrap').style.display = 'none';
+      document.querySelector('input[name="' + p + '-prior"]').checked = true;
+      document.getElementById(type + '-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
+      document.getElementById(type + '-other-wrap').style.display = 'none';
+      document.getElementById(type + '-prior-alert').style.display = 'none';
       selectedOffense[type] = '';
       setTimeout(() => toastEl.style.display = 'none', 5000);
     } else { throw new Error('Status ' + res.status); }
@@ -1593,27 +1592,27 @@ async function confirmAndSubmit() {
     errEl.style.display = 'block';
   }
   btn.disabled = false;
-  const labels = { vtos:'Submit VTOS Entry →', cg:'Submit CG Entry →', ex:'Submit Exploit Entry →' };
+  const labels = {vtos:'Submit VTOS Entry →', cg:'Submit CG Entry →', ex:'Submit Exploit Entry →'};
   btn.textContent = labels[type];
 }
 
-async function submitEntry(type){
-  const p=type==='vtos'?'v':type==='cg'?'c':'e';
-  const username=document.getElementById(p+'-user').value.trim();
-  const date=document.getElementById(p+'-date').value;
-  const mod=document.getElementById(p+'-mod').value.trim();
-  const action=document.getElementById(p+'-action').value;
-  const prior=document.querySelector('input[name="'+p+'-prior"]:checked').value;
-  const notes=document.getElementById(p+'-notes').value.trim();
-  const userid=document.getElementById(p+'-uid').value.trim();
-  let offense=selectedOffense[type];
-  if(offense==='other') offense=document.getElementById(p+'-other').value.trim();
-  const durEl=document.getElementById(p+'-duration');
-  const ban_duration=(action==='Temporary ban'&&durEl)?durEl.value:'';
-  const errEl=document.getElementById(type+'-err');
-  errEl.style.display='none';
-  if(!username||!date||!mod||!action||!offense){errEl.style.display='block';return;}
-  if(action==='Temporary ban'&&!ban_duration){errEl.textContent='Please select a ban duration.';errEl.style.display='block';return;}
+async function submitEntry(type) {
+  const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
+  const username = document.getElementById(p + '-user').value.trim();
+  const date     = document.getElementById(p + '-date').value;
+  const mod      = document.getElementById(p + '-mod').value.trim();
+  const action   = document.getElementById(p + '-action').value;
+  const prior    = document.querySelector('input[name="' + p + '-prior"]:checked').value;
+  const notes    = document.getElementById(p + '-notes').value.trim();
+  const userid   = document.getElementById(p + '-uid').value.trim();
+  let offense    = selectedOffense[type];
+  if (offense === 'other') offense = document.getElementById(p + '-other').value.trim();
+  const durEl = document.getElementById(p + '-duration');
+  const ban_duration = (action === 'Temporary ban' && durEl) ? durEl.value : '';
+  const errEl = document.getElementById(type + '-err');
+  errEl.style.display = 'none';
+  if (!username || !date || !mod || !action || !offense) { errEl.style.display = 'block'; return; }
+  if (action === 'Temporary ban' && !ban_duration) { errEl.textContent = 'Please select a ban duration.'; errEl.style.display = 'block'; return; }
   openConfirm(type, {username, userid, date, mod, offense, action, ban_duration, prior, notes});
 }
 </script>
