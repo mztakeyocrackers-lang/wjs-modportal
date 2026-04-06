@@ -176,6 +176,7 @@ body{
 .radio-group{display:flex;gap:24px;padding-top:4px;flex-wrap:wrap;}
 .radio-group label{display:flex;align-items:center;gap:9px;font-family:'DM Sans',sans-serif;font-size:14px;letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer;}
 .radio-group input[type="radio"]{accent-color:var(--red);width:15px;height:15px;}
+.radio-group input[type="checkbox"]{accent-color:var(--red);width:15px;height:15px;cursor:pointer;}
 .full-width{margin-bottom:18px;}
 
 /* OFFENSE CARDS */
@@ -641,9 +642,10 @@ body{
           </div>
           <div class="field">
             <label>Prior Offenses on Record</label>
-            <div class="radio-group" style="margin-top:8px;">
-              <label><input type="radio" name="v-prior" value="None — first offense" checked> None</label>
-              <label><input type="radio" name="v-prior" value="Yes — repeat offender"> Repeat offender</label>
+            <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;gap:14px;">
+              <label><input type="checkbox" id="v-prior-first" value="First offense"> First offense</label>
+              <label><input type="checkbox" id="v-prior-repeat" value="Repeat offender"> Repeat offender</label>
+              <label><input type="checkbox" id="v-prior-banned" value="Previously banned"> Previously banned</label>
             </div>
           </div>
         </div>
@@ -739,9 +741,10 @@ body{
           </div>
           <div class="field">
             <label>Prior Offenses on Record</label>
-            <div class="radio-group" style="margin-top:8px;">
-              <label><input type="radio" name="c-prior" value="None — first offense" checked> None</label>
-              <label><input type="radio" name="c-prior" value="Yes — repeat offender"> Repeat offender</label>
+            <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;gap:14px;">
+              <label><input type="checkbox" id="c-prior-first" value="First offense"> First offense</label>
+              <label><input type="checkbox" id="c-prior-repeat" value="Repeat offender"> Repeat offender</label>
+              <label><input type="checkbox" id="c-prior-banned" value="Previously banned"> Previously banned</label>
             </div>
           </div>
         </div>
@@ -832,9 +835,10 @@ body{
           </div>
           <div class="field">
             <label>Prior Offenses on Record</label>
-            <div class="radio-group" style="margin-top:8px;">
-              <label><input type="radio" name="e-prior" value="None — first offense" checked> None</label>
-              <label><input type="radio" name="e-prior" value="Yes — repeat offender"> Repeat offender</label>
+            <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;gap:14px;">
+              <label><input type="checkbox" id="e-prior-first" value="First offense"> First offense</label>
+              <label><input type="checkbox" id="e-prior-repeat" value="Repeat offender"> Repeat offender</label>
+              <label><input type="checkbox" id="e-prior-banned" value="Previously banned"> Previously banned</label>
             </div>
           </div>
         </div>
@@ -1248,7 +1252,7 @@ async function loadSigninLogs() {
     const data = await res.json();
     if (!data || data.length === 0) { wrap.innerHTML = '<div class="empty-state"><p>No sign-in logs yet.</p></div>'; return; }
     const rows = data.map(e => {
-      const dt = e.signed_in_at ? new Date(e.signed_in_at).toLocaleString() : '—';
+      const dt = e.signed_in_at ? formatTZ(e.signed_in_at) : '—';
       const nameDisplay = e.username ? '@' + e.username : (e.email || '—');
       return '<tr><td>' + (e.success ? '<span class="success-dot"></span>Success' : '<span class="fail-dot"></span>Failed') + '</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;">' + nameDisplay + '</td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">' + dt + '</td></tr>';
     }).join('');
@@ -1265,7 +1269,7 @@ async function loadAuthUsers() {
     const data = await res.json();
     if (!data || data.length === 0) { wrap.innerHTML = '<div class="empty-state"><p>No users found.</p></div>'; return; }
     const rows = data.map(u => {
-      const dt = u.created_at ? new Date(u.created_at).toLocaleString() : '—';
+      const dt = u.created_at ? formatTZ(u.created_at) : '—';
       return '<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;">@' + (u.username || '—') + '</td><td><span class="badge ' + (u.role === 'admin' ? 'badge-ban' : 'badge-rep') + '">' + (u.role || '—').toUpperCase() + '</span></td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">' + dt + '</td></tr>';
     }).join('');
     wrap.innerHTML = '<table class="signin-table"><thead><tr><th>Username</th><th>Role</th><th>Added</th></tr></thead><tbody>' + rows + '</tbody></table>';
@@ -1579,7 +1583,7 @@ async function confirmAndSubmit() {
       document.getElementById(p + '-action').value = '';
       if (durEl) durEl.value = '';
       document.getElementById(type + '-duration-wrap').style.display = 'none';
-      document.querySelector('input[name="' + p + '-prior"]').checked = true;
+      ['first','repeat','banned'].forEach(k=>{const el=document.getElementById(p+'-prior-'+k);if(el)el.checked=false;});
       document.getElementById(type + '-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
       document.getElementById(type + '-other-wrap').style.display = 'none';
       document.getElementById(type + '-prior-alert').style.display = 'none';
@@ -1596,13 +1600,22 @@ async function confirmAndSubmit() {
   btn.textContent = labels[type];
 }
 
+function getPrior(p){
+  const vals=[];
+  ['first','repeat','banned'].forEach(k=>{
+    const el=document.getElementById(p+'-prior-'+k);
+    if(el&&el.checked) vals.push(el.value);
+  });
+  return vals.length>0?vals.join(', '):'None specified';
+}
+
 async function submitEntry(type) {
   const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
   const username = document.getElementById(p + '-user').value.trim();
   const date     = document.getElementById(p + '-date').value;
   const mod      = document.getElementById(p + '-mod').value.trim();
   const action   = document.getElementById(p + '-action').value;
-  const prior    = document.querySelector('input[name="' + p + '-prior"]:checked').value;
+  const prior    = getPrior(p);
   const notes    = document.getElementById(p + '-notes').value.trim();
   const userid   = document.getElementById(p + '-uid').value.trim();
   let offense    = selectedOffense[type];
