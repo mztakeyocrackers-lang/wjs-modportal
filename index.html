@@ -117,18 +117,39 @@ body{
 .login-left-top{position:relative;z-index:2;}
 .login-brand-badge{
   display:inline-flex;align-items:center;gap:0;
-  border:1px solid #181412;
-  margin-bottom:56px;width:fit-content;overflow:hidden;
+  margin-bottom:56px;width:fit-content;
+  position:relative;overflow:hidden;
+  background:#0a0806;
+  border:1px solid rgba(140,21,21,.5);
+  box-shadow:0 0 20px rgba(140,21,21,.2),inset 0 0 12px rgba(140,21,21,.05);
+}
+.login-brand-badge::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(140,21,21,.12) 0%,transparent 50%);
+  pointer-events:none;
 }
 .login-brand-badge-dot{
-  width:34px;height:34px;background:var(--red);
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--red) 0%,var(--red-deep) 100%);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Bebas Neue',sans-serif;font-size:14px;color:#f5efe2;letter-spacing:.06em;
-  box-shadow:inset -1px 0 0 rgba(0,0,0,.3);
+  font-family:'Bebas Neue',sans-serif;font-size:16px;color:#f5efe2;letter-spacing:.06em;
+  flex-shrink:0;position:relative;
+  box-shadow:2px 0 12px rgba(140,21,21,.4),inset 1px 1px 0 rgba(255,255,255,.08);
+}
+.login-brand-badge-dot::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.1) 0%,transparent 55%);
+}
+/* chevron separator */
+.login-brand-badge-dot::before{
+  content:'';position:absolute;right:-10px;top:0;bottom:0;width:10px;
+  background:linear-gradient(135deg,var(--red-deep) 0%,var(--red-deep) 50%,transparent 50%);
+  z-index:2;
 }
 .login-brand-badge-text{
-  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.32em;
-  color:#2a2724;text-transform:uppercase;padding:0 16px;
+  font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.22em;
+  color:#e8ddd0;text-transform:uppercase;padding:0 20px 0 24px;
+  position:relative;z-index:1;
 }
 
 .login-headline{
@@ -919,12 +940,13 @@ body{
     <div class="login-left-top">
       <div class="login-brand-badge">
         <div class="login-brand-badge-dot">WJS</div>
-        <div class="login-brand-badge-text">Moderation Division</div>
+        <div class="login-brand-badge-text">Moderation Portal</div>
       </div>
       <div class="login-headline">Wild<br>Journey<br><em>Studios</em></div>
       <div class="login-descriptor">
         Moderation personnel only<br>
-        All activity is monitored &amp; recorded
+        All activity is monitored &amp; recorded<br>
+        Verified users only can access
       </div>
     </div>
 
