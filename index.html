@@ -1931,6 +1931,29 @@ function closeDeleteReason() {
   pendingDeleteType = null; pendingDeleteId = null; pendingDeleteEntryDetails = null;
 }
 
+// Cache of deletion_history column names, fetched once
+let _deletionHistoryCols = null;
+async function getDeletionHistoryCols() {
+  if (_deletionHistoryCols) return _deletionHistoryCols;
+  try {
+    // Fetch a single row (or empty) to get column names from the response
+    const res = await fetch(SUPA_URL + '/rest/v1/deletion_history?limit=1', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Accept': 'application/json' }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      _deletionHistoryCols = new Set(Object.keys(data[0]));
+    } else {
+      // No rows yet — use a HEAD request to get column info via OPTIONS or just fall back to a safe minimal set
+      // We'll try posting with all fields and handle the error gracefully by retrying with fewer fields
+      _deletionHistoryCols = new Set(['id','log_type','original_id','player_username','player_userid','offense','action','original_mod','deletion_reason','deleted_at']);
+    }
+  } catch(e) {
+    _deletionHistoryCols = new Set(['id','log_type','original_id','player_username','player_userid','offense','action','original_mod','deletion_reason','deleted_at']);
+  }
+  return _deletionHistoryCols;
+}
+
 async function confirmDeleteWithReason() {
   const reason = document.getElementById('delete-reason-input').value.trim();
   const errEl = document.getElementById('delete-reason-err');
@@ -1940,29 +1963,74 @@ async function confirmDeleteWithReason() {
   const type = pendingDeleteType, id = pendingDeleteId, entry = pendingDeleteEntryDetails;
   if (!type || !id || !entry) { alert('Delete failed: missing entry details. Please try again.'); return; }
 
-  // Disable confirm button to prevent double-click
   const confirmBtn = document.querySelector('#delete-reason-overlay .admin-pin-btn');
   if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'Deleting…'; }
 
   const table = tableMap[type];
   try {
+    // Build deletion history payload — only include columns the table actually has
+    const cols = await getDeletionHistoryCols();
+
+    const fullPayload = {
+      log_type: type,
+      original_id: id,
+      player_username: entry.username || null,
+      player_userid: entry.userid || null,
+      offense: entry.offense || null,
+      action: entry.action || null,
+      original_mod: entry.mod || null,
+      deleted_by_username: currentUser ? currentUser.username : null,
+      deleted_by_email: (currentUser && currentUser.email) ? currentUser.email : null,
+      deleted_by_role: currentUser ? currentUser.role : null,
+      deletion_reason: reason
+    };
+
+    // Filter to only columns the table has (skip unknown ones)
+    const payload = {};
+    for (const [k, v] of Object.entries(fullPayload)) {
+      if (cols.has(k)) payload[k] = v;
+    }
+    // If no admin cols detected, fall back to a combined 'deleted_by' field if that col exists
+    if (!cols.has('deleted_by_username') && cols.has('deleted_by')) {
+      payload['deleted_by'] = currentUser ? currentUser.username : null;
+    }
+
     // Step 1: log to deletion_history
     const histRes = await fetch(SUPA_URL + '/rest/v1/deletion_history', {
       method: 'POST',
       headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-      body: JSON.stringify({
-        log_type: type, original_id: id,
-        player_username: entry.username || null, player_userid: entry.userid || null,
-        offense: entry.offense || null, action: entry.action || null, original_mod: entry.mod || null,
-        deleted_by_username: currentUser ? currentUser.username : null,
-        deleted_by_email: (currentUser && currentUser.email) ? currentUser.email : null,
-        deleted_by_role: currentUser ? currentUser.role : null,
-        deletion_reason: reason
-      })
+      body: JSON.stringify(payload)
     });
+
     if (!histRes.ok && histRes.status !== 201) {
       const body = await histRes.text();
-      throw new Error('Could not log deletion history (status ' + histRes.status + '): ' + body);
+      // If still a column error, try stripping all optional fields and retry bare minimum
+      if (body.includes('column') || body.includes('schema cache')) {
+        const barePayload = {
+          log_type: type,
+          original_id: id,
+          player_username: entry.username || null,
+          offense: entry.offense || null,
+          action: entry.action || null,
+          deletion_reason: reason
+        };
+        const retryRes = await fetch(SUPA_URL + '/rest/v1/deletion_history', {
+          method: 'POST',
+          headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify(barePayload)
+        });
+        if (!retryRes.ok && retryRes.status !== 201) {
+          const retryBody = await retryRes.text();
+          throw new Error('Could not log deletion history: ' + retryBody);
+        }
+        // Update column cache with what we know works
+        _deletionHistoryCols = new Set(Object.keys(barePayload));
+      } else {
+        throw new Error('Could not log deletion history (status ' + histRes.status + '): ' + body);
+      }
+    } else {
+      // Success — update col cache with what we sent
+      _deletionHistoryCols = new Set([...cols, ...Object.keys(payload)]);
     }
 
     // Step 2: delete the actual record
@@ -1977,7 +2045,6 @@ async function confirmDeleteWithReason() {
 
     closeDeleteReason();
     loadRecords(type);
-    // Also refresh deletion history if it's open
     const dhSection = document.getElementById('admin-deletion-history');
     if (dhSection && dhSection.classList.contains('on')) loadDeletionHistory();
   } catch(e) {
