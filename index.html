@@ -493,6 +493,65 @@ body{
 .confirm-cancel-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;background:none;border:1px solid #1c1a18;color:#3a3633;padding:14px 22px;cursor:pointer;transition:all .15s;}
 .confirm-cancel-btn:hover{border-color:#2e2c29;color:#666;}
 
+/* PRIOR AUTO-BADGE */
+.prior-auto-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  padding:9px 16px;border-left:3px solid;margin-top:4px;
+}
+.prior-auto-badge.first{background:#f0f7f2;border-color:var(--success);color:var(--success);}
+.prior-auto-badge.repeat{background:var(--red-light);border-color:var(--red);color:var(--red-deep);}
+.prior-auto-badge.banned{background:#fff3cd;border-color:#e0a800;color:#7a5400;}
+.prior-auto-badge .badge-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* EVIDENCE UPLOAD AREA */
+.evidence-section{margin-bottom:18px;}
+.evidence-drop-zone{
+  border:2px dashed var(--border);
+  background:#fff;
+  padding:20px;
+  transition:border-color .2s, background .2s;
+  position:relative;
+  cursor:default;
+}
+.evidence-drop-zone.drag-over{border-color:var(--ink);background:var(--cream);}
+.evidence-drop-zone.has-files{border-style:solid;border-color:var(--border-dark);}
+.evidence-drop-hint{
+  font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;
+  color:var(--muted-light);text-transform:uppercase;text-align:center;
+  padding:14px 0 10px;pointer-events:none;
+}
+.evidence-drop-hint span{display:block;font-size:18px;margin-bottom:6px;opacity:.4;}
+.evidence-file-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.evidence-file-item{
+  display:flex;align-items:center;gap:10px;
+  background:var(--paper2);border:1px solid var(--border);padding:8px 12px;
+  font-family:'DM Mono',monospace;font-size:10.5px;color:var(--ink);letter-spacing:.03em;
+}
+.evidence-file-item .ef-icon{font-size:15px;flex-shrink:0;}
+.evidence-file-item .ef-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.evidence-file-item .ef-size{color:var(--muted);font-size:9.5px;flex-shrink:0;}
+.evidence-file-item .ef-remove{
+  background:none;border:none;cursor:pointer;color:var(--muted);
+  font-size:14px;padding:0 2px;line-height:1;transition:color .15s;flex-shrink:0;
+}
+.evidence-file-item .ef-remove:hover{color:var(--red);}
+.evidence-img-preview{
+  max-width:120px;max-height:80px;border:1px solid var(--border);
+  object-fit:cover;flex-shrink:0;
+}
+.evidence-paste-hint{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;
+  color:var(--muted-light);text-transform:uppercase;text-align:right;
+  margin-top:6px;opacity:.7;
+}
+.evidence-browse-btn{
+  font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;
+  background:none;border:1px solid var(--border-dark);color:var(--muted);
+  padding:7px 14px;cursor:pointer;transition:all .15s;margin-top:10px;display:block;width:100%;text-align:center;
+}
+.evidence-browse-btn:hover{border-color:var(--ink);color:var(--ink);background:rgba(0,0,0,.03);}
+
 @media(max-width:700px){
   .header-left,.header-right,.portal-user-bar,.main-nav,.sub-nav,.portal-body{padding-left:20px;padding-right:20px;}
   .form-grid{grid-template-columns:1fr;}
@@ -642,18 +701,27 @@ body{
           </div>
           <div class="field">
             <label>Prior Offenses on Record</label>
-            <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;gap:14px;">
-              <label><input type="checkbox" id="v-prior-first" value="First offense"> First offense</label>
-              <label><input type="checkbox" id="v-prior-repeat" value="Repeat offender"> Repeat offender</label>
-              <label><input type="checkbox" id="v-prior-banned" value="Previously banned"> Previously banned</label>
+            <div id="v-prior-display" style="margin-top:6px;">
+              <div class="prior-auto-badge first"><span class="badge-dot"></span><span id="v-prior-text">Checking record…</span></div>
             </div>
+            <input type="hidden" id="v-prior-value" value="First offense">
           </div>
         </div>
 
         <div class="form-rule"><span class="rule-num">04</span> Evidence &amp; Notes</div>
         <div class="field full-width">
-          <label>Evidence / Notes</label>
+          <label>Notes</label>
           <textarea id="v-notes" placeholder="Describe the incident. Paste screenshot links, witness usernames, or any relevant information..."></textarea>
+        </div>
+        <div class="evidence-section">
+          <div class="field"><label>Evidence Files</label></div>
+          <div class="evidence-drop-zone" id="v-evidence-zone" ondragover="evidenceDragOver(event,'vtos')" ondragleave="evidenceDragLeave(event,'vtos')" ondrop="evidenceDrop(event,'vtos')">
+            <div class="evidence-drop-hint" id="v-evidence-hint"><span>📎</span>Drag &amp; drop files here, or paste screenshots (Ctrl+V)</div>
+            <div class="evidence-file-list" id="v-evidence-list"></div>
+            <button class="evidence-browse-btn" onclick="document.getElementById('v-evidence-input').click()">Browse Files →</button>
+            <input type="file" id="v-evidence-input" multiple style="display:none" onchange="evidenceFileInput(event,'vtos')">
+          </div>
+          <div class="evidence-paste-hint">Tip: Click anywhere in this area, then press Ctrl+V to paste a screenshot directly</div>
         </div>
         <div class="form-footer">
           <div class="form-footer-note">WJS VTOS Log — Moderation Use Only<br>Submitted entries are logged and reviewed by moderation staff.</div>
@@ -741,18 +809,27 @@ body{
           </div>
           <div class="field">
             <label>Prior Offenses on Record</label>
-            <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;gap:14px;">
-              <label><input type="checkbox" id="c-prior-first" value="First offense"> First offense</label>
-              <label><input type="checkbox" id="c-prior-repeat" value="Repeat offender"> Repeat offender</label>
-              <label><input type="checkbox" id="c-prior-banned" value="Previously banned"> Previously banned</label>
+            <div id="c-prior-display" style="margin-top:6px;">
+              <div class="prior-auto-badge first"><span class="badge-dot"></span><span id="c-prior-text">Checking record…</span></div>
             </div>
+            <input type="hidden" id="c-prior-value" value="First offense">
           </div>
         </div>
 
         <div class="form-rule"><span class="rule-num">04</span> Evidence &amp; Notes</div>
         <div class="field full-width">
-          <label>Evidence / Notes</label>
+          <label>Notes</label>
           <textarea id="c-notes" placeholder="Describe the incident..."></textarea>
+        </div>
+        <div class="evidence-section">
+          <div class="field"><label>Evidence Files</label></div>
+          <div class="evidence-drop-zone" id="c-evidence-zone" ondragover="evidenceDragOver(event,'cg')" ondragleave="evidenceDragLeave(event,'cg')" ondrop="evidenceDrop(event,'cg')">
+            <div class="evidence-drop-hint" id="c-evidence-hint"><span>📎</span>Drag &amp; drop files here, or paste screenshots (Ctrl+V)</div>
+            <div class="evidence-file-list" id="c-evidence-list"></div>
+            <button class="evidence-browse-btn" onclick="document.getElementById('c-evidence-input').click()">Browse Files →</button>
+            <input type="file" id="c-evidence-input" multiple style="display:none" onchange="evidenceFileInput(event,'cg')">
+          </div>
+          <div class="evidence-paste-hint">Tip: Click anywhere in this area, then press Ctrl+V to paste a screenshot directly</div>
         </div>
         <div class="form-footer">
           <div class="form-footer-note">WJS Community Guidelines Log — Moderation Use Only<br>Submitted entries are logged and reviewed by moderation staff.</div>
@@ -835,18 +912,27 @@ body{
           </div>
           <div class="field">
             <label>Prior Offenses on Record</label>
-            <div class="radio-group" style="margin-top:8px;flex-wrap:wrap;gap:14px;">
-              <label><input type="checkbox" id="e-prior-first" value="First offense"> First offense</label>
-              <label><input type="checkbox" id="e-prior-repeat" value="Repeat offender"> Repeat offender</label>
-              <label><input type="checkbox" id="e-prior-banned" value="Previously banned"> Previously banned</label>
+            <div id="e-prior-display" style="margin-top:6px;">
+              <div class="prior-auto-badge first"><span class="badge-dot"></span><span id="e-prior-text">Checking record…</span></div>
             </div>
+            <input type="hidden" id="e-prior-value" value="First offense">
           </div>
         </div>
 
         <div class="form-rule"><span class="rule-num">04</span> Evidence &amp; Notes</div>
         <div class="field full-width">
-          <label>Evidence / Notes</label>
+          <label>Notes</label>
           <textarea id="e-notes" placeholder="Describe the exploit in detail. Include video links, screenshots, or any relevant evidence..."></textarea>
+        </div>
+        <div class="evidence-section">
+          <div class="field"><label>Evidence Files</label></div>
+          <div class="evidence-drop-zone" id="e-evidence-zone" ondragover="evidenceDragOver(event,'ex')" ondragleave="evidenceDragLeave(event,'ex')" ondrop="evidenceDrop(event,'ex')">
+            <div class="evidence-drop-hint" id="e-evidence-hint"><span>📎</span>Drag &amp; drop files here, or paste screenshots (Ctrl+V)</div>
+            <div class="evidence-file-list" id="e-evidence-list"></div>
+            <button class="evidence-browse-btn" onclick="document.getElementById('e-evidence-input').click()">Browse Files →</button>
+            <input type="file" id="e-evidence-input" multiple style="display:none" onchange="evidenceFileInput(event,'ex')">
+          </div>
+          <div class="evidence-paste-hint">Tip: Click anywhere in this area, then press Ctrl+V to paste a screenshot directly</div>
         </div>
         <div class="form-footer">
           <div class="form-footer-note">WJS Exploiting Log — Moderation Use Only<br>Submitted entries are logged and reviewed by moderation staff.</div>
@@ -1167,7 +1253,20 @@ async function checkPrior(type) {
   const p = type === 'vtos' ? 'v' : type === 'cg' ? 'c' : 'e';
   const username = document.getElementById(p + '-user').value.trim().toLowerCase();
   const alertEl = document.getElementById(type + '-prior-alert');
-  if (!username || username.length < 3) { alertEl.style.display = 'none'; return; }
+  const priorText = document.getElementById(p + '-prior-text');
+  const priorValue = document.getElementById(p + '-prior-value');
+  const badge = document.querySelector('#' + p + '-prior-display .prior-auto-badge');
+
+  if (!username || username.length < 3) {
+    alertEl.style.display = 'none';
+    if (badge) { badge.className = 'prior-auto-badge first'; }
+    if (priorText) priorText.textContent = 'No username entered';
+    if (priorValue) priorValue.value = 'First offense';
+    return;
+  }
+  if (priorText) priorText.textContent = 'Checking record…';
+  if (badge) badge.className = 'prior-auto-badge first';
+
   clearTimeout(priorTimer[type]);
   priorTimer[type] = setTimeout(async () => {
     const tables = ['vtos_log','cg_log','exploiting_log'];
@@ -1181,12 +1280,42 @@ async function checkPrior(type) {
         if (data && data.length) { total += data.length; offenses = offenses.concat(data); }
       } catch(e) {}
     }
-    if (total === 0) { alertEl.style.display = 'none'; return; }
-    const bans = offenses.filter(o => o.action && o.action.includes('ban')).length;
-    alertEl.classList.toggle('danger', bans > 0);
-    alertEl.querySelector('p').innerHTML = '⚑ Prior Record Found — ' + total + ' offense(s) on file across all logs.' + (bans > 0 ? ' ' + bans + ' ban(s) on record.' : '') + '<br>Recent: ' + offenses.slice(0,3).map(o => o.offense).join(', ');
-    alertEl.style.display = 'block';
+    const bans = offenses.filter(o => o.action && o.action.toLowerCase().includes('ban')).length;
+    const permBans = offenses.filter(o => o.action && o.action.toLowerCase().includes('permanent')).length;
+
+    let statusLabel, statusClass, priorVal;
+    if (total === 0) {
+      statusLabel = 'First offense — No prior record found';
+      statusClass = 'first'; priorVal = 'First offense';
+      alertEl.style.display = 'none';
+    } else if (permBans > 0) {
+      statusLabel = '⚑ Previously banned — ' + permBans + ' permanent ban(s) · ' + total + ' total offense(s)';
+      statusClass = 'banned'; priorVal = 'Previously banned';
+      alertEl.classList.add('danger');
+      alertEl.querySelector('p').innerHTML = '⚑ Prior Record Found — ' + total + ' offense(s) across all logs. ' + permBans + ' permanent ban(s).<br>Recent: ' + offenses.slice(0,3).map(o => o.offense).join(', ');
+      alertEl.style.display = 'block';
+    } else if (total > 1) {
+      statusLabel = '⚑ Repeat offender — ' + total + ' prior offense(s) on record';
+      statusClass = 'repeat'; priorVal = 'Repeat offender';
+      alertEl.classList.remove('danger');
+      alertEl.querySelector('p').innerHTML = '⚑ Prior Record Found — ' + total + ' offense(s) on file.' + (bans > 0 ? ' ' + bans + ' ban(s) on record.' : '') + '<br>Recent: ' + offenses.slice(0,3).map(o => o.offense).join(', ');
+      alertEl.style.display = 'block';
+    } else {
+      statusLabel = 'First offense — 1 prior entry found (first occurrence)';
+      statusClass = 'first'; priorVal = 'First offense';
+      alertEl.classList.remove('danger');
+      alertEl.querySelector('p').innerHTML = '⚑ 1 prior entry found for this username.';
+      alertEl.style.display = 'block';
+    }
+    if (badge) badge.className = 'prior-auto-badge ' + statusClass;
+    if (priorText) priorText.textContent = statusLabel;
+    if (priorValue) priorValue.value = priorVal;
   }, 600);
+}
+
+function getPrior(p) {
+  const el = document.getElementById(p + '-prior-value');
+  return el ? el.value : 'First offense';
 }
 
 const tableMap = {vtos:'vtos_log', cg:'cg_log', ex:'exploiting_log'};
@@ -1602,7 +1731,16 @@ async function confirmAndSubmit() {
       document.getElementById(p + '-action').value = '';
       if (durEl) durEl.value = '';
       document.getElementById(type + '-duration-wrap').style.display = 'none';
-      ['first','repeat','banned'].forEach(k=>{const el=document.getElementById(p+'-prior-'+k);if(el)el.checked=false;});
+      // Reset auto-prior badge
+      const priorBadge = document.querySelector('#' + p + '-prior-display .prior-auto-badge');
+      if (priorBadge) priorBadge.className = 'prior-auto-badge first';
+      const priorTxt = document.getElementById(p + '-prior-text');
+      if (priorTxt) priorTxt.textContent = 'No username entered';
+      const priorVal = document.getElementById(p + '-prior-value');
+      if (priorVal) priorVal.value = 'First offense';
+      // Reset evidence
+      evidenceFiles[type] = [];
+      renderEvidenceList(type);
       document.getElementById(type + '-offense-grid').querySelectorAll('.offense-card').forEach(c => c.classList.remove('selected','cg-selected','ex-selected'));
       document.getElementById(type + '-other-wrap').style.display = 'none';
       document.getElementById(type + '-prior-alert').style.display = 'none';
@@ -1617,15 +1755,6 @@ async function confirmAndSubmit() {
   btn.disabled = false;
   const labels = {vtos:'Submit VTOS Entry →', cg:'Submit CG Entry →', ex:'Submit Exploit Entry →'};
   btn.textContent = labels[type];
-}
-
-function getPrior(p){
-  const vals=[];
-  ['first','repeat','banned'].forEach(k=>{
-    const el=document.getElementById(p+'-prior-'+k);
-    if(el&&el.checked) vals.push(el.value);
-  });
-  return vals.length>0?vals.join(', '):'None specified';
 }
 
 async function submitEntry(type) {
@@ -1647,6 +1776,88 @@ async function submitEntry(type) {
   if (action === 'Temporary ban' && !ban_duration) { errEl.textContent = 'Please select a ban duration.'; errEl.style.display = 'block'; return; }
   openConfirm(type, {username, userid, date, mod, offense, action, ban_duration, prior, notes});
 }
+
+/* ── EVIDENCE FILE MANAGEMENT ─────────────────────────────── */
+const evidenceFiles = {vtos:[], cg:[], ex:[]};
+
+function typeFromPrefix(p){ return p==='v'?'vtos':p==='c'?'cg':'ex'; }
+function prefixFromType(type){ return type==='vtos'?'v':type==='cg'?'c':'e'; }
+
+function evidenceDragOver(e, type) {
+  e.preventDefault();
+  document.getElementById(prefixFromType(type)+'-evidence-zone').classList.add('drag-over');
+}
+function evidenceDragLeave(e, type) {
+  document.getElementById(prefixFromType(type)+'-evidence-zone').classList.remove('drag-over');
+}
+function evidenceDrop(e, type) {
+  e.preventDefault();
+  const p = prefixFromType(type);
+  document.getElementById(p+'-evidence-zone').classList.remove('drag-over');
+  addEvidenceFiles(type, Array.from(e.dataTransfer.files));
+}
+function evidenceFileInput(e, type) {
+  addEvidenceFiles(type, Array.from(e.target.files));
+  e.target.value = '';
+}
+
+function addEvidenceFiles(type, files) {
+  files.forEach(f => {
+    if (f.size > 20 * 1024 * 1024) { alert('File "' + f.name + '" is over 20MB and was not added.'); return; }
+    evidenceFiles[type].push(f);
+  });
+  renderEvidenceList(type);
+}
+
+function removeEvidenceFile(type, idx) {
+  evidenceFiles[type].splice(idx, 1);
+  renderEvidenceList(type);
+}
+
+function renderEvidenceList(type) {
+  const p = prefixFromType(type);
+  const list = document.getElementById(p+'-evidence-list');
+  const hint = document.getElementById(p+'-evidence-hint');
+  const zone = document.getElementById(p+'-evidence-zone');
+  const files = evidenceFiles[type];
+  hint.style.display = files.length === 0 ? 'block' : 'none';
+  zone.classList.toggle('has-files', files.length > 0);
+  list.innerHTML = files.map((f, i) => {
+    const isImg = f.type.startsWith('image/');
+    const ext = f.name.split('.').pop().toUpperCase();
+    const sizeStr = f.size > 1024*1024 ? (f.size/(1024*1024)).toFixed(1)+'MB' : Math.round(f.size/1024)+'KB';
+    const icon = isImg ? '🖼' : (f.type.includes('video') ? '🎬' : (f.type.includes('pdf') ? '📄' : '📎'));
+    const imgEl = isImg ? `<img class="evidence-img-preview" src="${URL.createObjectURL(f)}" alt="">` : '';
+    return `<div class="evidence-file-item">${imgEl}<span class="ef-icon">${icon}</span><span class="ef-name" title="${f.name}">${f.name}</span><span class="ef-size">${ext} · ${sizeStr}</span><button class="ef-remove" onclick="removeEvidenceFile('${type}',${i})" title="Remove">✕</button></div>`;
+  }).join('');
+}
+
+// Global paste listener — attaches to active evidence zone
+document.addEventListener('paste', function(e) {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  // Find which form section is visible
+  let activeType = null;
+  ['vtos','cg','ex'].forEach(t => {
+    const form = document.getElementById(t === 'vtos' ? 'main-vtos' : t === 'cg' ? 'main-cg' : 'main-ex');
+    if (form && form.classList.contains('on')) {
+      const formSec = document.getElementById(t + '-form');
+      if (formSec && formSec.classList.contains('on')) activeType = t;
+    }
+  });
+  if (!activeType) return;
+  const files = [];
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].kind === 'file') {
+      const f = items[i].getAsFile();
+      if (f) files.push(f);
+    }
+  }
+  if (files.length > 0) {
+    e.preventDefault();
+    addEvidenceFiles(activeType, files);
+  }
+});
 </script>
 </body>
 </html>
