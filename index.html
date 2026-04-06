@@ -135,7 +135,7 @@ body{
   font-family:'Bebas Neue',sans-serif;
   font-size:clamp(56px,5.8vw,88px);
   line-height:.92;letter-spacing:.03em;color:#e8e0d0;
-  margin-bottom:32px;
+  margin-bottom:40px;
   text-shadow:0 0 80px rgba(140,21,21,.15);
 }
 .login-headline em{
@@ -349,23 +349,21 @@ body{
   display:flex;align-items:center;justify-content:center;gap:10px;
 }
 
-/* SYSTEM STATUS ROW */
-.login-status-row{
-  display:flex;gap:20px;margin-bottom:32px;
+/* WARNING ROW */
+.login-warnings{
+  display:flex;flex-direction:column;gap:11px;margin-bottom:32px;
   position:relative;z-index:1;
 }
-.login-status-item{
-  display:flex;align-items:center;gap:7px;
-  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;
-  color:#282420;text-transform:uppercase;
+.login-warn-item{
+  display:flex;align-items:center;gap:10px;
+  font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;
+  color:#3a2020;text-transform:uppercase;
 }
-.login-status-dot{
-  width:5px;height:5px;border-radius:50%;flex-shrink:0;
-}
-.login-status-dot.green{
-  background:var(--success);
-  box-shadow:0 0 5px var(--success);
-  animation:pulse 2.8s ease-in-out infinite;
+.login-warn-dot{
+  width:6px;height:6px;border-radius:50%;flex-shrink:0;
+  background:var(--red);
+  box-shadow:0 0 7px rgba(140,21,21,.8);
+  animation:pulse 2s ease-in-out infinite;
 }
 
 @media(max-width:760px){
@@ -889,6 +887,8 @@ body{
       <span>WJS-MOD-PORTAL</span>
       <span class="login-topbar-div">|</span>
       <span>REV 2.0</span>
+      <span class="login-topbar-div">|</span>
+      <span style="color:#5a3a1a;">Work in Progress — Not Official to WJS</span>
     </div>
     <div class="login-topbar-right">
       <span id="login-clock"></span>
@@ -923,19 +923,8 @@ body{
       </div>
       <div class="login-headline">Wild<br>Journey<br><em>Studios</em></div>
       <div class="login-descriptor">
-        Restricted access system<br>
         Moderation personnel only<br>
-        All sessions are recorded<br>
-        Unauthorised access prohibited
-      </div>
-
-      <!-- Feature list -->
-      <div class="login-feature-list">
-        <div class="login-feature-item"><span class="lfi-bullet"></span>VTOS offense logging &amp; records</div>
-        <div class="login-feature-item"><span class="lfi-bullet"></span>Community Guidelines database</div>
-        <div class="login-feature-item"><span class="lfi-bullet"></span>Exploiting incident log</div>
-        <div class="login-feature-item"><span class="lfi-bullet"></span>Prior offense detection</div>
-        <div class="login-feature-item"><span class="lfi-bullet"></span>Admin deletion audit trail</div>
+        All activity is monitored &amp; recorded
       </div>
     </div>
 
@@ -986,28 +975,23 @@ body{
   <!-- Right panel — form -->
   <div class="login-right">
 
-    <!-- Security classification strip -->
-    <div class="login-classification">
-      <span>⬛</span> RESTRICTED ACCESS <span>⬛</span>
-    </div>
-
     <div class="login-right-eyebrow">Secure Access Portal</div>
     <div class="login-right-title">Authenticate</div>
     <div class="login-right-sub">Authorized Personnel Only · Session Will Be Logged</div>
 
     <!-- System status indicators -->
-    <div class="login-status-row">
-      <div class="login-status-item">
-        <span class="login-status-dot green"></span>
-        <span>Database</span>
+    <div class="login-warnings">
+      <div class="login-warn-item">
+        <span class="login-warn-dot"></span>
+        <span>All login attempts are permanently recorded</span>
       </div>
-      <div class="login-status-item">
-        <span class="login-status-dot green"></span>
-        <span>Auth Service</span>
+      <div class="login-warn-item">
+        <span class="login-warn-dot"></span>
+        <span>Unauthorised access will result in removal from WJS</span>
       </div>
-      <div class="login-status-item">
-        <span class="login-status-dot green"></span>
-        <span>Audit Log</span>
+      <div class="login-warn-item">
+        <span class="login-warn-dot"></span>
+        <span>Sharing credentials is a bannable offence</span>
       </div>
     </div>
 
