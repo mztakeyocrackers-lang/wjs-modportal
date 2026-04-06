@@ -1368,11 +1368,12 @@ async function addUser() {
       document.getElementById('nu-role').value = 'mod';
       loadManageUsers();
     } else {
-      throw new Error('Status ' + res.status);
+      const errBody = await res.text();
+      throw new Error('Status ' + res.status + ' — ' + errBody);
     }
   } catch(e) {
     alertEl.className = 'add-user-alert error';
-    alertEl.textContent = 'Could not add user. Please try again.';
+    alertEl.textContent = 'Error: ' + e.message;
     alertEl.style.display = 'block';
   }
 
