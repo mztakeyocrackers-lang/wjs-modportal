@@ -47,83 +47,91 @@ body{
 }
 
 /* LOGIN */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes sealSpin{to{transform:rotate(360deg)}}
+@keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes crosshairPulse{0%,100%{opacity:.15}50%{opacity:.35}}
+@keyframes lineDraw{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+
 #login-page{
   min-height:100vh;
-  background:var(--l-bg);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:40px 20px;
+  background:#050403;
+  display:grid;
+  grid-template-columns:1fr 1fr;
   position:relative;overflow:hidden;
 }
-#login-page::before{
-  content:'';position:absolute;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:0;
-}
-#login-page::after{
-  content:'';position:absolute;
-  top:-160px;left:50%;transform:translateX(-50%);
-  width:700px;height:400px;
-  background:radial-gradient(ellipse at 50% 30%,rgba(140,21,21,.22) 0%,transparent 68%);
-  pointer-events:none;z-index:1;
-}
-#login-page>*{position:relative;z-index:2;}
-.login-scanlines{
-  position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 4px);
-}
-.login-emblem{
+.login-left{
+  position:relative;
   display:flex;flex-direction:column;
-  align-items:center;margin-bottom:36px;
-  animation:fadeUp .7s ease both;
+  justify-content:space-between;
+  padding:52px 56px;
+  border-right:1px solid #111;
+  overflow:hidden;
+  animation:fadeIn .8s ease both;
 }
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.login-seal{
-  width:82px;height:82px;
-  border:1.5px solid rgba(140,21,21,.75);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin-bottom:22px;position:relative;
-  box-shadow:0 0 32px rgba(140,21,21,.25),inset 0 0 20px rgba(140,21,21,.06),0 0 0 8px rgba(140,21,21,.04);
-}
-.login-seal::before{content:'';position:absolute;inset:6px;border:1px solid rgba(140,21,21,.2);border-radius:50%;}
-.login-seal::after{content:'';position:absolute;inset:-10px;border:1px dashed rgba(140,21,21,.12);border-radius:50%;animation:sealSpin 28s linear infinite;}
-@keyframes sealSpin{to{transform:rotate(360deg)}}
-.login-seal-text{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red-mid);letter-spacing:.12em;text-shadow:0 0 18px rgba(140,21,21,.5);}
-.login-eyebrow{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.35em;color:var(--l-muted);text-transform:uppercase;margin-bottom:9px;text-align:center;}
-.login-title{font-family:'Bebas Neue',sans-serif;font-size:32px;font-weight:400;letter-spacing:.22em;color:var(--l-text);text-align:center;margin-bottom:4px;}
-.login-sub{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.22em;color:#262320;text-transform:uppercase;text-align:center;margin-bottom:40px;}
-.login-warning{font-family:'DM Mono',monospace;font-size:7.5px;color:#252220;letter-spacing:.1em;text-align:center;text-transform:uppercase;line-height:2.2;margin-bottom:28px;border:1px solid #131110;padding:12px 20px;background:rgba(255,255,255,.012);animation:fadeUp .7s .1s ease both;}
-.login-box{background:var(--l-surf);border:1px solid var(--l-border);border-top:2px solid var(--red);padding:38px 42px;width:100%;max-width:430px;box-shadow:0 0 0 1px rgba(255,255,255,.02),0 40px 80px rgba(0,0,0,.55),0 0 60px rgba(140,21,21,.07);position:relative;animation:fadeUp .7s .2s ease both;}
-.login-box::before,.login-box::after{content:'';position:absolute;width:13px;height:13px;}
-.login-box::before{bottom:13px;left:13px;border-left:1px solid rgba(140,21,21,.25);border-bottom:1px solid rgba(140,21,21,.25);}
-.login-box::after{bottom:13px;right:13px;border-right:1px solid rgba(140,21,21,.25);border-bottom:1px solid rgba(140,21,21,.25);}
-.login-field{margin-bottom:22px;}
-.login-field label{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.28em;color:#484440;text-transform:uppercase;display:block;margin-bottom:9px;}
-
-/* username input with @ prefix */
+.login-left-bg{position:absolute;inset:0;pointer-events:none;}
+.login-left-bg svg{width:100%;height:100%;}
+.login-left-bg svg line{stroke:#8c1515;stroke-width:.5;stroke-dasharray:900;stroke-dashoffset:900;animation:lineDraw 3.5s ease forwards;}
+.login-left-bg svg line:nth-child(2){animation-delay:.2s;}
+.login-left-bg svg line:nth-child(3){animation-delay:.4s;}
+.login-left-bg svg line:nth-child(4){animation-delay:.6s;}
+.login-left-bg svg line:nth-child(5){animation-delay:.8s;}
+.login-left-bg svg line:nth-child(6){animation-delay:1s;}
+.login-left-bg svg line:nth-child(7){animation-delay:1.2s;}
+.login-left-bg svg line:nth-child(8){animation-delay:1.4s;}
+.login-crosshair{position:absolute;width:100px;height:100px;animation:crosshairPulse 4s ease-in-out infinite;}
+.login-crosshair::before,.login-crosshair::after{content:'';position:absolute;background:var(--red);}
+.login-crosshair::before{width:1px;height:100%;left:50%;top:0;}
+.login-crosshair::after{width:100%;height:1px;top:50%;left:0;}
+.login-crosshair.tl{top:64px;left:64px;}
+.login-crosshair.br{bottom:80px;right:80px;animation-delay:2s;}
+.login-left-top{position:relative;z-index:2;}
+.login-brand-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid #1a1614;padding:8px 16px 8px 8px;margin-bottom:52px;width:fit-content;}
+.login-brand-badge-dot{width:28px;height:28px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#f5efe2;letter-spacing:.06em;}
+.login-brand-badge-text{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.28em;color:#2e2b28;text-transform:uppercase;}
+.login-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,5.5vw,78px);line-height:.95;letter-spacing:.04em;color:#f5efe2;margin-bottom:28px;}
+.login-headline em{color:var(--red);font-style:normal;}
+.login-descriptor{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.18em;color:#252220;text-transform:uppercase;line-height:2.2;max-width:280px;}
+.login-left-bottom{position:relative;z-index:2;}
+.login-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid #0e0c0a;margin-bottom:32px;}
+.login-stat{padding:16px 20px;background:#060504;}
+.login-stat-n{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:.06em;color:#c5bcaa;line-height:1;}
+.login-stat-l{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;color:#222;text-transform:uppercase;margin-top:4px;}
+.login-ticker-wrap{overflow:hidden;border-top:1px solid #0a0806;padding:10px 0;}
+.login-ticker-track{display:flex;white-space:nowrap;animation:ticker 24s linear infinite;}
+.login-ticker-item{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;color:#181512;text-transform:uppercase;padding:0 32px;}
+.login-ticker-item::before{content:'◆';margin-right:12px;color:#221010;}
+.login-right{display:flex;flex-direction:column;justify-content:center;padding:60px 64px;position:relative;animation:fadeUp .7s .25s ease both;}
+.login-right-eyebrow{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.3em;color:#242220;text-transform:uppercase;margin-bottom:36px;display:flex;align-items:center;gap:12px;}
+.login-right-eyebrow::before{content:'';width:24px;height:1px;background:#1a1816;}
+.login-right-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.14em;color:#c5bcaa;margin-bottom:6px;font-weight:400;}
+.login-right-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;color:#1c1a18;text-transform:uppercase;margin-bottom:40px;}
+.login-field{margin-bottom:20px;}
+.login-field label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.28em;color:#343028;text-transform:uppercase;display:block;margin-bottom:9px;}
 .login-username-wrap{position:relative;}
-.login-username-at{
-  position:absolute;left:16px;top:50%;transform:translateY(-50%);
-  font-family:'DM Mono',monospace;font-size:14px;color:#3a3530;
-  pointer-events:none;user-select:none;
-}
+.login-username-at{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:14px;color:#2a2724;pointer-events:none;user-select:none;}
 .login-username-wrap input{padding-left:30px !important;}
-
-.login-field input{width:100%;background:var(--l-bg);border:1px solid #1a1816;color:var(--l-text);font-family:'DM Mono',monospace;font-size:14px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.05em;border-radius:0;}
-.login-field input:focus{border-color:rgba(140,21,21,.65);box-shadow:0 0 0 3px rgba(140,21,21,.09),inset 0 0 16px rgba(140,21,21,.04);}
-.login-field input::placeholder{color:#222;}
-.login-divider{border:none;border-top:1px solid #161412;margin:24px 0;}
-.login-btn{width:100%;background:var(--red);color:#f5efe2;border:none;font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.32em;text-transform:uppercase;padding:16px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s,box-shadow .2s,transform .1s;margin-top:6px;}
-.login-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.09) 0%,transparent 100%);}
-.login-btn::after{content:'';position:absolute;left:-100%;top:0;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transition:left .6s;}
-.login-btn:hover{background:#a51c1c;box-shadow:0 0 32px rgba(140,21,21,.35);}
-.login-btn:hover::after{left:150%;}
+.login-field input{width:100%;background:#060504;border:1px solid #141210;color:#c5bcaa;font-family:'DM Mono',monospace;font-size:13px;padding:13px 15px;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.04em;border-radius:0;}
+.login-field input:focus{border-color:rgba(140,21,21,.6);box-shadow:0 0 0 3px rgba(140,21,21,.08);}
+.login-field input::placeholder{color:#1a1714;}
+.login-divider{border:none;border-top:1px solid #0e0c0a;margin:22px 0;}
+.login-btn{width:100%;background:var(--red);color:#f5efe2;border:none;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.32em;text-transform:uppercase;padding:15px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s,box-shadow .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:12px;}
+.login-btn-arrow{width:18px;height:1px;background:#f5efe2;position:relative;transition:width .25s;flex-shrink:0;}
+.login-btn-arrow::after{content:'';position:absolute;right:0;top:-3px;width:6px;height:6px;border-right:1px solid #f5efe2;border-top:1px solid #f5efe2;transform:rotate(45deg);}
+.login-btn:hover{background:#a51c1c;box-shadow:0 4px 28px rgba(140,21,21,.35);}
+.login-btn:hover .login-btn-arrow{width:28px;}
 .login-btn:active{transform:translateY(1px);}
-.login-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.login-err{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--red-mid);letter-spacing:.1em;margin-top:16px;text-align:center;display:none;text-transform:uppercase;padding:10px;border:1px solid rgba(140,21,21,.2);background:rgba(140,21,21,.06);animation:errShake .3s ease;}
-@keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-.login-footer{font-family:'DM Mono',monospace;font-size:8.5px;color:#202020;letter-spacing:.14em;text-align:center;margin-top:30px;text-transform:uppercase;line-height:2.1;animation:fadeUp .7s .3s ease both;}
+.login-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.login-err{font-family:'DM Mono',monospace;font-size:9px;color:#c07070;letter-spacing:.1em;margin-top:14px;text-align:center;display:none;text-transform:uppercase;padding:10px 14px;border:1px solid rgba(140,21,21,.2);background:rgba(140,21,21,.05);animation:errShake .3s ease;}
+.login-footer{font-family:'DM Mono',monospace;font-size:8px;color:#181614;letter-spacing:.12em;text-align:center;margin-top:36px;text-transform:uppercase;line-height:2.2;}
+.login-scanlines,.login-emblem,.login-seal,.login-warning{display:none;}
+@media(max-width:760px){
+  #login-page{grid-template-columns:1fr;}
+  .login-left{display:none;}
+  .login-right{padding:48px 28px;}
+}
 
 /* PORTAL SHELL */
 #portal-page{display:none;}
@@ -628,19 +636,71 @@ body{
 
 <!-- LOGIN -->
 <div id="login-page">
-  <div class="login-scanlines"></div>
-  <div class="login-emblem">
-    <div class="login-seal"><div class="login-seal-text">WJS</div></div>
-    <div class="login-eyebrow">Wild Journey Studios — Moderation Division</div>
-    <div class="login-title">Secure Access Portal</div>
-    <div class="login-sub">Moderation Personnel Only · Unauthorized Access Prohibited</div>
+
+  <!-- Left panel -->
+  <div class="login-left">
+    <div class="login-left-bg">
+      <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" opacity=".22">
+        <line x1="0" y1="0" x2="600" y2="800"/>
+        <line x1="150" y1="0" x2="600" y2="550"/>
+        <line x1="300" y1="0" x2="600" y2="300"/>
+        <line x1="0" y1="200" x2="600" y2="800"/>
+        <line x1="0" y1="400" x2="600" y2="800"/>
+        <line x1="0" y1="0" x2="300" y2="800"/>
+        <line x1="0" y1="100" x2="450" y2="800"/>
+        <line x1="600" y1="0" x2="0" y2="600"/>
+      </svg>
+    </div>
+    <div class="login-crosshair tl"></div>
+    <div class="login-crosshair br"></div>
+
+    <div class="login-left-top">
+      <div class="login-brand-badge">
+        <div class="login-brand-badge-dot">WJS</div>
+        <div class="login-brand-badge-text">Moderation Division</div>
+      </div>
+      <div class="login-headline">Wild<br>Journey<br><em>Studios</em></div>
+      <div class="login-descriptor">
+        Restricted access system<br>
+        Moderation personnel only<br>
+        All activity is monitored
+      </div>
+    </div>
+
+    <div class="login-left-bottom">
+      <div class="login-stat-row">
+        <div class="login-stat">
+          <div class="login-stat-n">3</div>
+          <div class="login-stat-l">Log databases</div>
+        </div>
+        <div class="login-stat">
+          <div class="login-stat-n">24/7</div>
+          <div class="login-stat-l">Monitored</div>
+        </div>
+      </div>
+      <div class="login-ticker-wrap">
+        <div class="login-ticker-track">
+          <span class="login-ticker-item">VTOS Log</span>
+          <span class="login-ticker-item">Community Guidelines</span>
+          <span class="login-ticker-item">Exploiting Log</span>
+          <span class="login-ticker-item">Permanent Record</span>
+          <span class="login-ticker-item">Moderation Portal</span>
+          <span class="login-ticker-item">VTOS Log</span>
+          <span class="login-ticker-item">Community Guidelines</span>
+          <span class="login-ticker-item">Exploiting Log</span>
+          <span class="login-ticker-item">Permanent Record</span>
+          <span class="login-ticker-item">Moderation Portal</span>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="login-warning">
-    WARNING: THIS SYSTEM IS RESTRICTED TO AUTHORIZED USERS ONLY.<br>
-    UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED AND WILL BE LOGGED.<br>
-    ALL ACTIVITY ON THIS SYSTEM IS MONITORED AND RECORDED.
-  </div>
-  <div class="login-box">
+
+  <!-- Right panel — form -->
+  <div class="login-right">
+    <div class="login-right-eyebrow">Secure Access Portal</div>
+    <div class="login-right-title">Authenticate</div>
+    <div class="login-right-sub">Authorized Personnel Only · Session Will Be Logged</div>
+
     <div class="login-field">
       <label>Username</label>
       <div class="login-username-wrap">
@@ -653,14 +713,19 @@ body{
       <input type="password" id="login-code" placeholder="••••••••" autocomplete="off">
     </div>
     <hr class="login-divider">
-    <button class="login-btn" id="login-btn" onclick="doLogin()">Authenticate →</button>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <span>Authenticate</span>
+      <span class="login-btn-arrow"></span>
+    </button>
     <div class="login-err" id="login-err">Access Denied — Invalid Credentials</div>
+
+    <div class="login-footer">
+      Unauthorized access attempts are logged and reported<br>
+      Issues with access? DM @aurxora<br>
+      WJS Moderation Division — All Rights Reserved
+    </div>
   </div>
-  <div class="login-footer">
-    Unauthorized access attempts are logged and reported<br>
-    Issues with access? DM @aurxora<br>
-    WJS Moderation Division — All Rights Reserved
-  </div>
+
 </div>
 
 <!-- PORTAL -->
