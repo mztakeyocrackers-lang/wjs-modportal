@@ -170,6 +170,16 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .radio-group input[type="radio"]{accent-color:var(--red);width:15px;height:15px;}
 .full-width{margin-bottom:18px;}
 
+/* ── MOD FIELD — auto-locked ── */
+.field input[readonly]{
+  color:var(--gold);
+  cursor:not-allowed;
+  opacity:.7;
+  border-color:var(--dark-border);
+  user-select:none;
+}
+.mod-locked-note{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;color:var(--dark-muted2);text-transform:uppercase;margin-top:4px;}
+
 /* OFFENSE CARDS — dark */
 .offense-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
 .offense-card{border:1px solid var(--dark-border);padding:14px 16px;cursor:pointer;background:var(--dark-surf);transition:border-color .15s,box-shadow .15s,transform .15s;position:relative;overflow:hidden;}
@@ -362,7 +372,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .role-admin{background:rgba(140,21,21,.15);color:#d08080;border:1px solid rgba(140,21,21,.3);}
 .role-mod{background:rgba(197,188,170,.07);color:var(--dark-muted);border:1px solid var(--dark-border);}
 .user-date-cell{font-family:'DM Mono',monospace;font-size:11px;color:var(--dark-muted);}
-.revoke-btn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid rgba(140,21,21,.3);color:var(--red);padding:5px 11px;cursor:pointer;transition:all .15s;}
+.revoke-btn{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;background:none;border:1px solid rgba(140,21,21,.3);color:var(--red);padding:5px 11px;cursor:pointer;transition:all .15px;}
 .revoke-btn:hover{background:var(--red);color:#fff;box-shadow:0 2px 10px rgba(140,21,21,.2);}
 .revoke-btn:disabled{opacity:.4;cursor:not-allowed;}
 
@@ -644,7 +654,11 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
         <div class="form-rule"><span class="rule-num">03</span> Incident Details</div>
         <div class="form-grid">
           <div class="field"><label>Date of Offense *</label><input type="date" id="v-date"></div>
-          <div class="field"><label>Logged by (Moderator) *</label><input type="text" id="v-mod" placeholder="Your Roblox username"></div>
+          <div class="field">
+            <label>Logged by (Moderator)</label>
+            <input type="text" id="v-mod" readonly tabindex="-1">
+            <div class="mod-locked-note">🔒 Auto-filled from your login — cannot be changed</div>
+          </div>
         </div>
         <div class="form-grid">
           <div class="field">
@@ -732,7 +746,11 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
         <div class="form-rule"><span class="rule-num">03</span> Incident Details</div>
         <div class="form-grid">
           <div class="field"><label>Date of Offense *</label><input type="date" id="c-date"></div>
-          <div class="field"><label>Logged by (Moderator) *</label><input type="text" id="c-mod" placeholder="Your Roblox username"></div>
+          <div class="field">
+            <label>Logged by (Moderator)</label>
+            <input type="text" id="c-mod" readonly tabindex="-1">
+            <div class="mod-locked-note">🔒 Auto-filled from your login — cannot be changed</div>
+          </div>
         </div>
         <div class="form-grid">
           <div class="field">
@@ -817,7 +835,11 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
         <div class="form-rule"><span class="rule-num">03</span> Incident Details</div>
         <div class="form-grid">
           <div class="field"><label>Date of Offense *</label><input type="date" id="e-date"></div>
-          <div class="field"><label>Logged by (Moderator) *</label><input type="text" id="e-mod" placeholder="Your Roblox username"></div>
+          <div class="field">
+            <label>Logged by (Moderator)</label>
+            <input type="text" id="e-mod" readonly tabindex="-1">
+            <div class="mod-locked-note">🔒 Auto-filled from your login — cannot be changed</div>
+          </div>
         </div>
         <div class="form-grid">
           <div class="field">
@@ -1007,8 +1029,21 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const selectedOffense={vtos:'',cg:'',ex:''};
 const allEntries={vtos:[],cg:[],ex:[]};
 let currentUser=null;
+
 function cleanUsername(v){return v.replace(/^@+/,'').trim().toLowerCase();}
 function formatTZ(d){if(!d)return'—';try{return new Date(d).toLocaleString('en-US',{timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',timeZoneName:'short'});}catch(e){return d;}}
+
+// ── AUTO-FILL MOD FIELDS ──
+// Called after successful login. Stamps all three mod inputs with the
+// signed-in username and marks them readonly so they cannot be edited.
+function fillModFields(){
+  if(!currentUser)return;
+  ['v-mod','c-mod','e-mod'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value=currentUser.username;el.readOnly=true;}
+  });
+}
+
 async function doLogin(){
   const username=cleanUsername(document.getElementById('login-username').value);
   const code=document.getElementById('login-code').value.trim();
@@ -1028,6 +1063,8 @@ async function doLogin(){
       document.getElementById('user-name-display').textContent='@'+currentUser.username;
       document.getElementById('user-role-display').textContent=currentUser.role.toUpperCase();
       if(currentUser.role==='admin')document.getElementById('admin-nav-btn').style.display='inline-block';
+      // Stamp & lock all moderator fields with the authenticated username
+      fillModFields();
     }else{
       await fetch(SUPA_URL+'/rest/v1/signin_log',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({username,success:false})});
       err.style.display='block';
@@ -1035,14 +1072,30 @@ async function doLogin(){
   }catch(e){err.textContent='Connection Error — Try Again';err.style.display='block';}
   btn.disabled=false;btn.innerHTML='<span>Authenticate</span><span class="login-btn-arrow"></span>';
 }
+
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.getElementById('login-page').style.display!=='none')doLogin();
   if(e.key==='Enter'&&document.getElementById('admin-pin-overlay').classList.contains('on'))verifyAdminPin();
   if(e.key==='Enter'&&document.getElementById('delete-reason-overlay').classList.contains('on'))confirmDeleteWithReason();
   if(e.key==='Escape'){closeLogDetail();closeImgViewer();}
 });
-function doLogout(){currentUser=null;document.getElementById('portal-page').style.display='none';document.getElementById('login-page').style.display='grid';adminUnlocked=false;document.getElementById('login-username').value='';document.getElementById('login-code').value='';}
+
+function doLogout(){
+  currentUser=null;
+  document.getElementById('portal-page').style.display='none';
+  document.getElementById('login-page').style.display='grid';
+  adminUnlocked=false;
+  document.getElementById('login-username').value='';
+  document.getElementById('login-code').value='';
+  // Clear mod fields on logout
+  ['v-mod','c-mod','e-mod'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.readOnly=false;}
+  });
+}
+
 let adminUnlocked=false,pendingAdminBtn=null,pendingDeleteType=null,pendingDeleteId=null,pendingDeleteEntryDetails=null;
+
 function showMain(id,btn){
   if(id==='admin'&&!adminUnlocked){pendingAdminBtn=btn;document.getElementById('admin-pin-overlay').classList.add('on');document.getElementById('admin-pin-input').value='';document.getElementById('admin-pin-err').style.display='none';setTimeout(()=>document.getElementById('admin-pin-input').focus(),100);return;}
   document.querySelectorAll('.main-sec').forEach(s=>s.classList.remove('on'));
@@ -1268,7 +1321,7 @@ async function confirmAndSubmit(){
     if(res.ok||res.status===201){
       closeConfirm();toastEl.style.display='block';
       const durEl=document.getElementById(p+'-duration');
-      [p+'-user',p+'-uid',p+'-date',p+'-mod',p+'-notes'].forEach(id=>document.getElementById(id).value='');
+      [p+'-user',p+'-uid',p+'-date',p+'-notes'].forEach(id=>document.getElementById(id).value='');
       document.getElementById(p+'-action').value='';if(durEl)durEl.value='';
       document.getElementById(type+'-duration-wrap').style.display='none';
       const priorBadge=document.querySelector('#'+p+'-prior-display .prior-auto-badge');if(priorBadge)priorBadge.className='prior-auto-badge first';
@@ -1279,16 +1332,18 @@ async function confirmAndSubmit(){
       document.getElementById(type+'-other-wrap').style.display='none';
       document.getElementById(type+'-prior-alert').style.display='none';
       selectedOffense[type]='';
+      // Re-stamp the mod field after form reset (don't clear it)
+      fillModFields();
       setTimeout(()=>toastEl.style.display='none',5000);
     }else throw new Error('Status '+res.status);
   }catch(e){closeConfirm();errEl.textContent='Could not reach database. Please try again.';errEl.style.display='block';}
   btn.disabled=false;const labels={vtos:'Submit VTOS Entry →',cg:'Submit CG Entry →',ex:'Submit Exploit Entry →'};btn.textContent=labels[type];
 }
+
 async function submitEntry(type){
   const p=type==='vtos'?'v':type==='cg'?'c':'e';
   const username=document.getElementById(p+'-user').value.trim();
   const date=document.getElementById(p+'-date').value;
-  const mod=document.getElementById(p+'-mod').value.trim();
   const action=document.getElementById(p+'-action').value;
   const prior=getPrior(p);const notes=document.getElementById(p+'-notes').value.trim();
   const userid=document.getElementById(p+'-uid').value.trim();
@@ -1296,12 +1351,17 @@ async function submitEntry(type){
   const durEl=document.getElementById(p+'-duration');
   const ban_duration=(action==='Temporary ban'&&durEl)?durEl.value:'';
   const errEl=document.getElementById(type+'-err');errEl.style.display='none';
+
+  // ── Always use the authenticated session username — never the input value ──
+  const mod=currentUser?currentUser.username:'';
+
   if(!username||!date||!mod||!action||!offense){errEl.style.display='block';return;}
   if(action==='Temporary ban'&&!ban_duration){errEl.textContent='Please select a ban duration.';errEl.style.display='block';return;}
   const files=evidenceFiles[type]||[];let evidence='[]';
   if(files.length>0){try{const encoded=await Promise.all(files.map(f=>new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve({name:f.name,type:f.type,size:f.size,data:reader.result});reader.onerror=reject;reader.readAsDataURL(f);})));evidence=JSON.stringify(encoded);}catch(encErr){evidence='[]';}}
   openConfirm(type,{username,userid,date,mod,offense,action,ban_duration,prior,notes,evidence});
 }
+
 function openLogDetail(type,id){
   const entry=(allEntries[type]||[]).find(e=>e.id===id);if(!entry)return;
   const typeLabels={vtos:'VTOS Log',cg:'Community Guidelines',ex:'Exploiting Log'};
