@@ -16,6 +16,7 @@
   --dark-text:#c5bcaa;--dark-muted:#4a4540;--dark-muted2:#2e2c29;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
 body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark-text);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
 /* ── LOGIN ── */
@@ -27,6 +28,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 @keyframes cornerBlink{0%,90%,100%{opacity:1}95%{opacity:.2}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 @keyframes errShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes loadingBlink{0%,100%{opacity:.35}50%{opacity:.75}}
 
 #login-page{min-height:100vh;background:#030201;display:grid;grid-template-columns:1.1fr .9fr;position:relative;overflow:hidden;padding-top:28px;}
 #login-page::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.18) 2px,rgba(0,0,0,.18) 4px);}
@@ -57,28 +59,28 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .login-brand-badge-text{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.22em;color:#e8ddd0;text-transform:uppercase;padding:0 20px 0 24px;position:relative;z-index:1;}
 .login-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,5.8vw,88px);line-height:.92;letter-spacing:.03em;color:#e8e0d0;margin-bottom:40px;}
 .login-headline em{color:transparent;font-style:normal;-webkit-text-stroke:1.5px var(--red);display:block;}
-.login-descriptor{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.2em;color:#1e1c19;text-transform:uppercase;line-height:2.4;max-width:300px;border-left:2px solid #1a1410;padding-left:18px;}
+.login-descriptor{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.2em;color:#252220;text-transform:uppercase;line-height:2.4;max-width:300px;border-left:2px solid #1a1410;padding-left:18px;}
 .login-left-bottom{position:relative;z-index:2;}
 .login-stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#0a0806;border:1px solid #0a0806;margin-bottom:36px;}
 .login-stat{padding:18px 20px;background:#050403;}
 .login-stat-n{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.04em;color:#a09078;line-height:1;}
-.login-stat-l{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.2em;color:#1c1a17;text-transform:uppercase;margin-top:6px;}
+.login-stat-l{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.2em;color:#2e2a26;text-transform:uppercase;margin-top:6px;}
 .login-ticker-wrap{overflow:hidden;border-top:1px solid #080604;padding:11px 0;}
 .login-ticker-track{display:flex;white-space:nowrap;animation:ticker 22s linear infinite;}
-.login-ticker-item{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.22em;color:#141210;text-transform:uppercase;padding:0 36px;}
-.login-ticker-item::before{content:'◆';margin-right:14px;color:#200e0e;}
+.login-ticker-item{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.22em;color:#1e1a16;text-transform:uppercase;padding:0 36px;}
+.login-ticker-item::before{content:'◆';margin-right:14px;color:#281010;}
 .login-authorship{display:flex;align-items:center;gap:14px;margin-top:22px;padding-top:18px;}
 .login-auth-line{flex:1;height:1px;background:#0d0b09;}
 .login-auth-text{display:flex;flex-direction:column;align-items:center;gap:3px;white-space:nowrap;}
-.login-auth-by{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.26em;color:#1a1815;text-transform:uppercase;}
-.login-auth-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.18em;color:#2e2924;}
-.login-auth-for{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.14em;color:#161412;text-transform:uppercase;}
+.login-auth-by{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.26em;color:#1e1c19;text-transform:uppercase;}
+.login-auth-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.18em;color:#3a3428;}
+.login-auth-for{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:.14em;color:#181614;text-transform:uppercase;}
 .login-right{display:flex;flex-direction:column;justify-content:center;padding:64px 68px;position:relative;z-index:2;background:linear-gradient(160deg,#040302 0%,#060403 100%);border-left:1px solid #0e0c0a;animation:fadeUp .7s .3s ease both;}
 .login-right::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:40px 40px;}
 .login-right-eyebrow{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.36em;color:#1e1c18;text-transform:uppercase;margin-bottom:40px;display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
 .login-right-eyebrow::before{content:'';width:32px;height:1px;background:#161412;}
 .login-right-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.12em;color:#c8bfac;margin-bottom:4px;font-weight:400;position:relative;z-index:1;}
-.login-right-sub{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:#181614;text-transform:uppercase;margin-bottom:44px;position:relative;z-index:1;}
+.login-right-sub{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:#1e1c18;text-transform:uppercase;margin-bottom:44px;position:relative;z-index:1;}
 .login-field{margin-bottom:22px;position:relative;z-index:1;}
 .login-field label{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.32em;color:#302c28;text-transform:uppercase;display:block;margin-bottom:10px;}
 .login-username-wrap{position:relative;}
@@ -86,7 +88,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .login-username-wrap input{padding-left:30px !important;}
 .login-field input{width:100%;background:#050302;border:1px solid #120f0c;color:#c5bcaa;font-family:'DM Mono',monospace;font-size:13px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:.04em;}
 .login-field input:focus{border-color:rgba(140,21,21,.5);box-shadow:0 0 0 3px rgba(140,21,21,.07);}
-.login-field input::placeholder{color:#181410;}
+.login-field input::placeholder{color:#1e1a16;}
 .login-divider{border:none;border-top:1px solid #0c0a08;margin:24px 0;position:relative;z-index:1;}
 .login-btn{width:100%;background:var(--red);color:#f5efe2;border:none;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.36em;text-transform:uppercase;padding:17px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s,box-shadow .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:14px;z-index:1;}
 .login-btn-arrow{width:20px;height:1px;background:#f5efe2;position:relative;transition:width .25s;flex-shrink:0;}
@@ -96,15 +98,15 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .login-btn:active{transform:translateY(1px);}
 .login-btn:disabled{opacity:.3;cursor:not-allowed;}
 .login-err{font-family:'DM Mono',monospace;font-size:8.5px;color:#b06060;letter-spacing:.12em;margin-top:14px;text-align:center;display:none;text-transform:uppercase;padding:11px 16px;border:1px solid rgba(140,21,21,.18);background:rgba(140,21,21,.04);animation:errShake .3s ease;position:relative;z-index:1;}
-.login-footer{font-family:'DM Mono',monospace;font-size:7.5px;color:#141210;letter-spacing:.14em;text-align:center;margin-top:40px;text-transform:uppercase;line-height:2.4;position:relative;z-index:1;}
+.login-footer{font-family:'DM Mono',monospace;font-size:7.5px;color:#181614;letter-spacing:.14em;text-align:center;margin-top:40px;text-transform:uppercase;line-height:2.4;position:relative;z-index:1;}
 .login-warnings{display:flex;flex-direction:column;gap:11px;margin-bottom:32px;position:relative;z-index:1;}
-.login-warn-item{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:#3a2020;text-transform:uppercase;}
+.login-warn-item{display:flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:#3e2424;text-transform:uppercase;}
 .login-warn-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--red);box-shadow:0 0 7px rgba(140,21,21,.8);animation:pulse 2s ease-in-out infinite;}
-.login-topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:7px 24px;background:#020100;border-bottom:1px solid #0d0b08;font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.24em;color:#1e1b17;text-transform:uppercase;}
+.login-topbar{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:7px 24px;background:#020100;border-bottom:1px solid #0d0b08;font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.24em;color:#222018;text-transform:uppercase;}
 .login-topbar-left{display:flex;align-items:center;gap:12px;}
 .login-topbar-dot{width:5px;height:5px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success);animation:pulse 2.5s ease-in-out infinite;flex-shrink:0;}
-.login-topbar-div{color:#0d0b08;}
-.login-topbar-right{font-variant-numeric:tabular-nums;color:#191714;}
+.login-topbar-div{color:#100e0c;}
+.login-topbar-right{font-variant-numeric:tabular-nums;color:#1e1c18;}
 .login-left,.login-right{min-height:calc(100vh - 28px);}
 
 /* ── PORTAL SHELL ── */
@@ -147,7 +149,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .sub-nav-btn.ex.on{border-bottom-color:var(--gold);}
 
 /* Body */
-.portal-body{padding:44px;max-width:1020px;}
+.portal-body{padding:44px;padding-bottom:72px;max-width:1020px;}
 .main-sec{display:none;}.main-sec.on{display:block;}
 .sub-sec{display:none;}.sub-sec.on{display:block;}
 
@@ -160,7 +162,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .field input,.field select,.field textarea{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark-text);background:var(--dark-surf);border:1px solid var(--dark-border);padding:12px 14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;-webkit-appearance:none;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(140,21,21,.5);box-shadow:0 0 0 3px rgba(140,21,21,.07);}
 .field textarea{min-height:106px;resize:vertical;line-height:1.65;background:var(--dark-surf);}
-.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a4540' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px;background-color:var(--dark-surf);}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236a6560' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px;background-color:var(--dark-surf);}
 .field select option{background:var(--dark-surf2);color:var(--dark-text);}
 .field input::placeholder,.field textarea::placeholder{color:var(--dark-muted);}
 .radio-group{display:flex;gap:24px;padding-top:4px;flex-wrap:wrap;}
@@ -235,12 +237,21 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .stat-box.gold .stat-n{color:var(--gold);}.stat-box.gold::after{background:var(--gold);}
 .stat-box.purple .stat-n{color:#b89eff;}.stat-box.purple::after{background:var(--purple-mid);}
 
+/* Deletion history feature stat */
+.dh-feature-box{width:100%;margin-bottom:14px;padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.dh-feature-box .stat-n{font-size:96px;}
+.dh-feature-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dark-muted);margin-bottom:10px;}
+.dh-feature-meta{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dark-muted2);text-align:right;line-height:2.2;}
+
 /* SEARCH & TABLES */
 .search-wrap{margin-bottom:20px;position:relative;}
 .search-wrap input{width:100%;font-family:'DM Mono',monospace;font-size:13px;background:var(--dark-surf);border:1px solid var(--dark-border);padding:13px 14px 13px 46px;outline:none;color:var(--dark-text);transition:border-color .2s,box-shadow .2s;}
 .search-wrap input:focus{border-color:rgba(140,21,21,.5);box-shadow:0 0 0 3px rgba(140,21,21,.07);}
 .search-wrap input::placeholder{color:var(--dark-muted);}
 .search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--dark-muted);font-size:17px;pointer-events:none;}
+
+/* Table scroll wrapper */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 
 /* Records table */
 .records-table{width:100%;border-collapse:collapse;}
@@ -265,11 +276,11 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .empty-state{text-align:center;padding:72px 20px;border:1px dashed var(--dark-border);background:rgba(255,255,255,.02);}
 .empty-state p{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--dark-muted);text-transform:uppercase;}
 .loading-state{text-align:center;padding:72px 20px;}
-.loading-state p{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--dark-muted);text-transform:uppercase;}
+.loading-state p{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.18em;color:var(--dark-muted);text-transform:uppercase;animation:loadingBlink 1.6s ease-in-out infinite;}
 
 /* BAN LOG LIST */
 .ban-log-list{display:flex;flex-direction:column;gap:0;}
-.ban-log-item{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--dark-border);background:var(--dark-surf);cursor:pointer;transition:background .12s,border-left .12s;border-left:3px solid transparent;}
+.ban-log-item{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--dark-border);background:var(--dark-surf);cursor:pointer;transition:background .12s,border-left-color .12s;border-left:3px solid transparent;}
 .ban-log-item:first-child{border-top:1px solid var(--dark-border);}
 .ban-log-item:hover{background:rgba(255,255,255,.03);border-left-color:var(--dark-border2);}
 .ban-log-item.is-ban:hover{border-left-color:var(--red);}
@@ -302,10 +313,10 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .btn-danger{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;background:none;border:1px solid rgba(140,21,21,.3);color:var(--red);padding:9px 16px;cursor:pointer;transition:all .15s;width:100%;}
 .btn-danger:hover{background:var(--red);color:#fff;box-shadow:0 2px 14px rgba(140,21,21,.3);}
 
-/* Deletion history */
+/* Deletion history table */
 .deletion-table{width:100%;border-collapse:collapse;font-size:13px;}
 .deletion-table thead tr{background:var(--dark-bg);}
-.deletion-table th{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dark-muted);padding:13px 16px;text-align:left;font-weight:400;border-bottom:1px solid var(--dark-border);}
+.deletion-table th{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dark-muted);padding:13px 16px;text-align:left;font-weight:400;border-bottom:1px solid var(--dark-border);white-space:nowrap;}
 .deletion-table td{padding:13px 16px;border-bottom:1px solid var(--dark-border);color:var(--dark-text);vertical-align:top;line-height:1.5;}
 .deletion-table tbody tr:hover{background:rgba(255,255,255,.02);}
 .dh-player-cell{min-width:140px;}
@@ -389,7 +400,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .confirm-val{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark-text);line-height:1.5;flex:1;}
 .confirm-val.highlight{color:var(--gold);}
 .confirm-val.danger{color:#c07070;}
-.confirm-val.notes-val{font-size:11px;color:var(--dark-muted);font-style:italic;max-width:300px;white-space:pre-wrap;line-height:1.55;}
+.confirm-val.notes-val{font-size:11px;color:var(--dark-muted);font-style:italic;max-width:400px;white-space:pre-wrap;line-height:1.55;}
 .confirm-warning{background:rgba(176,125,18,.06);border:1px solid rgba(176,125,18,.15);border-left:3px solid var(--gold);padding:11px 14px;margin-top:16px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:#7a6020;line-height:1.75;text-transform:uppercase;}
 .confirm-footer{padding:18px 32px 24px;display:flex;gap:10px;border-top:1px solid var(--dark-border);}
 .confirm-submit-btn{flex:1;background:var(--success);color:#f5efe2;border:none;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;padding:14px;cursor:pointer;transition:background .2s,box-shadow .2s;}
@@ -399,7 +410,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .confirm-cancel-btn:hover{border-color:var(--dark-border2);color:#888;}
 
 /* LOG DETAIL OVERLAY */
-#log-detail-overlay{position:fixed;inset:0;background:rgba(3,2,1,.97);display:none;align-items:flex-start;justify-content:center;z-index:9999;backdrop-filter:blur(8px);overflow-y:auto;padding:40px 20px;}
+#log-detail-overlay{position:fixed;inset:0;background:rgba(3,2,1,.97);display:none;align-items:flex-start;justify-content:center;z-index:9999;backdrop-filter:blur(8px);overflow-y:auto;padding:40px 20px 80px;}
 #log-detail-overlay.on{display:flex;}
 .log-detail-box{background:var(--dark-surf);border:1px solid var(--dark-border);border-top:2px solid var(--red);width:100%;max-width:700px;box-shadow:0 40px 80px rgba(0,0,0,.9);margin:auto;}
 .log-detail-header{padding:22px 30px 18px;border-bottom:1px solid var(--dark-border);display:flex;align-items:center;justify-content:space-between;gap:16px;}
@@ -443,7 +454,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .evidence-file-item .ef-remove{background:none;border:none;cursor:pointer;color:var(--dark-muted);font-size:14px;padding:0 2px;line-height:1;transition:color .15s;flex-shrink:0;}
 .evidence-file-item .ef-remove:hover{color:var(--red);}
 .evidence-img-preview{max-width:120px;max-height:80px;border:1px solid var(--dark-border);object-fit:cover;flex-shrink:0;}
-.evidence-paste-hint{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;color:var(--dark-muted2);text-transform:uppercase;text-align:right;margin-top:6px;}
+.evidence-paste-hint{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;color:var(--dark-muted2);text-transform:uppercase;text-align:right;margin-top:6px;margin-bottom:0;}
 .evidence-browse-btn{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;background:none;border:1px solid var(--dark-border);color:var(--dark-muted);padding:7px 14px;cursor:pointer;transition:all .15s;margin-top:10px;display:block;width:100%;text-align:center;}
 .evidence-browse-btn:hover{border-color:var(--red);color:var(--dark-text);}
 
@@ -465,6 +476,8 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
   .header-right{display:none;}
   .admin-actions{grid-template-columns:1fr;}
   .add-user-grid{grid-template-columns:1fr;}
+  .dh-feature-box{flex-direction:column;align-items:flex-start;padding:28px;}
+  .dh-feature-meta{text-align:left;}
 }
 </style>
 </head>
@@ -915,12 +928,12 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
       </div>
       <div id="admin-deletion-history" class="sub-sec">
         <div class="admin-section-title" style="margin-top:0;">Deletion Statistics</div>
-        <div class="stat-box" style="width:100%;margin-bottom:14px;padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+        <div class="stat-box dh-feature-box">
           <div>
-            <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dark-muted);margin-bottom:10px;">Total deletions logged</div>
-            <div class="stat-n" id="dh-total" style="font-size:96px;line-height:1;">—</div>
+            <div class="dh-feature-label">Total deletions logged</div>
+            <div class="stat-n" id="dh-total">—</div>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dark-muted2);text-align:right;line-height:2.2;">All logs combined<br>VTOS · CG · Exploiting<br>Admin-only action</div>
+          <div class="dh-feature-meta">All logs combined<br>VTOS · CG · Exploiting<br>Admin-only action</div>
         </div>
         <div class="stats-row">
           <div class="stat-box red"><div class="stat-n" id="dh-vtos">—</div><div class="stat-l">VTOS deletions</div></div>
@@ -929,7 +942,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
         </div>
         <div class="admin-section-title">Deletion Records</div>
         <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="dh-search" placeholder="Search by player, moderator, offense, or reason..." oninput="renderDeletionHistory()"></div>
-        <div id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
+        <div class="table-scroll" id="deletion-history-wrap"><div class="loading-state"><p>Loading deletion history...</p></div></div>
       </div>
       <div id="admin-manage-users" class="sub-sec">
         <div class="add-user-box">
@@ -941,7 +954,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
           </div>
           <div class="add-user-alert" id="add-user-alert"></div>
         </div>
-        <div class="admin-section-title" style="margin-top:0;">Current Authorized Users</div>
+        <div class="admin-section-title">Current Authorized Users</div>
         <div id="manage-users-tbl-wrap"><div class="loading-state"><p>Loading users...</p></div></div>
       </div>
     </div>
@@ -1125,7 +1138,7 @@ async function loadSigninLogs(){
   try{const res=await fetch(SUPA_URL+'/rest/v1/signin_log?order=id.desc&limit=100',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});const data=await res.json();
   if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No sign-in logs yet.</p></div>';return;}
   const rows=data.map(e=>'<tr><td>'+(e.success?'<span class="success-dot"></span>Success':'<span class="fail-dot"></span>Failed')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;">'+(e.username?'@'+e.username:(e.email||'—'))+'</td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--dark-muted);">'+(e.signed_in_at?formatTZ(e.signed_in_at):'—')+'</td></tr>').join('');
-  wrap.innerHTML='<table class="signin-table"><thead><tr><th>Status</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table>';}
+  wrap.innerHTML='<div class="table-scroll"><table class="signin-table"><thead><tr><th>Status</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
   catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load sign-in logs.</p></div>';}
 }
 async function loadAuthUsers(){
@@ -1133,7 +1146,7 @@ async function loadAuthUsers(){
   try{const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?select=id,username,role,created_at&order=id.asc',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});const data=await res.json();
   if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No users found.</p></div>';return;}
   const rows=data.map(u=>'<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;">@'+(u.username||'—')+'</td><td><span class="badge '+(u.role==='admin'?'badge-ban':'badge-rep')+'">'+(u.role||'—').toUpperCase()+'</span></td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--dark-muted);">'+(u.created_at?formatTZ(u.created_at):'—')+'</td></tr>').join('');
-  wrap.innerHTML='<table class="signin-table"><thead><tr><th>Username</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table>';}
+  wrap.innerHTML='<div class="table-scroll"><table class="signin-table"><thead><tr><th>Username</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
   catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';}
 }
 async function loadManageUsers(){
@@ -1142,7 +1155,7 @@ async function loadManageUsers(){
   try{const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?select=id,username,access_code,role,created_at&order=id.asc',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});const data=await res.json();
   if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No authorized users found.</p></div>';return;}
   const rows=data.map(u=>{const isSelf=currentUser&&currentUser.id===u.id;return`<tr><td class="user-name-cell">@${u.username||'—'}${isSelf?' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>':''}</td><td class="user-code-cell">${u.access_code||'—'}</td><td><span class="user-role-badge ${u.role==='admin'?'role-admin':'role-mod'}">${(u.role||'—').toUpperCase()}</span></td><td class="user-date-cell">${u.created_at?new Date(u.created_at).toLocaleDateString():'—'}</td><td>${isSelf?'':`<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.username}',this)">Revoke Access</button>`}</td></tr>`;}).join('');
-  wrap.innerHTML=`<table class="users-table"><thead><tr><th>Username</th><th>Access Code</th><th>Role</th><th>Added</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;}
+  wrap.innerHTML=`<div class="table-scroll"><table class="users-table"><thead><tr><th>Username</th><th>Access Code</th><th>Role</th><th>Added</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;}
   catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';}
 }
 async function addUser(){
