@@ -1637,7 +1637,7 @@ async function loadSigninLogs(){
   wrap.innerHTML='<div class="loading-state"><p>Loading...</p></div>';
   try{const res=await fetch(SUPA_URL+'/rest/v1/signin_log?order=id.desc&limit=100',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});const data=await res.json();
   if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No sign-in logs yet.</p></div>';return;}
-  const rows=data.map(e=>'<tr><td>'+(e.success?'<span class="success-dot"></span>Success':'<span class="fail-dot"></span>Failed')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;">'+(e.username?'@'+e.username:(e.email||'—'))+'</td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--dark-muted);">'+(e.signed_in_at?formatTZ(e.signed_in_at):'—')+'</td></tr>').join('');
+  const rows=data.map(e=>'<tr><td>'+(e.success?'<span class="success-dot"></span>Success':'<span class="fail-dot"></span>Failed')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:12px;">'+(e.username?'@'+e.username:'—')+'</td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--dark-muted);">'+(e.signed_in_at?formatTZ(e.signed_in_at):'—')+'</td></tr>').join('');
   wrap.innerHTML='<div class="table-scroll"><table class="signin-table"><thead><tr><th>Status</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
   catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load sign-in logs.</p></div>';}
 }
