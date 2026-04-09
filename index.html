@@ -511,7 +511,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 .sec-log-entry{display:flex;gap:12px;border-bottom:1px solid #0d0b08;padding:5px 0;font-family:'DM Mono',monospace;font-size:10.5px;line-height:1.7;}
 .sec-log-entry:last-child{border-bottom:none;}
 .sec-log-ts{color:var(--dark-muted);flex-shrink:0;min-width:76px;}
-.sec-log-type{flex-shrink:0;min-width:150px;letter-spacing:.06em;}
+.sec-log-type{flex-shrink:0;min-width:160px;letter-spacing:.06em;line-height:1.3;}
 .sec-log-type.warn{color:var(--gold);}
 .sec-log-type.crit{color:#c07070;}
 .sec-log-type.info{color:#5cb87a;}
@@ -1916,13 +1916,36 @@ function filterSecEvents(){
 }
 
 /* ── LIVE MONITOR HELPERS ── */
+/* ── SECURITY EVENT PLAIN-ENGLISH LABELS ── */
+const SEC_LABELS={
+  'SECURITY_INIT':    'System startup',
+  'BOT_DETECT':       'Bot attempt blocked',
+  'CLIPBOARD_INJECT': 'Suspicious paste detected',
+  'CLIPBOARD_PASTE':  'Paste into login field',
+  'TAB_HIDE':         'Tab was hidden',
+  'TAB_SHOW':         'Tab restored',
+  'DOM_TAMPER':       'Field was tampered with',
+  'DOM_PROP_SET':     'Field modified via console',
+  'INJECT_ATTEMPT':   'Injection attack blocked',
+  'DEVTOOLS_OPEN':    'DevTools detected',
+  'SCREEN_CAPTURE':   'Screen capture detected',
+  'SESSION_BIND_FAIL':'Session hijack attempt',
+  'CONSOLE_PROBE':    'Console honeypot triggered',
+  'DRAG_DROP_BLOCKED':'File drop blocked',
+  'SYS/INIT':         'System startup',
+  'SYS/RESET':        'Monitor reset',
+};
+
 function appendSecLogEntry(type,severity,msg,timestamp,scroll=true){
   const log=document.getElementById('sec-event-log');
   if(!log)return;
   const cls=severity==='critical'?'crit':severity==='warn'?'warn':'info';
+  const plain=SEC_LABELS[type]||'';
   const entry=document.createElement('div');
   entry.className='sec-log-entry';
-  entry.innerHTML=`<span class="sec-log-ts">${timestamp||new Date().toLocaleTimeString()}</span><span class="sec-log-type ${cls}">${type}</span><span class="sec-log-msg">${String(msg).substring(0,120)}</span>`;
+  entry.innerHTML=`<span class="sec-log-ts">${timestamp||new Date().toLocaleTimeString()}</span>`+
+    `<span class="sec-log-type ${cls}">${type}${plain?`<span style="display:block;font-size:8.5px;color:var(--dark-muted);letter-spacing:.06em;margin-top:1px;font-style:italic;">${plain}</span>`:''}</span>`+
+    `<span class="sec-log-msg">${String(msg).substring(0,120)}</span>`;
   log.appendChild(entry);
   if(scroll)log.scrollTop=log.scrollHeight;
 }
