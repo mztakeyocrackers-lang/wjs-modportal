@@ -488,6 +488,63 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 #img-viewer.on{display:flex;}
 #img-viewer img{max-width:92vw;max-height:92vh;object-fit:contain;}
 
+/* ── SECURITY MONITOR ── */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.sec-status-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.sec-status-pill{background:var(--dark-surf2);border:1px solid var(--dark-border);padding:12px 16px;display:flex;align-items:center;gap:9px;}
+.sp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sp-dot.on{background:#5cb87a;box-shadow:0 0 6px rgba(92,184,122,.6);animation:blink 2.4s ease-in-out infinite;}
+.sp-dot.warn{background:var(--gold);box-shadow:0 0 6px rgba(176,125,18,.5);}
+.sp-dot.off{background:var(--dark-muted);}
+.sp-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--dark-muted);text-transform:uppercase;}
+.sec-threat-meter{background:var(--dark-surf2);border:1px solid var(--dark-border);padding:16px 20px;display:flex;align-items:center;gap:18px;margin-bottom:20px;}
+.tm-label{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.2em;color:var(--dark-muted);text-transform:uppercase;min-width:120px;}
+.tm-bar-wrap{flex:1;height:6px;background:#0a0806;position:relative;}
+.tm-bar{height:100%;background:var(--success);transition:width .6s ease,background .4s ease;}
+.tm-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--dark-text);letter-spacing:.06em;min-width:40px;text-align:right;}
+.threat-badge{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:4px 12px;border-left:2px solid;}
+.threat-badge.low{background:rgba(28,84,48,.1);color:#5cb87a;border-color:var(--success);}
+.threat-badge.med{background:rgba(176,125,18,.08);color:var(--gold);border-color:var(--gold);}
+.threat-badge.high{background:rgba(140,21,21,.1);color:#c07070;border-color:var(--red);}
+.threat-badge.crit{background:rgba(140,21,21,.2);color:#e08080;border-color:var(--red);animation:blink .8s ease-in-out infinite;}
+.sec-event-log{background:#020100;border:1px solid var(--dark-border);min-height:180px;max-height:280px;overflow-y:auto;padding:12px 14px;margin-bottom:20px;}
+.sec-log-entry{display:flex;gap:12px;border-bottom:1px solid #0d0b08;padding:5px 0;font-family:'DM Mono',monospace;font-size:10.5px;line-height:1.7;}
+.sec-log-entry:last-child{border-bottom:none;}
+.sec-log-ts{color:var(--dark-muted);flex-shrink:0;min-width:76px;}
+.sec-log-type{flex-shrink:0;min-width:150px;letter-spacing:.06em;}
+.sec-log-type.warn{color:var(--gold);}
+.sec-log-type.crit{color:#c07070;}
+.sec-log-type.info{color:#5cb87a;}
+.sec-log-msg{color:var(--dark-text);word-break:break-word;}
+.sec-trigger-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.sec-trigger-btn{background:none;border:1px solid var(--dark-border);color:var(--dark-muted);font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;padding:10px 12px;cursor:pointer;transition:all .15s;text-align:left;}
+.sec-trigger-btn:hover{border-color:var(--red);color:#c07070;background:rgba(140,21,21,.05);}
+.sec-trigger-btn.gold:hover{border-color:var(--gold);color:var(--gold);background:rgba(176,125,18,.05);}
+.sec-trigger-btn.green:hover{border-color:var(--success);color:#5cb87a;background:rgba(28,84,48,.06);}
+.sec-module-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px;}
+.sec-module-card{background:var(--dark-surf);border:1px solid var(--dark-border);border-left:3px solid var(--red);padding:14px 16px;}
+.sec-module-card.gold{border-left-color:var(--gold);}
+.sec-module-card.green{border-left-color:var(--success);}
+.sec-module-card.purple{border-left-color:#4e2090;}
+.smc-code{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.22em;color:var(--red);text-transform:uppercase;margin-bottom:5px;}
+.sec-module-card.gold .smc-code{color:var(--gold);}
+.sec-module-card.green .smc-code{color:#5cb87a;}
+.sec-module-card.purple .smc-code{color:#b89eff;}
+.smc-name{font-size:11.5px;color:#e8e0d0;font-weight:500;margin-bottom:4px;line-height:1.3;}
+.smc-status{font-family:'DM Mono',monospace;font-size:8.5px;color:#5cb87a;letter-spacing:.1em;}
+.sec-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.sec-events-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.sec-events-tbl th{font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dark-muted);padding:11px 14px;text-align:left;font-weight:400;background:var(--dark-bg);border-bottom:1px solid var(--dark-border);white-space:nowrap;}
+.sec-events-tbl td{padding:11px 14px;border-bottom:1px solid var(--dark-border);vertical-align:top;}
+.sec-events-tbl tbody tr:hover{background:rgba(255,255,255,.02);}
+.sev-badge{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;display:inline-block;}
+.sev-info{background:rgba(28,84,48,.12);color:#5cb87a;border:1px solid rgba(28,84,48,.3);}
+.sev-warn{background:rgba(176,125,18,.1);color:var(--gold);border:1px solid rgba(176,125,18,.25);}
+.sev-crit{background:rgba(140,21,21,.15);color:#d08080;border:1px solid rgba(140,21,21,.3);}
+.sql-note{background:rgba(176,125,18,.06);border:1px solid rgba(176,125,18,.18);border-left:3px solid var(--gold);padding:14px 18px;font-family:'DM Mono',monospace;font-size:9.5px;color:#7a6020;letter-spacing:.08em;line-height:1.9;margin-bottom:24px;text-transform:uppercase;}
+.sql-code-block{background:#020100;border:1px solid var(--dark-border);border-left:3px solid var(--gold);padding:20px 22px;font-family:'DM Mono',monospace;font-size:11px;color:var(--dark-text);line-height:1.85;overflow-x:auto;margin-bottom:24px;}
+.sql-code-block pre{white-space:pre-wrap;word-break:break-word;}
+
 @media(max-width:760px){
   #login-page{grid-template-columns:1fr;}
   .login-left{display:none;}
@@ -1014,6 +1071,7 @@ document.addEventListener('contextmenu',function(e){
       <button class="sub-nav-btn" onclick="showSub('admin','deletions',this)">Delete Log Entries</button>
       <button class="sub-nav-btn" onclick="showSub('admin','deletion-history',this)">Deletion History</button>
       <button class="sub-nav-btn" onclick="showSub('admin','manage-users',this)">Manage Users</button>
+      <button class="sub-nav-btn" onclick="showSub('admin','security',this)">Security Monitor</button>
     </div>
     <div class="portal-body">
       <div id="admin-signin" class="sub-sec on">
@@ -1060,9 +1118,87 @@ document.addEventListener('contextmenu',function(e){
         </div>
         <div class="admin-section-title">Current Authorized Users</div>
         <div id="manage-users-tbl-wrap"><div class="loading-state"><p>Loading users...</p></div></div>
-      </div>
-    </div>
-  </div>
+      </div><!-- /admin-manage-users -->
+
+      <!-- SECURITY MONITOR -->
+      <div id="admin-security" class="sub-sec">
+        <div class="admin-section-title" style="margin-top:0;">Active Security Modules</div>
+        <div class="sec-module-grid">
+          <div class="sec-module-card"><div class="smc-code">SEC-01</div><div class="smc-name">Tab Visibility Logger</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card gold"><div class="smc-code">SEC-02</div><div class="smc-name">Clipboard Hijack Detection</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card green"><div class="smc-code">SEC-03</div><div class="smc-name">Bot / Automation Detection</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card purple"><div class="smc-code">SEC-04</div><div class="smc-name">DOM Integrity Monitor</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card"><div class="smc-code">SEC-05</div><div class="smc-name">Injection Pattern Detector</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card gold"><div class="smc-code">SEC-06</div><div class="smc-name">DevTools Detection</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card green"><div class="smc-code">SEC-07</div><div class="smc-name">Security Audit Stream</div><div class="smc-status">● Active</div></div>
+          <div class="sec-module-card purple"><div class="smc-code">SEC-08</div><div class="smc-name">Session Token Binding</div><div class="smc-status">● Active</div></div>
+        </div>
+
+        <div class="admin-section-title">Live Threat Monitor</div>
+        <div class="sec-status-row">
+          <div class="sec-status-pill"><span class="sp-dot on" id="sp-bot-dot"></span><span class="sp-label" id="sp-bot-lbl">Bot Check: Active</span></div>
+          <div class="sec-status-pill"><span class="sp-dot on" id="sp-dom-dot"></span><span class="sp-label" id="sp-dom-lbl">DOM Integrity: OK</span></div>
+          <div class="sec-status-pill"><span class="sp-dot on" id="sp-clip-dot"></span><span class="sp-label" id="sp-clip-lbl">Clipboard: Watching</span></div>
+          <div class="sec-status-pill"><span class="sp-dot on" id="sp-vis-dot"></span><span class="sp-label" id="sp-vis-lbl">Tab: Visible</span></div>
+        </div>
+        <div class="sec-threat-meter">
+          <span class="tm-label">Threat Level</span>
+          <div class="tm-bar-wrap"><div class="tm-bar" id="sec-threat-bar" style="width:2%"></div></div>
+          <span class="tm-val" id="sec-threat-val">0</span>
+          <span id="sec-threat-badge" class="threat-badge low">Low</span>
+        </div>
+
+        <div class="admin-section-title">Live Event Log</div>
+        <div class="sec-event-log" id="sec-event-log">
+          <div class="sec-log-entry"><span class="sec-log-ts" id="sec-init-ts">--:--:--</span><span class="sec-log-type info">SYS/INIT</span><span class="sec-log-msg">Security modules initialized. All 8 monitors active.</span></div>
+        </div>
+
+        <div class="admin-section-title">Simulate Security Events</div>
+        <div class="sec-trigger-grid">
+          <button class="sec-trigger-btn" onclick="simSecEvent('TAB_HIDE','warn','Tab hidden — possible session sharing detected',15)">⬜ Tab Hidden</button>
+          <button class="sec-trigger-btn" onclick="simSecEvent('CLIPBOARD_INJECT','critical','Paste in credential field — anomalous payload length detected',35)">📋 Clipboard Inject</button>
+          <button class="sec-trigger-btn" onclick="simSecEvent('BOT_DETECT','critical','Zero mouse entropy — automated submission blocked',50)">🤖 Bot Detected</button>
+          <button class="sec-trigger-btn gold" onclick="simSecEvent('DOM_TAMPER','critical','mod-name field tampered via console — session terminated',80)">⚠ DOM Tamper</button>
+          <button class="sec-trigger-btn gold" onclick="simSecEvent('INJECT_ATTEMPT','critical','SQL injection pattern in username field: OR 1=1',60)">💉 SQLi Attempt</button>
+          <button class="sec-trigger-btn gold" onclick="simSecEvent('DEVTOOLS_OPEN','warn','Window resize anomaly — DevTools attachment suspected',25)">🔧 DevTools Open</button>
+          <button class="sec-trigger-btn green" onclick="simSecEvent('SESSION_BIND_FAIL','critical','Fingerprint mismatch — possible session hijack attempt',70)">🔐 Session Bind Fail</button>
+          <button class="sec-trigger-btn green" onclick="simSecEvent('SCREEN_CAPTURE','warn','Screen dimensions anomaly — capture API usage suspected',20)">📸 Screen Capture</button>
+          <button class="sec-trigger-btn" onclick="resetSecMonitor()">↺ Reset Monitor</button>
+        </div>
+
+        <div class="admin-section-title" style="margin-top:32px;">Security Event Database</div>
+        <div class="sec-stats-row">
+          <div class="stat-box red"><div class="stat-n" id="sec-stat-crit">—</div><div class="stat-l">Critical events</div></div>
+          <div class="stat-box gold"><div class="stat-n" id="sec-stat-warn">—</div><div class="stat-l">Warnings</div></div>
+          <div class="stat-box"><div class="stat-n" id="sec-stat-info">—</div><div class="stat-l">Info events</div></div>
+          <div class="stat-box purple"><div class="stat-n" id="sec-stat-total">—</div><div class="stat-l">Total logged</div></div>
+        </div>
+        <div class="search-wrap"><span class="search-icon">⌕</span><input type="text" id="sec-search" placeholder="Search by event type, username, or payload..." oninput="filterSecEvents()"></div>
+        <div class="table-scroll" id="sec-events-wrap"><div class="loading-state"><p>Loading security events...</p></div></div>
+
+        <div class="admin-section-title">Supabase Table Setup (run once)</div>
+        <div class="sql-note">⚑ The security_events table must exist in your Supabase project. Run the SQL below in the Supabase SQL editor if you haven't already.</div>
+        <div class="sql-code-block"><pre>CREATE TABLE security_events (
+  id          BIGSERIAL PRIMARY KEY,
+  event_type  TEXT NOT NULL,
+  severity    TEXT NOT NULL,
+  username    TEXT,
+  session_id  TEXT,
+  payload     TEXT,
+  user_agent  TEXT,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE security_events ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "allow_insert_security_events"
+  ON security_events FOR INSERT TO anon WITH CHECK (true);
+
+CREATE POLICY "allow_admin_read_security_events"
+  ON security_events FOR SELECT TO anon USING (true);</pre></div>
+      </div><!-- /admin-security -->
+    </div><!-- /portal-body admin -->
+  </div><!-- /main-admin -->
 
   <!-- CONFIRM OVERLAY -->
   <div id="confirm-overlay">
@@ -1446,6 +1582,7 @@ function showSub(main,id,btn){
   if(main==='admin'&&id==='deletions')loadAuthUsers();
   if(main==='admin'&&id==='deletion-history')loadDeletionHistory();
   if(main==='admin'&&id==='manage-users')loadManageUsers();
+  if(main==='admin'&&id==='security')loadSecurityEvents();
 }
 function selectOffense(type,value,card){
   document.getElementById(type+'-offense-grid').querySelectorAll('.offense-card').forEach(c=>c.classList.remove('selected','cg-selected','ex-selected'));
@@ -1734,6 +1871,373 @@ function renderEvidenceList(type){
   hint.style.display=files.length===0?'block':'none';zone.classList.toggle('has-files',files.length>0);
   list.innerHTML=files.map((f,i)=>{const isImg=f.type.startsWith('image/');const ext=f.name.split('.').pop().toUpperCase();const sizeStr=f.size>1024*1024?(f.size/(1024*1024)).toFixed(1)+'MB':Math.round(f.size/1024)+'KB';const icon=isImg?'🖼':(f.type.includes('video')?'🎬':(f.type.includes('pdf')?'📄':'📎'));const imgEl=isImg?`<img class="evidence-img-preview" src="${URL.createObjectURL(f)}" alt="">`:'';return`<div class="evidence-file-item">${imgEl}<span style="font-size:16px;">${icon}</span><span class="ef-name" title="${f.name}">${f.name}</span><span class="ef-size">${ext} · ${sizeStr}</span><button class="ef-remove" onclick="removeEvidenceFile('${type}',${i})">✕</button></div>`;}).join('');
 }
+/* ════════════════════════════════════════════════════════════
+   SECURITY MONITOR — DB FUNCTIONS
+════════════════════════════════════════════════════════════ */
+let allSecEvents=[];
+let secThreatLevel=0;
+
+async function loadSecurityEvents(){
+  const wrap=document.getElementById('sec-events-wrap');
+  wrap.innerHTML='<div class="loading-state"><p>Loading security events...</p></div>';
+  try{
+    const res=await fetch(SUPA_URL+'/rest/v1/security_events?order=id.desc&limit=200',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    const data=await res.json();
+    if(!Array.isArray(data))throw new Error('Table may not exist yet');
+    allSecEvents=data;
+    updateSecStats(data);
+    renderSecEvents(data);
+    // Push real DB events into live log
+    const log=document.getElementById('sec-event-log');
+    if(log&&data.length>0){
+      const recent=data.slice(0,5).reverse();
+      recent.forEach(e=>{appendSecLogEntry(e.event_type,e.severity,e.payload||'—',new Date(e.created_at).toLocaleTimeString(),false);});
+    }
+    document.getElementById('sec-init-ts').textContent=new Date().toLocaleTimeString();
+  }catch(err){
+    wrap.innerHTML='<div class="sql-note">⚑ security_events table not found. Run the SQL above in Supabase to create it, then refresh this tab.</div>';
+    document.getElementById('sec-stat-total').textContent='—';
+    document.getElementById('sec-stat-crit').textContent='—';
+    document.getElementById('sec-stat-warn').textContent='—';
+    document.getElementById('sec-stat-info').textContent='—';
+  }
+}
+
+function updateSecStats(events){
+  document.getElementById('sec-stat-total').textContent=events.length;
+  document.getElementById('sec-stat-crit').textContent=events.filter(e=>e.severity==='critical').length;
+  document.getElementById('sec-stat-warn').textContent=events.filter(e=>e.severity==='warn').length;
+  document.getElementById('sec-stat-info').textContent=events.filter(e=>e.severity==='info').length;
+}
+
+function renderSecEvents(events){
+  const wrap=document.getElementById('sec-events-wrap');
+  if(!events||events.length===0){wrap.innerHTML='<div class="empty-state"><p>No security events logged yet.</p></div>';return;}
+  const rows=events.map(e=>{
+    const dt=e.created_at?new Date(e.created_at):null;
+    const sev=e.severity==='critical'?'sev-crit':e.severity==='warn'?'sev-warn':'sev-info';
+    const sevLabel=e.severity==='critical'?'CRITICAL':e.severity==='warn'?'WARN':'INFO';
+    return`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dark-muted);white-space:nowrap;">${dt?dt.toLocaleString():'—'}</td>
+      <td><span class="sev-badge ${sev}">${sevLabel}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:10.5px;color:#e8e0d0;">${e.event_type||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);">${e.username?'@'+e.username:'—'}</td>
+      <td style="font-size:11px;color:var(--dark-muted);max-width:200px;word-break:break-word;">${(e.payload||'—').substring(0,80)}</td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML=`<table class="sec-events-tbl"><thead><tr><th>Timestamp</th><th>Severity</th><th>Event Type</th><th>User</th><th>Payload</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function filterSecEvents(){
+  const q=(document.getElementById('sec-search').value||'').toLowerCase();
+  const filtered=allSecEvents.filter(e=>!q||(e.event_type&&e.event_type.toLowerCase().includes(q))||(e.username&&e.username.toLowerCase().includes(q))||(e.payload&&e.payload.toLowerCase().includes(q))||(e.severity&&e.severity.toLowerCase().includes(q)));
+  renderSecEvents(filtered);
+}
+
+/* ── LIVE MONITOR HELPERS ── */
+function appendSecLogEntry(type,severity,msg,timestamp,scroll=true){
+  const log=document.getElementById('sec-event-log');
+  if(!log)return;
+  const cls=severity==='critical'?'crit':severity==='warn'?'warn':'info';
+  const entry=document.createElement('div');
+  entry.className='sec-log-entry';
+  entry.innerHTML=`<span class="sec-log-ts">${timestamp||new Date().toLocaleTimeString()}</span><span class="sec-log-type ${cls}">${type}</span><span class="sec-log-msg">${String(msg).substring(0,120)}</span>`;
+  log.appendChild(entry);
+  if(scroll)log.scrollTop=log.scrollHeight;
+}
+
+function updateSecThreat(){
+  const bar=document.getElementById('sec-threat-bar');
+  const val=document.getElementById('sec-threat-val');
+  const badge=document.getElementById('sec-threat-badge');
+  if(!bar)return;
+  bar.style.width=secThreatLevel+'%';
+  val.textContent=secThreatLevel;
+  if(secThreatLevel<20){bar.style.background='var(--success)';badge.className='threat-badge low';badge.textContent='Low';}
+  else if(secThreatLevel<45){bar.style.background='var(--gold)';badge.className='threat-badge med';badge.textContent='Medium';}
+  else if(secThreatLevel<70){bar.style.background='#a51c1c';badge.className='threat-badge high';badge.textContent='High';}
+  else{bar.style.background='var(--red)';badge.className='threat-badge crit';badge.textContent='Critical';}
+}
+
+// Simulate event — logs to both UI and Supabase
+async function simSecEvent(type,severity,msg,threatDelta){
+  secThreatLevel=Math.min(100,secThreatLevel+threatDelta);
+  updateSecThreat();
+  appendSecLogEntry(type,severity,msg);
+  // Update status pills
+  if(type==='TAB_HIDE'){const d=document.getElementById('sp-vis-dot'),l=document.getElementById('sp-vis-lbl');if(d)d.className='sp-dot warn';if(l)l.textContent='Tab: Hidden';setTimeout(()=>{if(d)d.className='sp-dot on';if(l)l.textContent='Tab: Visible';},3000);}
+  if(type==='CLIPBOARD_INJECT'){const d=document.getElementById('sp-clip-dot'),l=document.getElementById('sp-clip-lbl');if(d)d.className='sp-dot warn';if(l)l.textContent='Clipboard: FLAGGED';}
+  if(type==='DOM_TAMPER'){const d=document.getElementById('sp-dom-dot'),l=document.getElementById('sp-dom-lbl');if(d)d.className='sp-dot warn';if(l){l.textContent='DOM: BREACH';l.style.color='#c07070';}}
+  if(type==='BOT_DETECT'){const d=document.getElementById('sp-bot-dot'),l=document.getElementById('sp-bot-lbl');if(d)d.className='sp-dot warn';if(l)l.textContent='Bot Check: FLAGGED';}
+  // Log to DB (fire and forget)
+  window._wjsLogSecurity&&window._wjsLogSecurity(type,severity,'[SIMULATED] '+msg);
+  // Refresh DB table if visible
+  setTimeout(()=>{const sec=document.getElementById('admin-security');if(sec&&sec.classList.contains('on'))loadSecurityEvents();},1500);
+}
+
+function resetSecMonitor(){
+  secThreatLevel=0;updateSecThreat();
+  const log=document.getElementById('sec-event-log');
+  if(log)log.innerHTML=`<div class="sec-log-entry"><span class="sec-log-ts">${new Date().toLocaleTimeString()}</span><span class="sec-log-type info">SYS/RESET</span><span class="sec-log-msg">Security monitor reset. All 8 modules active.</span></div>`;
+  ['sp-vis','sp-clip','sp-dom','sp-bot'].forEach(id=>{
+    const d=document.getElementById(id+'-dot'),l=document.getElementById(id+'-lbl');
+    if(d)d.className='sp-dot on';
+    if(l){l.style.color='';const base={'sp-vis':'Tab: Visible','sp-clip':'Clipboard: Watching','sp-dom':'DOM Integrity: OK','sp-bot':'Bot Check: Active'};l.textContent=base[id]||'';}
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   WJS SECURITY ENHANCEMENT PACKAGE REV 3.0
+   ─ SEC-01  Tab Visibility Tamper Logger
+   ─ SEC-02  Clipboard Hijack Detection
+   ─ SEC-03  Bot / Automation Detection
+   ─ SEC-04  DOM Integrity Monitor
+   ─ SEC-05  Suspicious Input Pattern Detector
+   ─ SEC-06  DevTools / Screen Capture Detection
+   ─ SEC-07  Security Event Audit Stream (Supabase)
+   ─ SEC-08  Session Token Binding / Fingerprint
+════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  /* ── SEC-08: SESSION FINGERPRINT ─────────────────────────── */
+  function buildFingerprint(){
+    const nav=window.navigator;
+    const raw=[nav.userAgent||'',nav.language||'',(nav.languages||[]).join(','),
+      Intl.DateTimeFormat().resolvedOptions().timeZone||'',
+      screen.width+'x'+screen.height,screen.colorDepth||'',
+      nav.hardwareConcurrency||'',nav.platform||''].join('|');
+    let h=5381;for(let i=0;i<raw.length;i++)h=((h<<5)+h)^raw.charCodeAt(i);
+    return(h>>>0).toString(16);
+  }
+  window._wjsBuildFP=buildFingerprint;
+  const FP_KEY='wjs_session_fp';
+  function storeFP(){try{sessionStorage.setItem(FP_KEY,buildFingerprint());}catch(e){}}
+  function verifyFP(){
+    try{
+      const stored=sessionStorage.getItem(FP_KEY);
+      if(!stored)return true;
+      const current=buildFingerprint();
+      if(stored!==current){logSec('SESSION_BIND_FAIL','critical','Fingerprint mismatch stored='+stored+' current='+current);return false;}
+      return true;
+    }catch(e){return true;}
+  }
+  // Wrap admin write functions to verify FP first
+  ['addUser','revokeUser','confirmDeleteWithReason'].forEach(fn=>{
+    const orig=window[fn];
+    if(typeof orig==='function'){
+      window[fn]=async function(){
+        if(!verifyFP()){alert('Security alert: Session fingerprint mismatch. Please sign out and sign back in.');window.doLogout&&window.doLogout();return;}
+        return orig.apply(this,arguments);
+      };
+    }
+  });
+  // Store FP on login
+  const _origDL=window.doLogin;
+  if(typeof _origDL==='function'){window.doLogin=async function(){storeFP();return _origDL.apply(this,arguments);};}
+
+  /* ── SEC-07: SECURITY EVENT AUDIT STREAM ──────────────────── */
+  function logSec(eventType,severity,payload){
+    try{
+      const username=(typeof currentUser!=='undefined'&&currentUser)?currentUser.username:null;
+      const body=JSON.stringify({event_type:eventType,severity,username,session_id:buildFingerprint(),payload:String(payload).substring(0,500),user_agent:navigator.userAgent.substring(0,300)});
+      fetch(SUPA_URL+'/rest/v1/security_events',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body,keepalive:true}).catch(()=>{});
+      // Also push to UI log if visible
+      appendSecLogEntry&&appendSecLogEntry(eventType,severity,payload);
+      // Update threat meter
+      const weights={critical:20,warn:10,info:2};
+      secThreatLevel=Math.min(100,secThreatLevel+(weights[severity]||5));
+      updateSecThreat&&updateSecThreat();
+    }catch(e){}
+  }
+  window._wjsLogSecurity=logSec;
+
+  /* ── SEC-01: TAB VISIBILITY TAMPER LOGGER ─────────────────── */
+  let tabHideCount=0,tabHideWindowStart=0;
+  document.addEventListener('visibilitychange',function(){
+    if(!window.currentUser)return;
+    const now=Date.now();
+    if(document.hidden){
+      tabHideCount++;
+      if(now-tabHideWindowStart>2*60*1000){tabHideCount=1;tabHideWindowStart=now;}
+      logSec('TAB_HIDE',tabHideCount>3?'critical':'warn','Tab hidden. Count in window: '+tabHideCount+(tabHideCount>3?' — RAPID SWITCHING DETECTED':''));
+    }else{
+      logSec('TAB_SHOW','info','Tab restored. Hidden count: '+tabHideCount);
+    }
+  });
+
+  /* ── SEC-02: CLIPBOARD HIJACK DETECTION ───────────────────── */
+  const INJECT_PATS=[/document\./i,/window\./i,/eval\s*\(/i,/javascript:/i,/<script/i,/onerror=/i,/onload=/i,/base64/i];
+  ['login-username','login-code'].forEach(fid=>{
+    const el=document.getElementById(fid);
+    if(!el)return;
+    el.addEventListener('paste',function(e){
+      try{
+        const pasted=(e.clipboardData||window.clipboardData).getData('text')||'';
+        const isInjection=INJECT_PATS.some(p=>p.test(pasted));
+        const hasNonPrint=/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(pasted);
+        if(isInjection||hasNonPrint){
+          e.preventDefault();
+          logSec('CLIPBOARD_INJECT','critical','Injection pattern in paste to '+fid+' | len:'+pasted.length+' | preview:'+pasted.substring(0,40));
+          return;
+        }
+        if(fid==='login-code'||pasted.length>80){
+          logSec('CLIPBOARD_PASTE','warn','Paste into '+fid+' | length:'+pasted.length+(fid==='login-code'?' | password field':''));
+        }
+      }catch(ex){}
+    });
+  });
+
+  /* ── SEC-03: BOT / AUTOMATION DETECTION ───────────────────── */
+  let mouseMovements=0,lastKS=0,ksIntervals=[],loginFocusTime=Date.now();
+  document.addEventListener('mousemove',()=>mouseMovements++,{passive:true});
+  document.addEventListener('keydown',function(){
+    const now=Date.now();if(lastKS>0){ksIntervals.push(now-lastKS);if(ksIntervals.length>20)ksIntervals.shift();}lastKS=now;
+  },{passive:true});
+  const _origDLBot=window.doLogin;
+  if(typeof _origDLBot==='function'){
+    window.doLogin=async function(){
+      const fillTime=Date.now()-loginFocusTime;
+      const avgKS=ksIntervals.length>0?ksIntervals.reduce((a,b)=>a+b,0)/ksIntervals.length:999;
+      const score=[(mouseMovements<5?40:0),(avgKS<40&&ksIntervals.length>3?35:0),(fillTime<800?25:0)].reduce((a,b)=>a+b,0);
+      if(score>=60){
+        logSec('BOT_DETECT','critical','Automated submission. Score:'+score+' mouse:'+mouseMovements+' avgKS:'+avgKS.toFixed(1)+'ms fillTime:'+fillTime+'ms');
+        const errEl=document.getElementById('login-err');
+        if(errEl){errEl.textContent='Access Denied — Invalid Credentials';errEl.style.display='block';}
+        return;
+      }
+      return _origDLBot.apply(this,arguments);
+    };
+  }
+  const _origDLOBotReset=window.doLogout;
+  if(typeof _origDLOBotReset==='function'){
+    window.doLogout=function(){mouseMovements=0;ksIntervals=[];lastKS=0;loginFocusTime=Date.now();return _origDLOBotReset.apply(this,arguments);};
+  }
+
+  /* ── SEC-04: DOM INTEGRITY MONITOR ────────────────────────── */
+  setTimeout(function(){
+    ['v-mod','c-mod','e-mod'].forEach(function(fieldId){
+      const el=document.getElementById(fieldId);if(!el)return;
+      const proto=Object.getPrototypeOf(el);
+      const descriptor=Object.getOwnPropertyDescriptor(proto,'value');
+      if(!descriptor)return;
+      Object.defineProperty(el,'value',{
+        get:function(){return descriptor.get.call(this);},
+        set:function(v){
+          const expected=window.currentUser?window.currentUser.username:null;
+          const portalVisible=document.getElementById('portal-page')&&document.getElementById('portal-page').style.display!=='none';
+          if(expected&&v!==''&&v!==expected&&portalVisible){
+            logSec('DOM_TAMPER','critical','Mod field value set programmatically: '+fieldId+' | value:'+String(v).substring(0,50)+' | expected:'+expected);
+          }
+          descriptor.set.call(this,v);
+        },
+        configurable:true
+      });
+    });
+    // Watch role display via MutationObserver
+    const roleEl=document.getElementById('user-role-display');
+    if(roleEl){
+      let lastRole=roleEl.textContent;
+      new MutationObserver(function(){
+        if(!window.currentUser)return;
+        const cur=roleEl.textContent;
+        if(cur&&cur!==lastRole&&lastRole){
+          logSec('DOM_TAMPER','critical','Role display tampered. was:'+lastRole+' now:'+cur);
+          setTimeout(()=>{alert('SECURITY ALERT: DOM tampering detected. Session terminated.');window.doLogout&&window.doLogout();},100);
+        }
+        lastRole=cur;
+      }).observe(roleEl,{childList:true,subtree:true,characterData:true});
+    }
+  },2000);
+
+  /* ── SEC-05: SUSPICIOUS INPUT PATTERN DETECTOR ─────────────── */
+  const SQLI=[/('?\s*(or|and)\s*'?\d)/i,/(\bor\b\s+\d=\d)/i,/(\bunion\b.*\bselect\b)/i,/(--\s*$)/m,/(;\s*drop\s+table)/i,/(exec\s*\()/i];
+  const XSS=[/<script[\s>]/i,/javascript:/i,/on\w+=["']/i,/data:text\/html/i];
+  function scanPayload(values){
+    for(const[key,val]of Object.entries(values)){
+      const v=String(val||'');
+      for(const pat of[...SQLI,...XSS]){
+        if(pat.test(v)){logSec('INJECT_ATTEMPT','critical','Injection in field:'+key+' | pattern:'+pat.toString()+' | val:'+v.substring(0,80));return{blocked:true,field:key};}
+      }
+    }
+    return{blocked:false};
+  }
+  // Hook submitEntry
+  const _origSE=window.submitEntry;
+  if(typeof _origSE==='function'){
+    window.submitEntry=async function(type){
+      const p=type==='vtos'?'v':type==='cg'?'c':'e';
+      const scan=scanPayload({username:(document.getElementById(p+'-user')||{}).value,userid:(document.getElementById(p+'-uid')||{}).value,notes:(document.getElementById(p+'-notes')||{}).value});
+      if(scan.blocked){const e=document.getElementById(type+'-err');if(e){e.textContent='Submission blocked — invalid input detected.';e.style.display='block';}return;}
+      return _origSE.apply(this,arguments);
+    };
+  }
+  // Hook login
+  const _origDLScan=window.doLogin;
+  if(typeof _origDLScan==='function'){
+    window.doLogin=async function(){
+      const scan=scanPayload({username:(document.getElementById('login-username')||{}).value,code:(document.getElementById('login-code')||{}).value});
+      if(scan.blocked){const e=document.getElementById('login-err');if(e){e.textContent='Access Denied — Invalid Credentials';e.style.display='block';}return;}
+      return _origDLScan.apply(this,arguments);
+    };
+  }
+
+  /* ── SEC-06: DEVTOOLS / SCREEN CAPTURE DETECTION ──────────── */
+  let devtoolsAlerted=false;
+  let lastDim={iw:window.innerWidth,ih:window.innerHeight};
+  function checkDevtools(){
+    if(!window.currentUser)return;
+    const gapW=window.outerWidth-window.innerWidth;
+    const gapH=window.outerHeight-window.innerHeight;
+    const wChg=Math.abs(window.innerWidth-lastDim.iw)>50;
+    const hChg=Math.abs(window.innerHeight-lastDim.ih)>50;
+    if((gapW>160||gapH>160)&&!devtoolsAlerted&&(wChg||hChg)){
+      devtoolsAlerted=true;
+      logSec('DEVTOOLS_OPEN','warn','DevTools suspected. outer:'+window.outerWidth+'x'+window.outerHeight+' inner:'+window.innerWidth+'x'+window.innerHeight);
+    }
+    if(gapW<160&&gapH<160)devtoolsAlerted=false;
+    lastDim={iw:window.innerWidth,ih:window.innerHeight};
+  }
+  setInterval(checkDevtools,2000);
+  window.addEventListener('resize',checkDevtools,{passive:true});
+  // Screen capture API interception
+  if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia){
+    const _orig=navigator.mediaDevices.getDisplayMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getDisplayMedia=function(opts){
+      logSec('SCREEN_CAPTURE','warn','Screen capture API called. opts:'+JSON.stringify(opts||{}).substring(0,100));
+      return _orig(opts);
+    };
+  }
+
+  /* ── DRAG-DROP LOCKOUT OUTSIDE EVIDENCE ZONES ─────────────── */
+  window.addEventListener('dragover',function(e){if(!e.target.closest('.evidence-drop-zone')){e.preventDefault();e.dataTransfer.dropEffect='none';}},false);
+  window.addEventListener('drop',function(e){if(!e.target.closest('.evidence-drop-zone')){e.preventDefault();logSec('DRAG_DROP_BLOCKED','warn','File drop blocked outside evidence zone. Target:'+(e.target.tagName||'unknown'));}},false);
+
+  /* ── CONSOLE HONEYPOT EXTENSION ───────────────────────────── */
+  try{
+    Object.defineProperty(window,'wjsInternal',{
+      get:function(){logSec('CONSOLE_PROBE','critical','Console honeypot triggered — wjsInternal accessed');return'⚑ This access has been logged.';},
+      configurable:false
+    });
+  }catch(e){}
+
+  /* ── AUTOCOMPLETE HARDENING ON MOD FIELDS ─────────────────── */
+  setTimeout(function(){
+    ['v-mod','c-mod','e-mod'].forEach(function(id){
+      const el=document.getElementById(id);
+      if(el){el.setAttribute('autocomplete','off');el.setAttribute('autocorrect','off');el.setAttribute('autocapitalize','off');el.setAttribute('spellcheck','false');}
+    });
+  },1000);
+
+  /* ── INIT LOG ──────────────────────────────────────────────── */
+  setTimeout(function(){
+    logSec('SECURITY_INIT','info','WJS Security Package REV 3.0 loaded. 8 modules active. FP:'+buildFingerprint());
+    const initTs=document.getElementById('sec-init-ts');
+    if(initTs)initTs.textContent=new Date().toLocaleTimeString();
+  },500);
+
+})();
+
 document.addEventListener('paste',function(e){
   const items=e.clipboardData&&e.clipboardData.items;if(!items)return;
   let activeType=null;
