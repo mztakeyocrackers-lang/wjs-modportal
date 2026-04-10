@@ -1240,6 +1240,20 @@ const selectedOffense={vtos:'',cg:'',ex:''};
 const allEntries={vtos:[],cg:[],ex:[]};
 let currentUser=null;
 
+function getLocalDateInputValue(d=new Date()){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function ensureDefaultOffenseDate(id){
+  const el=document.getElementById(id);
+  if(el&&!el.value)el.value=getLocalDateInputValue();
+}
+function ensureAllDefaultOffenseDates(){
+  ['v-date','c-date','e-date'].forEach(ensureDefaultOffenseDate);
+}
+
 /* ════════════════════════════════════════════════════════════
    SECURITY — BRUTE FORCE LOCKOUT
    Max 5 failed attempts → 10 minute lockout, stored in localStorage
@@ -1416,6 +1430,7 @@ function fillModFields(){
 ════════════════════════════════════════════════════════════ */
 // Init lockout UI on page load
 window.addEventListener('DOMContentLoaded',updateLoginLockoutUI);
+window.addEventListener('DOMContentLoaded',ensureAllDefaultOffenseDates);
 
 async function doLogin(){
   // Check lockout first
@@ -1608,11 +1623,7 @@ async function sendSubmissionWebhook(type,data){
   const submittedUnix=Math.floor(Date.now()/1000);
   const dateRaw=String(data.date||'').trim();
   const ymd=/^(\d{4})-(\d{2})-(\d{2})$/.exec(dateRaw);
-  let offenseWhen=dateRaw||'N/A';
-  if(ymd){
-    const offenseUnix=Math.floor(Date.UTC(Number(ymd[1]),Number(ymd[2])-1,Number(ymd[3]),12,0,0)/1000);
-    offenseWhen=`<t:${offenseUnix}:D>`;
-  }
+  const offenseWhen=ymd?`${ymd[2]}/${ymd[3]}/${ymd[1]}`:(dateRaw||'N/A');
   const payload={
     username:'WJS Moderation Logs',
     embeds:[{
@@ -1822,7 +1833,9 @@ async function confirmAndSubmit(){
       void sendSubmissionWebhook(type,data);
       closeConfirm();toastEl.style.display='block';
       const durEl=document.getElementById(p+'-duration');
-      [p+'-user',p+'-uid',p+'-date',p+'-notes'].forEach(id=>document.getElementById(id).value='');
+      [p+'-user',p+'-uid',p+'-notes'].forEach(id=>document.getElementById(id).value='');
+      const dateEl=document.getElementById(p+'-date');
+      if(dateEl)dateEl.value=getLocalDateInputValue();
       document.getElementById(p+'-action').value='';if(durEl)durEl.value='';
       document.getElementById(type+'-duration-wrap').style.display='none';
       const priorBadge=document.querySelector('#'+p+'-prior-display .prior-auto-badge');if(priorBadge)priorBadge.className='prior-auto-badge first';
@@ -1843,7 +1856,9 @@ async function confirmAndSubmit(){
 async function submitEntry(type){
   const p=type==='vtos'?'v':type==='cg'?'c':'e';
   const username=document.getElementById(p+'-user').value.trim();
-  const date=document.getElementById(p+'-date').value;
+  const dateInput=document.getElementById(p+'-date');
+  if(dateInput&&!dateInput.value)dateInput.value=getLocalDateInputValue();
+  const date=dateInput?dateInput.value:'';
   const action=document.getElementById(p+'-action').value;
   const prior=getPrior(p);const notes=document.getElementById(p+'-notes').value.trim();
   const userid=document.getElementById(p+'-uid').value.trim();
