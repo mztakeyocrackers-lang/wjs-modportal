@@ -49,7 +49,6 @@
 .tos-decline-link{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#1e1c18;text-align:center;display:block;margin-top:12px;cursor:pointer;transition:color .15s;}
 .tos-decline-link:hover{color:#4a4540;}
 @media(max-width:600px){.tos-box{max-height:100vh;border-left:none;border-right:none;}.tos-header,.tos-body,.tos-footer{padding-left:20px;padding-right:20px;}.tos-data-key{min-width:130px;}}
-</style>
 :root {
   --ink:#0a0908;--paper:#f5efe2;--paper2:#ede7d9;--paper3:#e5dfd1;--cream:#faf6ee;
   --red:#8c1515;--red-mid:#a51c1c;--red-deep:#5e0d0d;--red-light:#f8ecec;--red-glow:rgba(140,21,21,.15);
@@ -618,7 +617,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
 ═══════════════════════════════════════════════════════════ -->
 <script>
 /* ── TOS MODAL ── */
-(function(){
+document.addEventListener('DOMContentLoaded',function(){(function(){
   const TOS_KEY='wjs_tos_accepted_v1';
   const overlay=document.getElementById('tos-overlay');
   const body=document.getElementById('tos-body');
@@ -662,7 +661,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
   window.declineTos=function(){
     document.body.innerHTML='<div style="min-height:100vh;background:#020100;display:flex;align-items:center;justify-content:center;font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#1e1c18;">Access Declined — You may close this window</div>';
   };
-})();
+})();});
 </script>
 
 <script>  
