@@ -602,6 +602,8 @@ document.addEventListener('keydown',function(e){
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['I','J','C','i','j','c'].includes(e.key)){e.preventDefault();e.stopImmediatePropagation();return false;}
   // Ctrl+U (view source)
   if((e.ctrlKey||e.metaKey)&&(e.key==='u'||e.key==='U')){e.preventDefault();e.stopImmediatePropagation();return false;}
+  // Ctrl+S (save page)
+if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S')){e.preventDefault();e.stopImmediatePropagation();return false;}
 },true);
 
 /* ── 3. RIGHT-CLICK DISABLE on portal only ───────────────── */
