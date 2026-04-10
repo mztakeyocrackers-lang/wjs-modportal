@@ -2024,7 +2024,7 @@ async function deleteEntry(type,id){
   document.getElementById('delete-reason-overlay').classList.add('on');
   setTimeout(()=>document.getElementById('delete-reason-input').focus(),100);
 }
-function closeDeleteReason(){document.getElementById('delete-reason-overlay').classList.remove('on');pendingDeleteType=null;pendingDeleteId=null;pendingDeleteEntryDetails=null;}
+function closeDeleteReason(){document.getElementById('delete-reason-overlay').classList.remove('on');pendingDeleteType=null;pendingDeleteId=null;pendingDeleteEntryDetails=null;const confirmBtn=document.querySelector('#delete-reason-overlay .admin-pin-btn');if(confirmBtn){confirmBtn.disabled=false;confirmBtn.textContent='Confirm & Log Deletion →';}}
 let _deletionHistoryCols=null;
 async function getDeletionHistoryCols(){
   if(_deletionHistoryCols)return _deletionHistoryCols;
