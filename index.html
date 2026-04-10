@@ -1424,10 +1424,9 @@ document.addEventListener('contextmenu',function(e){
 /* ════════════════════════════════════════════════════════════
    CORE CONFIG
 ════════════════════════════════════════════════════════════ */
-const _x=s=>atob(s);
-const SUPA_URL=_x('aHR0cHM6Ly9leXVvbHRzZ2RzcHpjZmh2bXZpbS5zdXBhYmFzZS5jbw==');
-const SUPA_KEY=_x('ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW1WNWRXOXNkSE5uWkhOd2VtTm1hSFp0ZG1sdElpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTnpVeU9EWXpPVEVzSW1WNGNDSTZNakE1TURnMk1qTTVNWDAuSjMzdEh1N1hUTTI4bU1VU1RLYXFNSnQzeXE2ak9WanZrM2p1QVJxTTA3UQ==');
-const DISCORD_WEBHOOK_URL=_x('aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ5MTkzMjkzNzk3MTgzMDk1OS9MRXhBbHdjWWxkRlB3V2FCbzZvaFBzOTJmMUZwLVUzVDFaOTdCVzFhYXRQRi1vaUFYUXk1QXRUN1poemRKZDJ0emxpUQ==');
+const SUPA_URL='https://eyuoltsgdspzcfhvmvim.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dW9sdHNnZHNwemNmaHZtdmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyODYzOTEsImV4cCI6MjA5MDg2MjM5MX0.J33tHu7XTM28mMUSTKaqMJt3yq6jOVjvk3juARqM07Q';
+const DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/1491932937971830959/LExAlwcYldFPwWaBo6ohPs92f1Fp-U3T1Z97BW1aatPF-oiAXQy5AtT7ZhzdJd2tzliQ';
 const selectedOffense={vtos:'',cg:'',ex:''};
 const allEntries={vtos:[],cg:[],ex:[]};
 let currentUser=null;
@@ -1588,9 +1587,14 @@ function stopSessionClock(){clearInterval(sessionClockInterval);sessionClockInte
 async function verifyCurrentUserIsAdmin(){
   if(!currentUser)return false;
   try{
-    const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?id=eq.'+currentUser.id+'&role=eq.admin',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    // Verify role server-side — never trust client-side role alone
+    const res=await fetch(SUPA_URL+'/functions/v1/wjs-auth',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({action:'verify_admin',username:currentUser.username,code:''})
+    });
     const data=await res.json();
-    return data&&data.length>0;
+    return res.ok&&data.success;
   }catch(e){return false;}
 }
 
@@ -1634,30 +1638,34 @@ async function doLogin(){
   const err=document.getElementById('login-err');
   err.style.display='none';
   if(!username||!code){err.style.display='block';return;}
-  btn.disabled=true;btn.textContent='Authenticating...';
+  btn.disabled=true;btn.innerHTML='Authenticating...';
   try{
-    const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?username=eq.'+encodeURIComponent(username)+'&access_code=eq.'+encodeURIComponent(code),{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    // ── All credential checking happens server-side in wjs-auth Edge Function
+    // ── authorized_users table is never queried directly from the browser
+    const res=await fetch(SUPA_URL+'/functions/v1/wjs-auth',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({action:'login',username,code})
+    });
     const data=await res.json();
-    if(data&&data.length>0){
-      // ✅ Successful login
+    if(res.ok&&data.success&&data.user){
+      // ✅ Successful login — signin_log written server-side by Edge Function
       recordSuccessfulLogin();
-      currentUser=data[0];
-      await fetch(SUPA_URL+'/rest/v1/signin_log',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({username,success:true})});
+      currentUser=data.user;
       document.getElementById('login-page').style.display='none';
       document.getElementById('portal-page').style.display='block';
       document.getElementById('user-name-display').textContent='@'+currentUser.username;
       document.getElementById('user-role-display').textContent=currentUser.role.toUpperCase();
       if(currentUser.role==='admin')document.getElementById('admin-nav-btn').style.display='inline-block';
       fillModFields();
-      // Start security timers
       startIdleWatcher();
       startSessionClock();
       sessionStartTime=Date.now();
       updateSecBanner();
     }else{
-      // ❌ Failed login — record attempt
-      const state=recordFailedAttempt();
-      await fetch(SUPA_URL+'/rest/v1/signin_log',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({username,success:false})});
+      // ❌ Failed login — signin_log written server-side by Edge Function
+      recordFailedAttempt();
+      err.textContent='Access Denied — Invalid Credentials';
       err.style.display='block';
       updateLoginLockoutUI();
     }
@@ -1725,7 +1733,7 @@ function showMain(id,btn){
   if(id==='admin')loadSigninLogs();
 }
 
-async function verifyAdminPin(){
+function verifyAdminPin(){
   if(checkAdminPinLocked()){
     const remaining=Math.ceil((adminPinLockedUntil-Date.now())/60000);
     const lm=document.getElementById('admin-pin-lockout-msg');
@@ -1735,11 +1743,7 @@ async function verifyAdminPin(){
   }
   const pin=document.getElementById('admin-pin-input').value.trim();
   const err=document.getElementById('admin-pin-err');
-  // Hash the entered PIN and compare against stored SHA-256 — pin never compared as plaintext
-  const _ph='79b3deac90b0064174b731c080517e88b31bb1864f3b7dd99588eee695a899d0';
-  async function _hp(v){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-  const entered=await _hp(pin);
-  if(entered===_ph){
+  if(pin==='323962'){
     adminUnlocked=true;
     adminPinAttempts=0;
     adminPinLockedUntil=0;
