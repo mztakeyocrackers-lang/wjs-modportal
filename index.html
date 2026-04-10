@@ -1618,12 +1618,50 @@ async function checkPrior(type){
 function getPrior(p){const el=document.getElementById(p+'-prior-value');return el?el.value:'First offense';}
 const tableMap={vtos:'vtos_log',cg:'cg_log',ex:'exploiting_log'};
 async function sendSubmissionWebhook(type,data){
+  function safeWebhookFilename(name,idx){
+    const fallback='evidence-'+(idx+1);
+    const clean=String(name||fallback).replace(/[^\w.\- ()]/g,'_').trim();
+    return clean||fallback;
+  }
+  function parseWebhookEvidence(raw){
+    if(!raw)return[];
+    try{
+      const parsed=typeof raw==='string'?JSON.parse(raw):raw;
+      if(!Array.isArray(parsed))return[];
+      return parsed.filter(f=>f&&typeof f.data==='string'&&f.data.startsWith('data:'));
+    }catch(e){return[];}
+  }
+  function dataUrlToBlob(dataUrl){
+    const comma=dataUrl.indexOf(',');
+    if(comma<0)return null;
+    const header=dataUrl.slice(0,comma);
+    const b64=dataUrl.slice(comma+1);
+    const mimeMatch=/^data:([^;]+);base64$/i.exec(header);
+    const mime=mimeMatch&&mimeMatch[1]?mimeMatch[1]:'application/octet-stream';
+    try{
+      const binary=atob(b64);
+      const bytes=new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+      return new Blob([bytes],{type:mime});
+    }catch(e){return null;}
+  }
   const typeLabels={vtos:'VTOS Log',cg:'Community Guidelines',ex:'Exploiting Log'};
   const actionLabel=(data.action||'N/A')+(data.ban_duration?(' ('+data.ban_duration+')'):'');
   const submittedUnix=Math.floor(Date.now()/1000);
   const dateRaw=String(data.date||'').trim();
   const ymd=/^(\d{4})-(\d{2})-(\d{2})$/.exec(dateRaw);
   const offenseWhen=ymd?`${ymd[2]}/${ymd[3]}/${ymd[1]}`:(dateRaw||'N/A');
+  const parsedEvidence=parseWebhookEvidence(data.evidence);
+  const evidenceFiles=[];
+  for(let i=0;i<parsedEvidence.length&&evidenceFiles.length<10;i++){
+    const ev=parsedEvidence[i];
+    const blob=dataUrlToBlob(ev.data);
+    if(blob)evidenceFiles.push({blob,name:safeWebhookFilename(ev.name,i)});
+  }
+  const skippedEvidence=Math.max(0,parsedEvidence.length-evidenceFiles.length);
+  const evidenceSummary=evidenceFiles.length===0
+    ?'None attached'
+    :'Attached '+evidenceFiles.length+' file(s)'+(skippedEvidence>0?' ('+skippedEvidence+' skipped)':'');
   const payload={
     username:'WJS Moderation Logs',
     embeds:[{
@@ -1640,15 +1678,34 @@ async function sendSubmissionWebhook(type,data){
         {name:'🛡️ Logged By',value:data.mod||'Unknown',inline:true},
         {name:'📅 Offense Date',value:offenseWhen,inline:true},
         {name:'🕒 Submitted At',value:`<t:${submittedUnix}:f> • <t:${submittedUnix}:R>`,inline:true},
+        {name:'📎 Evidence',value:evidenceSummary,inline:true},
         {name:'📝 Notes',value:(data.notes&&data.notes.trim())?data.notes.trim().slice(0,1000):'None',inline:false}
       ],
       timestamp:new Date().toISOString()
     }]
   };
+  if(evidenceFiles.length>0){
+    try{
+      const form=new FormData();
+      form.append('payload_json',JSON.stringify(payload));
+      evidenceFiles.forEach((f,i)=>form.append(`files[${i}]`,f.blob,f.name));
+      const res=await fetch(DISCORD_WEBHOOK_URL,{method:'POST',body:form});
+      if(res.ok)return true;
+    }catch(e){}
+  }
   try{
     const res=await fetch(DISCORD_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(res.ok)return true;
   }catch(e){}
+  if(evidenceFiles.length>0){
+    try{
+      const form=new FormData();
+      form.append('payload_json',JSON.stringify(payload));
+      evidenceFiles.forEach((f,i)=>form.append(`files[${i}]`,f.blob,f.name));
+      await fetch(DISCORD_WEBHOOK_URL,{method:'POST',mode:'no-cors',body:form});
+      return true;
+    }catch(e){}
+  }
   try{
     await fetch(DISCORD_WEBHOOK_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});
     return true;
