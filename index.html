@@ -6,6 +6,50 @@
 <title>WJS — Moderation Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
+/* ── TOS MODAL ── */
+#tos-overlay{position:fixed;inset:0;background:#020100;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#tos-overlay.hidden{display:none;}
+.tos-box{background:#0a0806;border:1px solid #1c1a18;border-top:2px solid #8c1515;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 40px 80px rgba(0,0,0,.9);}
+.tos-header{padding:28px 36px 20px;border-bottom:1px solid #1c1a18;flex-shrink:0;}
+.tos-badge{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:#8c1515;border:1px solid rgba(140,21,21,.3);padding:4px 12px;margin-bottom:16px;}
+.tos-badge-dot{width:5px;height:5px;border-radius:50%;background:#8c1515;animation:pulse 2s ease-in-out infinite;}
+.tos-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.1em;color:#e8e0d0;line-height:1;margin-bottom:6px;}
+.tos-subtitle{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.18em;color:#2e2c29;text-transform:uppercase;}
+.tos-body{padding:28px 36px;overflow-y:auto;flex:1;}
+.tos-body::-webkit-scrollbar{width:4px;}
+.tos-body::-webkit-scrollbar-track{background:#050302;}
+.tos-body::-webkit-scrollbar-thumb{background:#1c1a18;}
+.tos-section{margin-bottom:26px;}
+.tos-section-title{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:#8c1515;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.tos-section-title::after{content:'';flex:1;height:1px;background:#0e0c0a;}
+.tos-section p{font-family:'DM Sans',sans-serif;font-size:13px;color:#7d7469;line-height:1.85;margin-bottom:8px;}
+.tos-section p strong{color:#a09078;font-weight:600;}
+.tos-warning-box{background:rgba(140,21,21,.06);border:1px solid rgba(140,21,21,.18);border-left:3px solid #8c1515;padding:14px 18px;margin-bottom:10px;}
+.tos-warning-box p{color:#8c6060 !important;font-size:12.5px !important;margin-bottom:0 !important;}
+.tos-info-box{background:rgba(28,84,48,.06);border:1px solid rgba(28,84,48,.2);border-left:3px solid #1c5430;padding:14px 18px;margin-bottom:10px;}
+.tos-info-box p{color:#4a7a5a !important;font-size:12.5px !important;margin-bottom:0 !important;}
+.tos-data-row{display:flex;align-items:baseline;gap:0;padding:8px 0;border-bottom:1px solid #0a0806;}
+.tos-data-row:last-child{border-bottom:none;}
+.tos-data-key{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#2e2c29;min-width:180px;flex-shrink:0;}
+.tos-data-val{font-family:'DM Sans',sans-serif;font-size:12.5px;color:#7d7469;flex:1;line-height:1.6;}
+.tos-data-val.collected{color:#8c6060;}
+.tos-data-val.not-collected{color:#4a7a5a;}
+.tos-footer{padding:20px 36px 24px;border-top:1px solid #1c1a18;flex-shrink:0;}
+.tos-scroll-note{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;color:#1e1c18;text-transform:uppercase;text-align:center;margin-bottom:16px;transition:opacity .3s;}
+.tos-checkbox-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;cursor:pointer;}
+.tos-checkbox-row input[type="checkbox"]{accent-color:#8c1515;width:15px;height:15px;flex-shrink:0;margin-top:2px;cursor:pointer;}
+.tos-checkbox-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:#4a4540;line-height:1.75;cursor:pointer;}
+.tos-checkbox-label span{color:#8c1515;}
+.tos-accept-btn{width:100%;background:#8c1515;color:#f5efe2;border:none;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;padding:16px;cursor:pointer;transition:background .2s,box-shadow .2s,opacity .2s;display:flex;align-items:center;justify-content:center;gap:14px;}
+.tos-accept-btn:hover:not(:disabled){background:#a51c1c;box-shadow:0 4px 24px rgba(140,21,21,.4);}
+.tos-accept-btn:disabled{opacity:.25;cursor:not-allowed;}
+.tos-accept-btn-arrow{width:20px;height:1px;background:#f5efe2;position:relative;transition:width .25s;flex-shrink:0;}
+.tos-accept-btn-arrow::after{content:'';position:absolute;right:0;top:-3px;width:7px;height:7px;border-right:1.5px solid #f5efe2;border-top:1.5px solid #f5efe2;transform:rotate(45deg);}
+.tos-accept-btn:hover:not(:disabled) .tos-accept-btn-arrow{width:30px;}
+.tos-decline-link{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:#1e1c18;text-align:center;display:block;margin-top:12px;cursor:pointer;transition:color .15s;}
+.tos-decline-link:hover{color:#4a4540;}
+@media(max-width:600px){.tos-box{max-height:100vh;border-left:none;border-right:none;}.tos-header,.tos-body,.tos-footer{padding-left:20px;padding-right:20px;}.tos-data-key{min-width:130px;}}
+</style>
 :root {
   --ink:#0a0908;--paper:#f5efe2;--paper2:#ede7d9;--paper3:#e5dfd1;--cream:#faf6ee;
   --red:#8c1515;--red-mid:#a51c1c;--red-deep:#5e0d0d;--red-light:#f8ecec;--red-glow:rgba(140,21,21,.15);
@@ -573,6 +617,55 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
      These are all inlined first so they fire before DOM is ready
 ═══════════════════════════════════════════════════════════ -->
 <script>
+/* ── TOS MODAL ── */
+(function(){
+  const TOS_KEY='wjs_tos_accepted_v1';
+  const overlay=document.getElementById('tos-overlay');
+  const body=document.getElementById('tos-body');
+  const checkbox=document.getElementById('tos-checkbox');
+  const acceptBtn=document.getElementById('tos-accept-btn');
+  const scrollNote=document.getElementById('tos-scroll-note');
+  let scrolledToBottom=false;
+
+  // Check if already accepted this session
+  // (We use sessionStorage so they see it again on a fresh tab — not localStorage)
+  if(sessionStorage.getItem(TOS_KEY)==='1'){
+    overlay.classList.add('hidden');
+    return;
+  }
+
+  // Show overlay
+  overlay.classList.remove('hidden');
+
+  // Unlock checkbox only after user has scrolled to bottom
+  body.addEventListener('scroll',function(){
+    if(scrolledToBottom)return;
+    const atBottom=body.scrollTop+body.clientHeight>=body.scrollHeight-30;
+    if(atBottom){
+      scrolledToBottom=true;
+      checkbox.disabled=false;
+      scrollNote.style.opacity='0';
+      scrollNote.textContent='';
+    }
+  });
+
+  window.tosCheckboxChange=function(){
+    acceptBtn.disabled=!checkbox.checked;
+  };
+
+  window.acceptTos=function(){
+    if(!checkbox.checked)return;
+    sessionStorage.setItem(TOS_KEY,'1');
+    overlay.classList.add('hidden');
+  };
+
+  window.declineTos=function(){
+    document.body.innerHTML='<div style="min-height:100vh;background:#020100;display:flex;align-items:center;justify-content:center;font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#1e1c18;">Access Declined — You may close this window</div>';
+  };
+})();
+</script>
+
+<script>  
 /* ── 1. CONSOLE HONEYPOT ─────────────────────────────────── */
 (function(){
   const W=[
@@ -592,7 +685,7 @@ body{background:var(--dark-bg);font-family:'DM Sans',sans-serif;color:var(--dark
     'color:#5a2020;font-size:11px;font-family:monospace;'
   ];
   try{console.log(...W);console.log(...L);console.log(...L2);console.log(...L3);}catch(e){}
-})();
+})();  
 
 /* ── 2. DEVTOOLS KEYBOARD BLOCKER ────────────────────────── */
 document.addEventListener('keydown',function(e){
@@ -613,7 +706,104 @@ document.addEventListener('contextmenu',function(e){
   }
 });
 </script>
+<div id="tos-overlay">
+  <div class="tos-box">
 
+    <div class="tos-header">
+      <div class="tos-badge"><span class="tos-badge-dot"></span>Legal Notice · Required Reading</div>
+      <div class="tos-title">Terms of Access &amp; Privacy Notice</div>
+      <div class="tos-subtitle">Wild Journey Studios · Moderation Portal · Effective upon access</div>
+    </div>
+
+    <div class="tos-body" id="tos-body">
+
+      <div class="tos-section">
+        <div class="tos-section-title">01 · Who This Applies To</div>
+        <p>This portal is operated exclusively by <strong>Wild Journey Studios (WJS)</strong> and is restricted to current, authorized moderation staff. By accessing this portal, you confirm that you are an authorized member of the WJS moderation team and that your access credentials were issued directly to you by WJS leadership.</p>
+        <div class="tos-warning-box">
+          <p><strong>Unauthorized access is strictly prohibited.</strong> Any person who accesses, attempts to access, or uses this portal without explicit authorization from Wild Journey Studios will be permanently removed from all WJS platforms and communities. Repeat attempts may be escalated further.</p>
+        </div>
+      </div>
+
+      <div class="tos-section">
+        <div class="tos-section-title">02 · What Data We Collect</div>
+        <p>We want to be fully transparent. The following table outlines exactly what information this portal collects and why.</p>
+        <div style="border:1px solid #0e0c0a;padding:0 16px;margin-top:12px;">
+          <div class="tos-data-row"><span class="tos-data-key">Login username</span><span class="tos-data-val collected">Collected — stored in audit log on every sign-in attempt</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Sign-in timestamp</span><span class="tos-data-val collected">Collected — every login attempt is permanently timestamped</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Login success / failure</span><span class="tos-data-val collected">Collected — all attempts (successful and failed) are logged</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Moderation actions</span><span class="tos-data-val collected">Collected — every entry you file is attributed to your username</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Deletion actions</span><span class="tos-data-val collected">Collected — all entry deletions are logged with your identity and a mandatory reason</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Security events</span><span class="tos-data-val collected">Collected — suspicious activity, bot detection, and DOM integrity events are logged</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Browser / user agent</span><span class="tos-data-val collected">Collected — used for session fingerprinting and security audit purposes</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Session fingerprint</span><span class="tos-data-val collected">Collected — a non-identifying hash of your browser environment used to detect session hijacking</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Personal emails</span><span class="tos-data-val not-collected">Not collected — we do not collect, store, or process your personal email address</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Passwords / access codes</span><span class="tos-data-val not-collected">Your access code is stored in our database but is never transmitted outside of it</span></div>
+          <div class="tos-data-row"><span class="tos-data-key">Location / IP address</span><span class="tos-data-val not-collected">Not directly collected by this portal</span></div>
+        </div>
+      </div>
+
+      <div class="tos-section">
+        <div class="tos-section-title">03 · Audit Logs &amp; Permanent Records</div>
+        <p>All actions taken within this portal are <strong>permanently recorded</strong> in our moderation database. This includes every entry filed, every record deleted, and every sign-in attempt — successful or not. These logs are visible to WJS administrators and are used to ensure moderation accountability and data integrity.</p>
+        <p>Audit logs cannot be deleted by moderators. Admin-level deletions of moderation entries are themselves logged separately, including the identity of the admin who performed the deletion and the stated reason.</p>
+        <div class="tos-info-box">
+          <p>These logs exist to protect both players and moderators — they ensure moderation decisions are traceable, fair, and reviewable by WJS leadership.</p>
+        </div>
+      </div>
+
+      <div class="tos-section">
+        <div class="tos-section-title">04 · Authorized Use Only</div>
+        <p>This portal is a <strong>restricted internal tool</strong>. You are authorized to use it solely for the purpose of logging moderation actions within Wild Journey Studios games and communities. Any other use is unauthorized and constitutes a violation of these terms.</p>
+        <p>The following actions are explicitly prohibited:</p>
+        <p>— Sharing your access credentials with any other person, whether a WJS staff member or otherwise<br>
+        — Logging false, inaccurate, or malicious moderation entries<br>
+        — Accessing the portal for any purpose unrelated to official WJS moderation duties<br>
+        — Attempting to tamper with, inspect, or reverse-engineer the portal's source code or backend<br>
+        — Using automated tools, bots, or scripts to interact with the portal<br>
+        — Attempting to access admin functions beyond your assigned role<br>
+        — Deleting or modifying entries without a legitimate and documented reason</p>
+        <div class="tos-warning-box">
+          <p>Violation of any of the above will result in immediate revocation of portal access, permanent removal from WJS staff, and permanent ban from all WJS platforms with no right of appeal.</p>
+        </div>
+      </div>
+
+      <div class="tos-section">
+        <div class="tos-section-title">05 · Session Security</div>
+        <p>This portal operates a multi-layer security system. Your session is monitored for indicators of automated access, credential sharing, DOM tampering, and other suspicious behaviour. These events are logged automatically and reviewed by WJS administrators.</p>
+        <p>You agree to use this portal only from a device and network that you personally control. You agree not to share your screen, credentials, or active session with any other person while the portal is open.</p>
+        <p>Sessions will automatically expire after a period of inactivity as a security measure. You are responsible for signing out when you leave your device unattended.</p>
+      </div>
+
+      <div class="tos-section">
+        <div class="tos-section-title">06 · Data Retention &amp; Third Parties</div>
+        <p>All moderation data is stored securely in our <strong>Supabase</strong> database. Supabase is a third-party database provider and their own privacy policy applies to the storage of this data. New moderation submissions are also sent to a private <strong>Discord</strong> webhook for staff notification purposes. We do not sell, share, or distribute any data to any other third party.</p>
+        <p>Moderation logs are retained indefinitely as part of Wild Journey Studios' permanent player record system. Deletion of entries by administrators is tracked but does not guarantee permanent removal from all backups.</p>
+      </div>
+
+      <div class="tos-section">
+        <div class="tos-section-title">07 · Changes to These Terms</div>
+        <p>Wild Journey Studios reserves the right to update or modify these terms at any time. Continued use of the portal after changes are made constitutes acceptance of the updated terms. It is your responsibility to review these terms when prompted.</p>
+        <p>Questions, concerns, or access issues should be directed to <strong>@aurxora</strong> on the WJS staff platform.</p>
+      </div>
+
+    </div>
+
+    <div class="tos-footer">
+      <div class="tos-scroll-note" id="tos-scroll-note">↓ Scroll to read all terms before accepting</div>
+      <label class="tos-checkbox-row">
+        <input type="checkbox" id="tos-checkbox" disabled onchange="tosCheckboxChange()">
+        <span class="tos-checkbox-label">I confirm that I am an <span>authorized WJS staff member</span>, that I have read and understood these terms, and that I agree to use this portal only for official Wild Journey Studios moderation purposes.</span>
+      </label>
+      <button class="tos-accept-btn" id="tos-accept-btn" disabled onclick="acceptTos()">
+        <span>I Agree — Enter Portal</span>
+        <span class="tos-accept-btn-arrow"></span>
+      </button>
+      <span class="tos-decline-link" onclick="declineTos()">I do not agree — close this page</span>
+    </div>
+
+  </div>
+</div>
 <!-- LOGIN PAGE -->
 <div id="login-page">
   <div class="login-topbar">
