@@ -1235,6 +1235,7 @@ document.addEventListener('contextmenu',function(e){
 ════════════════════════════════════════════════════════════ */
 const SUPA_URL='https://eyuoltsgdspzcfhvmvim.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dW9sdHNnZHNwemNmaHZtdmltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyODYzOTEsImV4cCI6MjA5MDg2MjM5MX0.J33tHu7XTM28mMUSTKaqMJt3yq6jOVjvk3juARqM07Q';
+const DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/1491932937971830959/LExAlwcYldFPwWaBo6ohPs92f1Fp-U3T1Z97BW1aatPF-oiAXQy5AtT7ZhzdJd2tzliQ';
 const selectedOffense={vtos:'',cg:'',ex:''};
 const allEntries={vtos:[],cg:[],ex:[]};
 let currentUser=null;
@@ -1601,6 +1602,37 @@ async function checkPrior(type){
 }
 function getPrior(p){const el=document.getElementById(p+'-prior-value');return el?el.value:'First offense';}
 const tableMap={vtos:'vtos_log',cg:'cg_log',ex:'exploiting_log'};
+async function sendSubmissionWebhook(type,data){
+  const typeLabels={vtos:'VTOS Log',cg:'Community Guidelines',ex:'Exploiting Log'};
+  const actionLabel=(data.action||'N/A')+(data.ban_duration?(' ('+data.ban_duration+')'):'');
+  const payload={
+    embeds:[{
+      title:'New Ban Log Submission',
+      color:String(actionLabel).toLowerCase().includes('permanent')?0xb22222:0xdaa520,
+      fields:[
+        {name:'Log Type',value:typeLabels[type]||type,inline:true},
+        {name:'Player',value:data.username||'N/A',inline:true},
+        {name:'User ID',value:data.userid||'Not provided',inline:true},
+        {name:'Offense',value:data.offense||'N/A',inline:false},
+        {name:'Action',value:actionLabel,inline:true},
+        {name:'Prior',value:data.prior||'First offense',inline:true},
+        {name:'Logged By',value:data.mod||'Unknown',inline:true},
+        {name:'Date',value:data.date||'N/A',inline:true},
+        {name:'Notes',value:(data.notes&&data.notes.trim())?data.notes.trim().slice(0,1000):'None',inline:false}
+      ],
+      timestamp:new Date().toISOString()
+    }]
+  };
+  try{
+    const res=await fetch(DISCORD_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(res.ok)return true;
+  }catch(e){}
+  try{
+    await fetch(DISCORD_WEBHOOK_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});
+    return true;
+  }catch(e){}
+  return false;
+}
 const isAdmin=()=>currentUser&&currentUser.role==='admin';
 function badgeClass(action){if(!action)return'';if(action.includes('Permanent ban')||action.toLowerCase().includes('permanent'))return'badge-ban';if(action.toLowerCase().includes('ban'))return'badge-ban';if(action.toLowerCase().includes('warn')||action.toLowerCase().includes('warning'))return'badge-warn';if(action.toLowerCase().includes('kick'))return'badge-kick';return'badge-rep';}
 async function loadRecords(type){
@@ -1776,6 +1808,7 @@ async function confirmAndSubmit(){
   try{
     const res=await fetch(SUPA_URL+'/rest/v1/'+tableMap[type],{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});
     if(res.ok||res.status===201){
+      void sendSubmissionWebhook(type,data);
       closeConfirm();toastEl.style.display='block';
       const durEl=document.getElementById(p+'-duration');
       [p+'-user',p+'-uid',p+'-date',p+'-notes'].forEach(id=>document.getElementById(id).value='');
