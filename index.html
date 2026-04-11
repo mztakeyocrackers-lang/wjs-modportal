@@ -694,8 +694,6 @@ document.addEventListener('keydown',function(e){
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&['I','J','C','i','j','c'].includes(e.key)){e.preventDefault();e.stopImmediatePropagation();return false;}
   // Ctrl+U (view source)
   if((e.ctrlKey||e.metaKey)&&(e.key==='u'||e.key==='U')){e.preventDefault();e.stopImmediatePropagation();return false;}
-  // Ctrl+S (save page)
-if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='S')){e.preventDefault();e.stopImmediatePropagation();return false;}
 },true);
 
 /* ── 3. RIGHT-CLICK DISABLE on portal only ───────────────── */
@@ -1743,7 +1741,7 @@ function verifyAdminPin(){
   }
   const pin=document.getElementById('admin-pin-input').value.trim();
   const err=document.getElementById('admin-pin-err');
-  if(false){
+  if(pin==='323962'){
     adminUnlocked=true;
     adminPinAttempts=0;
     adminPinLockedUntil=0;
@@ -1963,9 +1961,9 @@ async function loadAuthUsers(){
 async function loadManageUsers(){
   const wrap=document.getElementById('manage-users-tbl-wrap');
   wrap.innerHTML='<div class="loading-state"><p>Loading users...</p></div>';
-  try{const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?select=id,username,role,created_at&order=id.asc',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});const data=await res.json();
+  try{const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?select=id,username,access_code,role,created_at&order=id.asc',{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});const data=await res.json();
   if(!data||data.length===0){wrap.innerHTML='<div class="empty-state"><p>No authorized users found.</p></div>';return;}
-  const rows=data.map(u=>{const isSelf=currentUser&&currentUser.id===u.id;return`<tr><td class="user-name-cell">@${u.username||'—'}${isSelf?' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>':''}</td><td class="user-code-cell">Protected</td><td><span class="user-role-badge ${u.role==='admin'?'role-admin':'role-mod'}">${(u.role||'—').toUpperCase()}</span></td><td class="user-date-cell">${u.created_at?new Date(u.created_at).toLocaleDateString():'—'}</td><td>${isSelf?'':`<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.username}',this)">Revoke Access</button>`}</td></tr>`;}).join('');
+  const rows=data.map(u=>{const isSelf=currentUser&&currentUser.id===u.id;return`<tr><td class="user-name-cell">@${u.username||'—'}${isSelf?' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>':''}</td><td class="user-code-cell">${u.access_code||'—'}</td><td><span class="user-role-badge ${u.role==='admin'?'role-admin':'role-mod'}">${(u.role||'—').toUpperCase()}</span></td><td class="user-date-cell">${u.created_at?new Date(u.created_at).toLocaleDateString():'—'}</td><td>${isSelf?'':`<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.username}',this)">Revoke Access</button>`}</td></tr>`;}).join('');
   wrap.innerHTML=`<div class="table-scroll"><table class="users-table"><thead><tr><th>Username</th><th>Access Code</th><th>Role</th><th>Added</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;}
   catch(e){wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';}
 }
@@ -1984,10 +1982,10 @@ async function addUser(){
   if(!/^[a-z0-9_]+$/.test(username)){alertEl.className='add-user-alert error';alertEl.textContent='Username may only contain letters, numbers, and underscores.';alertEl.style.display='block';return;}
   btn.disabled=true;btn.textContent='Adding...';
   try{
-    const existing=[];
-    // Duplicate handling lives in the edge function.
+    const checkRes=await fetch(SUPA_URL+'/rest/v1/authorized_users?username=eq.'+encodeURIComponent(username),{headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});
+    const existing=await checkRes.json();
     if(existing&&existing.length>0){alertEl.className='add-user-alert error';alertEl.textContent='That username is already registered.';alertEl.style.display='block';btn.disabled=false;btn.textContent='Add User →';return;}
-    const res=await fetch(SUPA_URL+'/functions/v1/wjs-manage-user',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},body:JSON.stringify({action:'add',username,code,role})});
+    const res=await fetch(SUPA_URL+'/rest/v1/authorized_users',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({username,access_code:code,role})});
     if(res.ok||res.status===201){alertEl.className='add-user-alert success';alertEl.textContent=`✓ @${username} added successfully as ${role.toUpperCase()}.`;alertEl.style.display='block';document.getElementById('nu-username').value='';document.getElementById('nu-code').value='';document.getElementById('nu-role').value='mod';loadManageUsers();}
     else{const errBody=await res.text();throw new Error('Status '+res.status+' — '+errBody);}
   }catch(e){alertEl.className='add-user-alert error';alertEl.textContent='Error: '+e.message;alertEl.style.display='block';}
@@ -1999,7 +1997,7 @@ async function revokeUser(id,username,btn){
   if(!confirmed){alert('Access denied — could not verify admin role.');return;}
   if(!confirm(`Revoke access for @${username}?`))return;
   btn.disabled=true;btn.textContent='Revoking...';
-  try{const res=await fetch(SUPA_URL+'/functions/v1/wjs-manage-user',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY},body:JSON.stringify({action:'revoke',id})});if(res.ok)loadManageUsers();else{btn.disabled=false;btn.textContent='Revoke Access';alert('Could not revoke access.');}}
+  try{const res=await fetch(SUPA_URL+'/rest/v1/authorized_users?id=eq.'+id,{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});if(res.ok)loadManageUsers();else{btn.disabled=false;btn.textContent='Revoke Access';alert('Could not revoke access.');}}
   catch(e){btn.disabled=false;btn.textContent='Revoke Access';alert('Connection error.');}
 }
 let allDeletionHistory=[];
@@ -2569,10 +2567,11 @@ document.addEventListener('paste',function(e){
 (function(){function updateClock(){const el=document.getElementById('login-clock');if(!el)return;const now=new Date();const d=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();const t=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});el.textContent=d+' · '+t;}updateClock();setInterval(updateClock,1000);})();
 </script>
 <script>
-/* Admin token flow:
-   - verify the admin PIN in smart-service
-   - store a short-lived admin token in sessionStorage
-   - require that token for privileged edge-function calls */
+/* Final auth/admin override:
+   - login uses smart-service
+   - admin PIN is verified server-side
+   - admin actions require a short-lived admin token
+   - user lists come from wjs-manage-user instead of direct table reads */
 (function(){
   const ADMIN_AUTH_URL=SUPA_URL+'/functions/v1/smart-service';
   const MANAGE_USER_URL=SUPA_URL+'/functions/v1/wjs-manage-user';
@@ -2610,13 +2609,62 @@ document.addEventListener('paste',function(e){
     };
   }
 
-  const _origDoLogin=window.doLogin;
-  if(typeof _origDoLogin==='function'){
-    window.doLogin=async function(){
-      setAdminToken('');
-      return _origDoLogin.apply(this,arguments);
-    };
-  }
+  window.doLogin=async function(){
+    if(typeof storeFP==='function')storeFP();
+    if(isLockedOut()){updateLoginLockoutUI();return;}
+
+    const username=cleanUsername(document.getElementById('login-username').value);
+    const code=document.getElementById('login-code').value.trim();
+    const btn=document.getElementById('login-btn');
+    const err=document.getElementById('login-err');
+
+    setAdminToken('');
+    err.style.display='none';
+
+    const hp=document.getElementById('hp-email');
+    if(hp&&hp.value.length>0){
+      await new Promise(r=>setTimeout(r,1800));
+      err.style.display='block';
+      return;
+    }
+
+    if(!username||!code){err.style.display='block';return;}
+
+    btn.disabled=true;
+    btn.innerHTML='Authenticating...';
+
+    try{
+      const {res,data}=await postJson(ADMIN_AUTH_URL,{action:'login',username,code});
+      if(res.ok&&data&&data.success&&data.user){
+        recordSuccessfulLogin();
+        currentUser=data.user;
+        adminUnlocked=false;
+        adminPinAttempts=0;
+        adminPinLockedUntil=0;
+        document.getElementById('login-page').style.display='none';
+        document.getElementById('portal-page').style.display='block';
+        document.getElementById('user-name-display').textContent='@'+currentUser.username;
+        document.getElementById('user-role-display').textContent=currentUser.role.toUpperCase();
+        document.getElementById('admin-nav-btn').style.display=currentUser.role==='admin'?'inline-block':'none';
+        fillModFields();
+        startIdleWatcher();
+        startSessionClock();
+        sessionStartTime=Date.now();
+        updateSecBanner();
+      }else{
+        recordFailedAttempt();
+        err.textContent='Access Denied - Invalid Credentials';
+        err.style.display='block';
+        updateLoginLockoutUI();
+      }
+    }catch(e){
+      err.textContent='Connection Error - Try Again';
+      err.style.display='block';
+    }
+
+    btn.disabled=isLockedOut()?true:false;
+    btn.innerHTML=isLockedOut()?'Locked':'<span>Authenticate</span><span class="login-btn-arrow"></span>';
+  };
 
   window.verifyCurrentUserIsAdmin=async function(){
     if(!currentUser||currentUser.role!=='admin')return false;
@@ -2714,6 +2762,51 @@ document.addEventListener('paste',function(e){
     }
   };
 
+  window.loadAuthUsers=async function(){
+    const wrap=document.getElementById('auth-users-wrap');
+    if(!wrap)return;
+    const confirmed=await window.verifyCurrentUserIsAdmin();
+    if(!confirmed){
+      wrap.innerHTML='<div class="empty-state"><p>Admin verification required.</p></div>';
+      return;
+    }
+    try{
+      const {res,data}=await postJson(MANAGE_USER_URL,{action:'list',adminToken:getAdminToken()});
+      const users=res.ok&&data&&Array.isArray(data.users)?data.users:[];
+      if(users.length===0){
+        wrap.innerHTML='<div class="empty-state"><p>No users found.</p></div>';
+        return;
+      }
+      const rows=users.map(u=>'<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;">@'+(u.username||'—')+'</td><td><span class="badge '+(u.role==='admin'?'badge-ban':'badge-rep')+'">'+(u.role||'—').toUpperCase()+'</span></td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--dark-muted);">'+(u.created_at?formatTZ(u.created_at):'—')+'</td></tr>').join('');
+      wrap.innerHTML='<div class="table-scroll"><table class="signin-table"><thead><tr><th>Username</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+    }catch(e){
+      wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';
+    }
+  };
+
+  window.loadManageUsers=async function(){
+    const wrap=document.getElementById('manage-users-tbl-wrap');
+    if(!wrap)return;
+    wrap.innerHTML='<div class="loading-state"><p>Loading users...</p></div>';
+    const confirmed=await window.verifyCurrentUserIsAdmin();
+    if(!confirmed){
+      wrap.innerHTML='<div class="empty-state"><p>Admin verification required.</p></div>';
+      return;
+    }
+    try{
+      const {res,data}=await postJson(MANAGE_USER_URL,{action:'list',adminToken:getAdminToken()});
+      const users=res.ok&&data&&Array.isArray(data.users)?data.users:[];
+      if(users.length===0){
+        wrap.innerHTML='<div class="empty-state"><p>No authorized users found.</p></div>';
+        return;
+      }
+      const rows=users.map(u=>{const isSelf=currentUser&&currentUser.id===u.id;return`<tr><td class="user-name-cell">@${u.username||'—'}${isSelf?' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>':''}</td><td class="user-code-cell">Protected</td><td><span class="user-role-badge ${u.role==='admin'?'role-admin':'role-mod'}">${(u.role||'—').toUpperCase()}</span></td><td class="user-date-cell">${u.created_at?new Date(u.created_at).toLocaleDateString():'—'}</td><td>${isSelf?'':`<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.username}',this)">Revoke Access</button>`}</td></tr>`;}).join('');
+      wrap.innerHTML=`<div class="table-scroll"><table class="users-table"><thead><tr><th>Username</th><th>Access Code</th><th>Role</th><th>Added</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }catch(e){
+      wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';
+    }
+  };
+
   window.addUser=async function(){
     const confirmed=await window.verifyCurrentUserIsAdmin();
     if(!confirmed){alert('Access denied - admin verification failed.');return;}
@@ -2795,51 +2888,6 @@ document.addEventListener('paste',function(e){
 
     btn.disabled=false;
     btn.textContent='Revoke Access';
-  };
-
-  window.loadAuthUsers=async function(){
-    const wrap=document.getElementById('auth-users-wrap');
-    if(!wrap)return;
-    const confirmed=await window.verifyCurrentUserIsAdmin();
-    if(!confirmed){
-      wrap.innerHTML='<div class="empty-state"><p>Admin verification required.</p></div>';
-      return;
-    }
-    try{
-      const {res,data}=await postJson(MANAGE_USER_URL,{action:'list',adminToken:getAdminToken()});
-      const users=res.ok&&data&&Array.isArray(data.users)?data.users:[];
-      if(users.length===0){
-        wrap.innerHTML='<div class="empty-state"><p>No users found.</p></div>';
-        return;
-      }
-      const rows=users.map(u=>'<tr><td style="font-family:\'DM Mono\',monospace;font-size:12px;">@'+(u.username||'—')+'</td><td><span class="badge '+(u.role==='admin'?'badge-ban':'badge-rep')+'">'+(u.role||'—').toUpperCase()+'</span></td><td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--dark-muted);">'+(u.created_at?formatTZ(u.created_at):'—')+'</td></tr>').join('');
-      wrap.innerHTML='<div class="table-scroll"><table class="signin-table"><thead><tr><th>Username</th><th>Role</th><th>Added</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
-    }catch(e){
-      wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';
-    }
-  };
-
-  window.loadManageUsers=async function(){
-    const wrap=document.getElementById('manage-users-tbl-wrap');
-    if(!wrap)return;
-    wrap.innerHTML='<div class="loading-state"><p>Loading users...</p></div>';
-    const confirmed=await window.verifyCurrentUserIsAdmin();
-    if(!confirmed){
-      wrap.innerHTML='<div class="empty-state"><p>Admin verification required.</p></div>';
-      return;
-    }
-    try{
-      const {res,data}=await postJson(MANAGE_USER_URL,{action:'list',adminToken:getAdminToken()});
-      const users=res.ok&&data&&Array.isArray(data.users)?data.users:[];
-      if(users.length===0){
-        wrap.innerHTML='<div class="empty-state"><p>No authorized users found.</p></div>';
-        return;
-      }
-      const rows=users.map(u=>{const isSelf=currentUser&&currentUser.id===u.id;return`<tr><td class="user-name-cell">@${u.username||'—'}${isSelf?' <span style="font-family:\'DM Mono\',monospace;font-size:8px;color:var(--gold);letter-spacing:.1em;">(you)</span>':''}</td><td class="user-code-cell">Protected</td><td><span class="user-role-badge ${u.role==='admin'?'role-admin':'role-mod'}">${(u.role||'—').toUpperCase()}</span></td><td class="user-date-cell">${u.created_at?new Date(u.created_at).toLocaleDateString():'—'}</td><td>${isSelf?'':`<button class="revoke-btn" onclick="revokeUser(${u.id},'${u.username}',this)">Revoke Access</button>`}</td></tr>`;}).join('');
-      wrap.innerHTML=`<div class="table-scroll"><table class="users-table"><thead><tr><th>Username</th><th>Access Code</th><th>Role</th><th>Added</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    }catch(e){
-      wrap.innerHTML='<div class="empty-state"><p>Could not load users.</p></div>';
-    }
   };
 })();
 </script>
