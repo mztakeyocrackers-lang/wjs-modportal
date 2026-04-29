@@ -1,0 +1,1278 @@
+
+
+Creating enhanced HTML version of Nexus Dashboard
+html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nexus · Bot Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:          #08090f;
+    --surface:     #10121a;
+    --card:        #171a28;
+    --card-hover:  #1c2035;
+    --border:      #222640;
+    --border-h:    #363d6a;
+    --accent:      #5b63f5;
+    --accent-glow: #5b63f518;
+    --accent-h:    #6e75f7;
+    --cyan:        #00d4ff;
+    --cyan-dim:    #00d4ff18;
+    --green:       #3dd68c;
+    --green-dim:   #3dd68c18;
+    --yellow:      #f5c542;
+    --yellow-dim:  #f5c54218;
+    --red:         #f04747;
+    --red-dim:     #f0474718;
+    --text:        #e8eaf6;
+    --text-2:      #7a82a8;
+    --text-3:      #404568;
+    --radius:      12px;
+    --sidebar-w:   224px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+  }
+
+  /* ─── Scrollbar ─────────────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* ─── Sidebar ────────────────────────────────────── */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* subtle ambient glow behind sidebar */
+  #sidebar::before {
+    content: '';
+    position: absolute;
+    top: 60px; left: -40px;
+    width: 120px; height: 200px;
+    background: radial-gradient(ellipse, #5b63f520 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .sidebar-logo {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 16px #5b63f540;
+  }
+
+  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; letter-spacing: -.03em; line-height: 1; }
+  .logo-sub  { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+  .sidebar-server {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .server-label {
+    font-size: 10px; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: .1em; margin-bottom: 6px;
+    font-family: 'Syne', sans-serif; font-weight: 600;
+  }
+
+  .server-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .server-pill:hover { border-color: var(--border-h); }
+
+  .server-avatar {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: linear-gradient(135deg, #5b63f580, #00d4ff80);
+    flex-shrink: 0;
+  }
+
+  .server-name { font-size: 12px; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+
+  .nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    font-size: 13px; font-weight: 400;
+    cursor: pointer;
+    width: 100%; text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    transition: background .15s, color .15s;
+    position: relative;
+  }
+  .nav-btn:hover { background: var(--accent-glow); color: var(--text); }
+  .nav-btn.active {
+    background: var(--accent-glow);
+    color: var(--accent);
+    font-weight: 600;
+    outline: 1px solid #5b63f528;
+  }
+  .nav-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 3px; border-radius: 0 3px 3px 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  .nav-icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .bot-status {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    background: var(--green-dim);
+    border: 1px solid #3dd68c28;
+    border-radius: 8px;
+  }
+
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .5; }
+  }
+
+  /* ─── Main ───────────────────────────────────────── */
+  #main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #topbar {
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+  }
+
+  .page-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -.03em;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+  .version-badge {
+    padding: 5px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .avatar-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: #fff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 12px #5b63f540;
+  }
+
+  #content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px;
+  }
+
+  /* ─── Pages ──────────────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp .25s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── Cards ──────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: var(--border-h); }
+
+  .card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 700;
+    color: var(--text-2);
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+
+  /* ─── Stats grid ─────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+    cursor: default;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-h);
+    box-shadow: 0 8px 24px #00000040;
+  }
+
+  .stat-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: .85;
+  }
+
+  .stat-label {
+    font-size: 10px; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: .1em;
+    margin-bottom: 8px;
+    font-family: 'Syne', sans-serif; font-weight: 600;
+  }
+
+  .stat-value {
+    font-size: 28px; font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -.03em;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+
+  .stat-change { font-size: 12px; }
+
+  /* ─── 2-col grid ─────────────────────────────────── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ─── Log rows ───────────────────────────────────── */
+  .log-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #1c1f30;
+    transition: background .15s;
+  }
+  .log-row:last-child { border-bottom: none; }
+  .log-row:hover { background: #ffffff04; }
+
+  .log-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .log-action { font-size: 13px; color: var(--text); }
+  .log-meta { font-size: 11px; color: var(--text-3); margin-top: 1px; font-family: 'JetBrains Mono', monospace; }
+  .log-time { font-size: 11px; color: var(--text-3); margin-left: auto; flex-shrink: 0; }
+
+  /* ─── Bot status rows ────────────────────────────── */
+  .status-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 20px;
+    border-bottom: 1px solid #1c1f30;
+  }
+  .status-row:last-child { border-bottom: none; }
+
+  .status-key { font-size: 13px; color: var(--text-2); }
+  .status-val { font-size: 13px; color: var(--text); font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 8px; }
+
+  .online-banner {
+    margin: 0 16px 16px;
+    padding: 10px 14px;
+    background: var(--green-dim);
+    border: 1px solid #3dd68c28;
+    border-radius: 8px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--green);
+  }
+
+  /* ─── Channel rows ───────────────────────────────── */
+  .ch-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #1c1f30;
+    transition: background .15s;
+  }
+  .ch-row:last-child { border-bottom: none; }
+  .ch-row:hover { background: #ffffff03; }
+
+  .ch-icon-box {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .ch-label { font-size: 14px; font-weight: 600; font-family: 'Syne', sans-serif; }
+  .ch-desc  { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  .ch-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+  .ch-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  select.ch-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-2);
+    font-size: 13px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+    cursor: pointer;
+    min-width: 180px;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a82a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+  select.ch-select:focus { border-color: var(--accent); }
+
+  .save-btn {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 12px; font-weight: 600;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .save-btn:hover { background: #5b63f530; }
+  .save-btn.saved { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+
+  /* ─── Commands ───────────────────────────────────── */
+  .cmd-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #1c1f30;
+    transition: opacity .2s, background .15s;
+  }
+  .cmd-row:last-child { border-bottom: none; }
+  .cmd-row:hover { background: #ffffff03; }
+  .cmd-row.disabled { opacity: .45; }
+
+  .cmd-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    padding: 3px 8px; border-radius: 5px;
+    min-width: 110px;
+  }
+  .cmd-name.on { color: var(--cyan); background: var(--cyan-dim); }
+  .cmd-name.off { color: var(--text-3); }
+
+  .cmd-desc { flex: 1; font-size: 13px; color: var(--text-2); }
+
+  .cmd-uses {
+    font-size: 12px; color: var(--text-3);
+    font-family: 'JetBrains Mono', monospace;
+    min-width: 60px; text-align: right;
+  }
+
+  /* ─── Toggle switch ──────────────────────────────── */
+  .toggle {
+    width: 40px; height: 22px; border-radius: 11px;
+    position: relative; cursor: pointer;
+    transition: background .2s;
+    flex-shrink: 0;
+    border: none;
+    outline: none;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left .2s;
+  }
+  .toggle.on  { background: var(--accent); box-shadow: 0 0 10px #5b63f550; }
+  .toggle.on::after  { left: 21px; }
+  .toggle.off { background: var(--border); }
+
+  /* ─── AutoMod ────────────────────────────────────── */
+  .automod-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .rule-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .rule-card:hover { border-color: var(--border-h); }
+  .rule-card.active {
+    background: #5b63f50d;
+    border-color: #5b63f550;
+    box-shadow: 0 0 20px #5b63f508;
+  }
+
+  .rule-emoji { font-size: 20px; margin-top: 1px; }
+  .rule-name  { font-size: 13px; font-weight: 600; font-family: 'Syne', sans-serif; color: var(--text); }
+  .rule-desc  { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+  /* small toggle inside rule card */
+  .mini-toggle {
+    width: 36px; height: 20px; border-radius: 10px;
+    background: var(--border);
+    position: relative;
+    flex-shrink: 0;
+    transition: background .2s;
+  }
+  .mini-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left .2s;
+  }
+  .mini-toggle.on { background: var(--accent); }
+  .mini-toggle.on::after { left: 18px; }
+
+  .rule-header { display: flex; align-items: center; justify-content: space-between; }
+
+  /* ─── Audit logs ─────────────────────────────────── */
+  .audit-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid #1c1f30;
+    transition: background .15s;
+  }
+  .audit-row:last-child { border-bottom: none; }
+  .audit-row:hover { background: #ffffff04; }
+  .audit-action { font-size: 13px; color: var(--text); }
+  .audit-user   { font-size: 12px; color: var(--text-3); margin-left: 8px; font-family: 'JetBrains Mono', monospace; }
+  .audit-mod    { font-size: 12px; color: var(--text-2); margin-left: auto; }
+  .audit-time   { font-size: 11px; color: var(--text-3); min-width: 60px; text-align: right; }
+
+  /* ─── Settings ───────────────────────────────────── */
+  .settings-section {
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .settings-section.danger {
+    background: #f0474708;
+    border: 1px solid #f0474728;
+  }
+  .settings-section:not(.danger) {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .section-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-2);
+  }
+  .settings-section.danger .section-header {
+    border-bottom-color: #f0474720;
+    color: var(--red);
+  }
+
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid #1c1f30;
+  }
+  .settings-section.danger .settings-row {
+    border-bottom-color: #f0474712;
+  }
+  .settings-row:last-child { border-bottom: none; }
+
+  .settings-key { font-size: 13px; font-weight: 500; color: var(--text); }
+  .settings-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+  input.setting-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input.setting-input:focus { border-color: var(--accent); }
+  input.setting-input.w-sm { width: 80px; }
+  input.setting-input.w-md { width: 160px; }
+
+  select.setting-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    padding: 8px 12px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  select.setting-select:focus { border-color: var(--accent); }
+
+  .danger-btn {
+    background: var(--red-dim);
+    border: 1px solid #f0474750;
+    border-radius: 8px;
+    color: var(--red);
+    font-size: 12px; font-weight: 600;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    transition: all .2s;
+  }
+  .danger-btn:hover { background: #f0474720; }
+
+  /* ─── Tag badges ─────────────────────────────────── */
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 600;
+    font-family: 'Syne', sans-serif; text-transform: uppercase; letter-spacing: .05em;
+  }
+
+  /* ─── Section subheading ─────────────────────────── */
+  .section-hint {
+    font-size: 13px; color: var(--text-2);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  /* ─── Active-count badge ─────────────────────────── */
+  .count-badge {
+    display: inline-flex; align-items: center;
+    padding: 5px 14px; border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Syne', sans-serif; font-weight: 600;
+    margin-bottom: 18px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside id="sidebar">
+
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 2L3 6v5c0 3 2.5 4.5 6 5 3.5-.5 6-2 6-5V6L9 2z" fill="white" fill-opacity=".9"/>
+        <path d="M6.5 9.5L8 11l4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">NEXUS</div>
+      <div class="logo-sub">Bot Dashboard</div>
+    </div>
+  </div>
+
+  <div class="sidebar-server">
+    <div class="server-label">Server</div>
+    <div class="server-pill">
+      <div class="server-avatar"></div>
+      <span class="server-name">Nexus Community</span>
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="color:var(--text-3);flex-shrink:0">
+        <path d="M2 4l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <nav>
+    <button class="nav-btn active" data-page="overview" onclick="navigate('overview')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+        <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/>
+        <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor" opacity=".45"/>
+        <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".45"/>
+        <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor" opacity=".45"/>
+      </svg>
+      Overview
+    </button>
+    <button class="nav-btn" data-page="channels" onclick="navigate('channels')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+        <path d="M2 4h12M2 8h12M2 12h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Channels
+    </button>
+    <button class="nav-btn" data-page="commands" onclick="navigate('commands')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+        <path d="M3 5l3 3-3 3M8 11h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Commands
+    </button>
+    <button class="nav-btn" data-page="automod" onclick="navigate('automod')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1.5L2 4v4c0 3 2.5 5.5 6 6 3.5-.5 6-3 6-6V4L8 1.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      AutoMod
+    </button>
+    <button class="nav-btn" data-page="logs" onclick="navigate('logs')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Audit Logs
+    </button>
+    <button class="nav-btn" data-page="settings" onclick="navigate('settings')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Settings
+    </button>
+  </nav>
+
+  <div class="bot-status">
+    <div class="status-pill">
+      <div class="dot" style="background:var(--green)"></div>
+      <span style="font-size:11px;color:var(--green)">Nexus is online</span>
+    </div>
+  </div>
+
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════════ -->
+<div id="main">
+
+  <header id="topbar">
+    <h1 class="page-title" id="page-title">Overview</h1>
+    <div class="topbar-right">
+      <div class="version-badge">v2.4.1</div>
+      <button class="avatar-btn">A</button>
+    </div>
+  </header>
+
+  <div id="content">
+
+    <!-- ══ OVERVIEW ══════════════════════════════════ -->
+    <section class="page active" id="page-overview">
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-bar" style="background:var(--green)"></div>
+          <div class="stat-label">Members</div>
+          <div class="stat-value" style="color:var(--green)">12,847</div>
+          <div class="stat-change" style="color:var(--green)">+142 today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-bar" style="background:var(--cyan)"></div>
+          <div class="stat-label">Messages Today</div>
+          <div class="stat-value" style="color:var(--cyan)">4,291</div>
+          <div class="stat-change" style="color:var(--green)">+18% vs yesterday</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-bar" style="background:var(--accent)"></div>
+          <div class="stat-label">Commands Ran</div>
+          <div class="stat-value" style="color:var(--accent)">638</div>
+          <div class="stat-change" style="color:var(--text-3)">Last 24 hours</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-bar" style="background:var(--yellow)"></div>
+          <div class="stat-label">Mod Actions</div>
+          <div class="stat-value" style="color:var(--yellow)">7</div>
+          <div class="stat-change" style="color:var(--red)">-3 vs yesterday</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+
+        <!-- Recent Audit Log -->
+        <div class="card">
+          <div class="card-header">Recent Audit Log</div>
+          <div class="log-row">
+            <div class="log-dot" style="background:var(--red)"></div>
+            <div><div class="log-action">Member banned</div><div class="log-meta">darkspider_94 · by StaffMike</div></div>
+            <div class="log-time">2m ago</div>
+          </div>
+          <div class="log-row">
+            <div class="log-dot" style="background:var(--yellow)"></div>
+            <div><div class="log-action">Message deleted</div><div class="log-meta">randomuser22 · by AutoMod</div></div>
+            <div class="log-time">5m ago</div>
+          </div>
+          <div class="log-row">
+            <div class="log-dot" style="background:var(--green)"></div>
+            <div><div class="log-action">Role assigned</div><div class="log-meta">newmember_77 · by Nexus Bot</div></div>
+            <div class="log-time">8m ago</div>
+          </div>
+          <div class="log-row">
+            <div class="log-dot" style="background:var(--yellow)"></div>
+            <div><div class="log-action">Member warned</div><div class="log-meta">spammer_lol · by StaffJess</div></div>
+            <div class="log-time">14m ago</div>
+          </div>
+          <div class="log-row">
+            <div class="log-dot" style="background:var(--cyan)"></div>
+            <div><div class="log-action">Invite created</div><div class="log-meta">coolguy123 · by —</div></div>
+            <div class="log-time">22m ago</div>
+          </div>
+        </div>
+
+        <!-- Bot Status -->
+        <div class="card">
+          <div class="card-header">Bot Status</div>
+          <div class="status-row">
+            <span class="status-key">Bot Latency</span>
+            <span class="status-val"><div class="dot" style="background:var(--green)"></div>48ms</span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">API Status</span>
+            <span class="status-val"><div class="dot" style="background:var(--green)"></div>Operational</span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">Uptime</span>
+            <span class="status-val"><div class="dot" style="background:var(--green)"></div>99.97%</span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">Shard</span>
+            <span class="status-val"><div class="dot" style="background:var(--green)"></div>Shard 0 / 1</span>
+          </div>
+          <div class="status-row">
+            <span class="status-key">Last Restart</span>
+            <span class="status-val"><div class="dot" style="background:var(--yellow)"></div>6 days ago</span>
+          </div>
+          <div class="online-banner">
+            <div class="dot" style="background:var(--green)"></div>
+            Nexus is online and operating normally
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ CHANNELS ═══════════════════════════════════ -->
+    <section class="page" id="page-channels">
+      <p class="section-hint">Assign specific channels for each bot function. Changes apply instantly after saving.</p>
+
+      <div class="card">
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--green-dim);border:1px solid #3dd68c28">👋</div>
+          <div><div class="ch-label">Welcome Channel</div><div class="ch-desc">Where new member greetings are posted</div></div>
+          <div class="ch-controls">
+            <select class="ch-select" onchange="chSelect(this,'welcome')">
+              <option value="">— Not set —</option>
+              <option value="general"># general</option>
+              <option value="welcome"># welcome</option>
+              <option value="announcements"># announcements</option>
+              <option value="mod-logs"># mod-logs</option>
+              <option value="bot-commands"># bot-commands</option>
+              <option value="staff-chat"># staff-chat</option>
+              <option value="suggestions"># suggestions</option>
+              <option value="farewell"># farewell</option>
+              <option value="verification"># verification</option>
+              <option value="tickets"># tickets</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--yellow-dim);border:1px solid #f5c54228">🚪</div>
+          <div><div class="ch-label">Farewell Channel</div><div class="ch-desc">Where member departure messages appear</div></div>
+          <div class="ch-controls">
+            <select class="ch-select" onchange="chSelect(this,'farewell')">
+              <option value="">— Not set —</option>
+              <option value="general"># general</option>
+              <option value="welcome"># welcome</option>
+              <option value="farewell"># farewell</option>
+              <option value="announcements"># announcements</option>
+              <option value="mod-logs"># mod-logs</option>
+              <option value="bot-commands"># bot-commands</option>
+              <option value="staff-chat"># staff-chat</option>
+              <option value="suggestions"># suggestions</option>
+              <option value="verification"># verification</option>
+              <option value="tickets"># tickets</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--accent-glow);border:1px solid #5b63f528">📣</div>
+          <div><div class="ch-label">Announcements Channel</div><div class="ch-desc">For important server-wide announcements</div></div>
+          <div class="ch-controls">
+            <select class="ch-select">
+              <option value="">— Not set —</option>
+              <option value="announcements"># announcements</option>
+              <option value="general"># general</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--red-dim);border:1px solid #f0474728">🔒</div>
+          <div><div class="ch-label">Moderation Logs</div><div class="ch-desc">Audit trail for all mod actions</div></div>
+          <div class="ch-controls">
+            <select class="ch-select">
+              <option value="">— Not set —</option>
+              <option value="mod-logs"># mod-logs</option>
+              <option value="staff-chat"># staff-chat</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--cyan-dim);border:1px solid #00d4ff28">⚙️</div>
+          <div><div class="ch-label">Bot Commands Channel</div><div class="ch-desc">Restrict bot commands to this channel</div></div>
+          <div class="ch-controls">
+            <select class="ch-select">
+              <option value="">— Not set —</option>
+              <option value="bot-commands"># bot-commands</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--yellow-dim);border:1px solid #f5c54228">💡</div>
+          <div><div class="ch-label">Suggestions Channel</div><div class="ch-desc">Where users submit suggestions</div></div>
+          <div class="ch-controls">
+            <select class="ch-select">
+              <option value="">— Not set —</option>
+              <option value="suggestions"># suggestions</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--green-dim);border:1px solid #3dd68c28">🎫</div>
+          <div><div class="ch-label">Ticket Panel Channel</div><div class="ch-desc">Where the support ticket panel is posted</div></div>
+          <div class="ch-controls">
+            <select class="ch-select">
+              <option value="">— Not set —</option>
+              <option value="tickets"># tickets</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+        <div class="ch-row">
+          <div class="ch-icon-box" style="background:var(--accent-glow);border:1px solid #5b63f528">✅</div>
+          <div><div class="ch-label">Verification Channel</div><div class="ch-desc">Where members verify to access the server</div></div>
+          <div class="ch-controls">
+            <select class="ch-select">
+              <option value="">— Not set —</option>
+              <option value="verification"># verification</option>
+            </select>
+            <button class="save-btn" onclick="saveChannel(this)">Save</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ COMMANDS ═══════════════════════════════════ -->
+    <section class="page" id="page-commands">
+      <p class="section-hint">Enable or disable bot commands server-wide. Disabled commands will not respond to users.</p>
+
+      <div class="card" id="commands-list">
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/ban</span>
+          <span class="cmd-desc">Ban a member from the server</span>
+          <span class="cmd-uses">14 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/kick</span>
+          <span class="cmd-desc">Kick a member from the server</span>
+          <span class="cmd-uses">23 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/warn</span>
+          <span class="cmd-desc">Issue a warning to a member</span>
+          <span class="cmd-uses">87 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/mute</span>
+          <span class="cmd-desc">Temporarily mute a member</span>
+          <span class="cmd-uses">31 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/purge</span>
+          <span class="cmd-desc">Bulk delete messages in a channel</span>
+          <span class="cmd-uses">9 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/ticket</span>
+          <span class="cmd-desc">Open a support ticket</span>
+          <span class="cmd-uses">156 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row" data-enabled="true">
+          <span class="cmd-name on">/suggest</span>
+          <span class="cmd-desc">Submit a server suggestion</span>
+          <span class="cmd-uses">44 uses</span>
+          <button class="toggle on" onclick="toggleCmd(this)"></button>
+        </div>
+        <div class="cmd-row disabled" data-enabled="false">
+          <span class="cmd-name off">/userinfo</span>
+          <span class="cmd-desc">View info about a user</span>
+          <span class="cmd-uses">63 uses</span>
+          <button class="toggle off" onclick="toggleCmd(this)"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ AUTOMOD ════════════════════════════════════ -->
+    <section class="page" id="page-automod">
+
+      <div class="count-badge" id="rule-count-badge"
+           style="background:var(--accent-glow);border:1px solid #5b63f540;color:var(--accent)">
+        5 / 8 rules active
+      </div>
+
+      <div class="automod-grid" id="automod-grid">
+
+        <div class="rule-card active" onclick="toggleRule(this)">
+          <span class="rule-emoji">⚡</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Anti-Spam</span>
+              <div class="mini-toggle on"></div>
+            </div>
+            <div class="rule-desc">Delete messages sent too quickly in succession</div>
+          </div>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <span class="rule-emoji">🔗</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Block External Links</span>
+              <div class="mini-toggle"></div>
+            </div>
+            <div class="rule-desc">Prevent members from posting external URLs</div>
+          </div>
+        </div>
+
+        <div class="rule-card active" onclick="toggleRule(this)">
+          <span class="rule-emoji">📩</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Block Discord Invites</span>
+              <div class="mini-toggle on"></div>
+            </div>
+            <div class="rule-desc">Auto-delete server invite links</div>
+          </div>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <span class="rule-emoji">🔠</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Anti-Caps</span>
+              <div class="mini-toggle"></div>
+            </div>
+            <div class="rule-desc">Flag messages with excessive capitalization</div>
+          </div>
+        </div>
+
+        <div class="rule-card active" onclick="toggleRule(this)">
+          <span class="rule-emoji">🚫</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Bad Word Filter</span>
+              <div class="mini-toggle on"></div>
+            </div>
+            <div class="rule-desc">Delete messages containing configured profanity</div>
+          </div>
+        </div>
+
+        <div class="rule-card active" onclick="toggleRule(this)">
+          <span class="rule-emoji">📢</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Anti-Mass Mention</span>
+              <div class="mini-toggle on"></div>
+            </div>
+            <div class="rule-desc">Prevent mass pings of users or roles</div>
+          </div>
+        </div>
+
+        <div class="rule-card" onclick="toggleRule(this)">
+          <span class="rule-emoji">✏️</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Anti-Zalgo Text</span>
+              <div class="mini-toggle"></div>
+            </div>
+            <div class="rule-desc">Remove corrupted or zalgo-styled text</div>
+          </div>
+        </div>
+
+        <div class="rule-card active" onclick="toggleRule(this)">
+          <span class="rule-emoji">🐢</span>
+          <div style="flex:1">
+            <div class="rule-header">
+              <span class="rule-name">Auto Slowmode</span>
+              <div class="mini-toggle on"></div>
+            </div>
+            <div class="rule-desc">Activate slowmode when chat activity spikes</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ AUDIT LOGS ═════════════════════════════════ -->
+    <section class="page" id="page-logs">
+      <div class="card">
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--red)"></div>
+          <div><span class="audit-action">Member banned</span><span class="audit-user">darkspider_94</span></div>
+          <span class="audit-mod">by StaffMike</span>
+          <span class="audit-time">2m ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--yellow)"></div>
+          <div><span class="audit-action">Message deleted</span><span class="audit-user">randomuser22</span></div>
+          <span class="audit-mod">by AutoMod</span>
+          <span class="audit-time">5m ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--green)"></div>
+          <div><span class="audit-action">Role assigned</span><span class="audit-user">newmember_77</span></div>
+          <span class="audit-mod">by Nexus Bot</span>
+          <span class="audit-time">8m ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--yellow)"></div>
+          <div><span class="audit-action">Member warned</span><span class="audit-user">spammer_lol</span></div>
+          <span class="audit-mod">by StaffJess</span>
+          <span class="audit-time">14m ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--cyan)"></div>
+          <div><span class="audit-action">Invite created</span><span class="audit-user">coolguy123</span></div>
+          <span class="audit-mod">by —</span>
+          <span class="audit-time">22m ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--cyan)"></div>
+          <div><span class="audit-action">Channel created</span><span class="audit-user">#staff-chat</span></div>
+          <span class="audit-mod">by AdminUser</span>
+          <span class="audit-time">1h ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--red)"></div>
+          <div><span class="audit-action">Role deleted</span><span class="audit-user">Trial Mod</span></div>
+          <span class="audit-mod">by AdminUser</span>
+          <span class="audit-time">2h ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--green)"></div>
+          <div><span class="audit-action">Bot configured</span><span class="audit-user">Nexus</span></div>
+          <span class="audit-mod">by AdminUser</span>
+          <span class="audit-time">3h ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--green)"></div>
+          <div><span class="audit-action">Member unbanned</span><span class="audit-user">peacekeeper</span></div>
+          <span class="audit-mod">by StaffMike</span>
+          <span class="audit-time">5h ago</span>
+        </div>
+        <div class="audit-row">
+          <div class="log-dot" style="background:var(--yellow)"></div>
+          <div><span class="audit-action">Spam detected</span><span class="audit-user">bot_account_99</span></div>
+          <span class="audit-mod">by AutoMod</span>
+          <span class="audit-time">6h ago</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SETTINGS ═══════════════════════════════════ -->
+    <section class="page" id="page-settings">
+
+      <div class="settings-section">
+        <div class="section-header">Bot Configuration</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-key">Bot Prefix</div>
+            <div class="settings-desc">Classic prefix for non-slash commands</div>
+          </div>
+          <input class="setting-input w-sm" value="!" />
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-key">Display Name</div>
+            <div class="settings-desc">How the bot signs its messages</div>
+          </div>
+          <input class="setting-input w-md" value="Nexus" />
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-key">Language</div>
+            <div class="settings-desc">Language for bot responses</div>
+          </div>
+          <select class="setting-select">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-section danger">
+        <div class="section-header">Danger Zone</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-key">Reset All Settings</div>
+            <div class="settings-desc">Revert all bot configuration to defaults</div>
+          </div>
+          <button class="danger-btn">Reset</button>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-key">Remove Nexus from Server</div>
+            <div class="settings-desc">This will kick the bot and erase all data</div>
+          </div>
+          <button class="danger-btn">Remove Bot</button>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+  const titles = {
+    overview: 'Overview',
+    channels: 'Channel Setup',
+    commands: 'Command Manager',
+    automod:  'AutoMod Rules',
+    logs:     'Audit Logs',
+    settings: 'Settings'
+  };
+
+  function navigate(id) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === id));
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + id));
+    document.getElementById('page-title').textContent = titles[id];
+  }
+
+  function saveChannel(btn) {
+    btn.textContent = '✓ Saved';
+    btn.classList.add('saved');
+    setTimeout(() => { btn.textContent = 'Save'; btn.classList.remove('saved'); }, 2000);
+  }
+
+  function toggleCmd(btn) {
+    const row  = btn.closest('.cmd-row');
+    const name = row.querySelector('.cmd-name');
+    const on   = btn.classList.toggle('on');
+    btn.classList.toggle('off', !on);
+    row.classList.toggle('disabled', !on);
+    name.classList.toggle('on', on);
+    name.classList.toggle('off', !on);
+  }
+
+  function toggleRule(card) {
+    const toggle = card.querySelector('.mini-toggle');
+    const on = card.classList.toggle('active');
+    toggle.classList.toggle('on', on);
+    updateRuleCount();
+  }
+
+  function updateRuleCount() {
+    const total   = document.querySelectorAll('.rule-card').length;
+    const active  = document.querySelectorAll('.rule-card.active').length;
+    document.getElementById('rule-count-badge').textContent = `${active} / ${total} rules active`;
+  }
+</script>
+</body>
+</html>
